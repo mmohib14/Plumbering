@@ -122,7 +122,7 @@ export const Header: React.FC<HeaderProps> = ({
   };
 
   return (
-    <header className="site-header sticky top-0 z-50 border-b transition-all">
+    <header className="site-header relative sticky top-0 z-50 border-b transition-all">
       <div className="site-announcement border-b text-center text-[10px] font-bold sm:text-xs">
         <div className="mx-auto flex min-h-7 max-w-360 items-center justify-center gap-2 px-4 py-1">
           <span>America's trusted plumbing team</span>
@@ -341,8 +341,8 @@ export const Header: React.FC<HeaderProps> = ({
       </div>
 
       {mobileMenuOpen && (
-        <div className="border-t border-white/15 bg-(--color-navy) px-4 pb-6 pt-3 shadow-2xl xl:hidden">
-          <div className="grid grid-cols-2 gap-2 border-b border-white/15 pb-3">
+        <div className="absolute left-0 right-0 top-full max-h-[calc(100vh-5.5rem)] overflow-y-auto border-t border-white/15 bg-(--color-navy) px-4 pb-6 pt-3 shadow-2xl xl:hidden">
+          <div className="grid grid-cols-3 gap-2 border-b border-white/15 pb-3">
             <a
               href={`tel:${COMPANY_INFO.phoneRaw}`}
               className="site-emergency flex items-center justify-center gap-2 rounded-xl px-3 py-2.5 text-sm font-bold"
@@ -359,6 +359,13 @@ export const Header: React.FC<HeaderProps> = ({
             >
               <Calendar className="h-4 w-4" />
               <span>Book Online</span>
+            </button>
+            <button
+              onClick={() => handleNavClick('staff')}
+              className="site-nav flex items-center justify-center gap-2 rounded-xl px-3 py-2.5 text-sm font-bold text-white"
+            >
+              <UserCheck className="h-4 w-4" />
+              <span>Staff Login</span>
             </button>
           </div>
 
@@ -484,13 +491,6 @@ export const Header: React.FC<HeaderProps> = ({
               </span>
             </button>
 
-            <button
-              onClick={() => handleNavClick('staff')}
-              className="flex w-full items-center rounded-xl border border-sky-400/30 bg-sky-900/70 px-3 py-2.5 text-left text-sm font-semibold text-sky-100"
-            >
-              <UserCheck className="mr-2 h-4 w-4 text-sky-300" />
-              Staff Login
-            </button>
           </div>
         </div>
       )}

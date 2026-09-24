@@ -18,7 +18,7 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({ compact = false }) => (
       <div className={`font-black uppercase tracking-[-0.06em] text-white ${compact ? 'text-xl' : 'text-xl sm:text-3xl'}`}>
         USA <span className="text-(--color-orange)">PRO</span>
       </div>
-      <div className="mt-1 flex items-center gap-1.5">
+      <div className="mt-1 hidden items-center gap-1.5 sm:flex">
         <span className={`h-px bg-(--color-orange) ${compact ? 'w-4' : 'w-5 sm:w-7'}`} />
         <p className={`font-bold uppercase tracking-[0.14em] text-sky-100 ${compact ? 'text-[8px]' : 'text-[8px] sm:text-[10px]'}`}>
           Plumbing & Rooter Services
