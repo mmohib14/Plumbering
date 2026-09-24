@@ -1,0 +1,6 @@
+{
+  "name": "USA Pro Plumbing & Rooter Services",
+  "description": "Licensed, insured 24/7 plumbing services across the United States. Fast emergency dispatch, drain cleaning, water heater repair, sewer lines, leak detection, and commercial plumbing.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

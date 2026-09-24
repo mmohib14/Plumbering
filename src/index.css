@@ -1,0 +1,148 @@
+@import "tailwindcss";
+
+:root {
+  --color-navy: #0D2C54;
+  --color-ice: #F4F7F6;
+  --color-charcoal: #1A1A1A;
+  --color-orange: #FF6B35;
+  --color-orange-dark: #D94F22;
+  --shadow-navy: 0 12px 30px rgba(13, 44, 84, 0.18);
+}
+
+@layer base {
+  body {
+    overflow-x: hidden;
+    background: var(--color-ice);
+    color: var(--color-charcoal);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+  }
+}
+
+/* Shared semantic surfaces keep the 60-30-10 palette consistent across pages. */
+.site-header {
+  background: var(--color-ice);
+  border-color: rgba(13, 44, 84, 0.16);
+  box-shadow: var(--shadow-navy);
+}
+
+.site-announcement {
+  background: var(--color-orange);
+  border-color: var(--color-orange-dark);
+  color: var(--color-charcoal);
+}
+
+.site-header-main {
+  background: var(--color-navy);
+}
+
+.site-nav {
+  border-color: rgba(244, 247, 246, 0.2);
+  background: rgba(244, 247, 246, 0.08);
+}
+
+.site-nav-active {
+  background: var(--color-ice);
+  color: var(--color-navy);
+}
+
+.site-cta {
+  background: var(--color-orange);
+  color: var(--color-charcoal);
+  box-shadow: 0 8px 20px rgba(13, 44, 84, 0.28);
+}
+
+.site-cta:hover {
+  background: var(--color-orange-dark);
+  color: #fff;
+}
+
+.site-emergency {
+  background: var(--color-orange);
+  color: var(--color-charcoal);
+}
+
+.site-surface {
+  background: var(--color-ice);
+  color: var(--color-charcoal);
+}
+
+.site-footer {
+  background: var(--color-navy);
+  color: var(--color-ice);
+}
+
+.site-footer-muted {
+  color: rgba(244, 247, 246, 0.68);
+}
+
+.site-footer-link:hover {
+  color: var(--color-orange);
+}
+
+.site-footer-cta {
+  background: var(--color-orange);
+  color: var(--color-charcoal);
+}
+
+.site-footer-cta:hover {
+  background: var(--color-orange-dark);
+  color: #fff;
+}
+
+.field {
+  width: 100%;
+  border: 1px solid rgb(51 65 85);
+  border-radius: 0.75rem;
+  background: rgb(2 6 23);
+  padding: 0.625rem 0.75rem;
+  color: white;
+  font-size: 0.875rem;
+  outline: none;
+}
+
+.field:focus {
+  border-color: rgb(14 165 233);
+  box-shadow: 0 0 0 2px rgb(14 165 233 / 0.2);
+}
+
+/* Custom plumbing badge and pulse animations */
+@keyframes emergency-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(255, 107, 53, 0.55);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(255, 107, 53, 0);
+  }
+}
+
+.emergency-glow {
+  animation: emergency-pulse 2s infinite cubic-bezier(0.4, 0, 0.6, 1);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-ice);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(13, 44, 84, 0.42);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-navy);
+}
+
