@@ -12,6 +12,13 @@ import {
 } from 'lucide-react';
 import { COST_ESTIMATOR_BENCHMARKS, COMPANY_INFO } from '../data/plumbingData';
 
+const categoryButtonLabels: Record<string, string> = {
+  'Drain Cleaning & Clogs': 'Drain & Clogs',
+  'Water Heaters': 'Water Heaters',
+  'Water Leaks & Slab': 'Leaks & Slab',
+  'Fixtures & Restrooms': 'Fixtures'
+};
+
 interface CostEstimatorProps {
   onOpenBookingWithEstimate: (details: {
     serviceName: string;
@@ -84,13 +91,13 @@ export const CostEstimator: React.FC<CostEstimatorProps> = ({
                       setSelectedCategoryIdx(idx);
                       setSelectedOptionId(cat.options[0].id);
                     }}
-                    className={`flex min-h-20 min-w-0 items-center rounded-xl border p-3 text-left text-xs font-semibold leading-snug break-words transition-all sm:text-sm ${
+                    className={`flex h-16 min-h-16 min-w-0 items-center justify-center rounded-xl border p-2 text-center text-xs font-semibold leading-snug break-words transition-all sm:text-sm ${
                       selectedCategoryIdx === idx
                         ? 'bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-600/20'
                         : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'
                     }`}
                   >
-                    {cat.category}
+                    {categoryButtonLabels[cat.category] || cat.category}
                   </button>
                 ))}
               </div>

@@ -9,13 +9,13 @@ import {
   ChevronDown, 
   Calendar, 
   Flame, 
-  Sparkles,
   MapPin,
   FileText,
   UserCheck
 } from 'lucide-react';
 import { COMPANY_INFO, SERVICES_DATA } from '../data/plumbingData';
 import { ServiceItem } from '../types';
+import { BrandLogo } from './BrandLogo';
 
 interface HeaderProps {
   currentTab: string;
@@ -140,25 +140,9 @@ export const Header: React.FC<HeaderProps> = ({
           <div className="flex min-h-16 flex-wrap items-center justify-between gap-3 py-2 sm:min-h-18 sm:py-2.5">
             <div
               onClick={() => handleNavClick('home')}
-              className="group flex cursor-pointer select-none items-center gap-3.5"
+              className="cursor-pointer"
             >
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white shadow-[0_8px_18px_rgba(3,45,70,0.25)] transition-transform duration-200 group-hover:scale-105 sm:h-11 sm:w-11">
-                <div className="relative">
-                  <Wrench className="h-5 w-5 -rotate-45 text-[#0875ad] sm:h-6 sm:w-6" />
-                  <Sparkles className="absolute -right-1.5 -top-1.5 h-3.5 w-3.5 text-amber-400" />
-                </div>
-              </div>
-
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xl font-black tracking-tighter text-white sm:text-3xl">
-                    USA <span className="text-amber-300">PRO</span>
-                  </span>
-                </div>
-                <p className="text-[9px] font-bold uppercase tracking-[0.16em] text-sky-100 sm:text-[10px]">
-                  Plumbing & Rooter Services
-                </p>
-              </div>
+              <BrandLogo />
             </div>
 
             <nav className="site-nav order-3 hidden basis-full min-w-0 items-center justify-center gap-1 rounded-xl border-t px-2 py-1.5 xl:flex">
@@ -498,6 +482,14 @@ export const Header: React.FC<HeaderProps> = ({
               <span className="rounded bg-slate-700 px-2 py-0.5 text-[10px] font-bold text-white">
                 {leadsCount} Leads
               </span>
+            </button>
+
+            <button
+              onClick={() => handleNavClick('staff')}
+              className="flex w-full items-center rounded-xl border border-sky-400/30 bg-sky-900/70 px-3 py-2.5 text-left text-sm font-semibold text-sky-100"
+            >
+              <UserCheck className="mr-2 h-4 w-4 text-sky-300" />
+              Staff Login
             </button>
           </div>
         </div>

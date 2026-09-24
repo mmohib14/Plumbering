@@ -176,7 +176,7 @@ export const ServiceDetailModal: React.FC<ServiceDetailModalProps> = ({
               className="flex-1 sm:flex-initial bg-red-600 hover:bg-red-700 text-white font-bold px-4 py-2.5 rounded-xl text-xs flex items-center justify-center space-x-1.5 transition-colors shadow-sm"
             >
               <Phone className="w-3.5 h-3.5" />
-              <span>Call (800) 555-PIPE</span>
+              <span>Call Now</span>
             </a>
 
             <button
@@ -186,7 +186,7 @@ export const ServiceDetailModal: React.FC<ServiceDetailModalProps> = ({
               }}
               className="flex-1 sm:flex-initial bg-blue-600 hover:bg-blue-700 text-white font-bold px-5 py-2.5 rounded-xl text-xs transition-colors shadow-md shadow-blue-600/20"
             >
-              Request Service Online
+              Book Online
             </button>
           </div>
         </div>

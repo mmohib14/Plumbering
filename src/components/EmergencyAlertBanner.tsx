@@ -76,14 +76,14 @@ export const EmergencyAlertBanner: React.FC<EmergencyAlertBannerProps> = ({ onOp
                 className="flex-1 bg-white hover:bg-slate-100 active:bg-slate-200 text-red-700 font-black py-3.5 px-4 rounded-xl shadow-lg transition-transform active:scale-95 text-center flex items-center justify-center space-x-2"
               >
                 <Phone className="w-4 h-4 text-red-600" />
-                <span>Call Now (24/7)</span>
+                <span>Call 24/7</span>
               </a>
 
               <button
                 onClick={onOpenBooking}
                 className="flex-1 bg-red-800 hover:bg-red-700 text-white font-bold py-3.5 px-4 rounded-xl border border-red-400/40 transition-colors text-center text-sm"
               >
-                Request Dispatch Online
+                Request Online
               </button>
             </div>
           </div>

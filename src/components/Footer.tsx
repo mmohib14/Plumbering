@@ -5,14 +5,13 @@ import {
   MapPin, 
   Clock, 
   ShieldCheck, 
-  Wrench, 
-  Sparkles, 
   CheckCircle2, 
   Award,
   CreditCard,
   Lock
 } from 'lucide-react';
 import { COMPANY_INFO, SERVICES_DATA, SERVICE_AREAS_DATA } from '../data/plumbingData';
+import { BrandLogo } from './BrandLogo';
 
 interface FooterProps {
   onSelectTab: (tab: string) => void;
@@ -65,19 +64,7 @@ export const Footer: React.FC<FooterProps> = ({
       <div className="mx-auto grid max-w-7xl grid-cols-1 gap-x-10 gap-y-10 px-4 py-12 sm:px-6 lg:grid-cols-5 lg:px-8">
         {/* Column 1: Brand & Credentials */}
         <div className="lg:col-span-2 space-y-4">
-          <div className="flex items-center space-x-3 select-none">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-(--color-ice) text-(--color-navy) shadow-md">
-              <Wrench className="w-5 h-5 -rotate-45" />
-            </div>
-            <div>
-              <span className="font-extrabold text-xl tracking-tight text-white">
-                USA <span className="text-(--color-orange)">PRO</span> PLUMBING
-              </span>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
-                Rooter & Mechanical Services
-              </p>
-            </div>
-          </div>
+          <BrandLogo compact />
 
           <p className="site-footer-muted max-w-sm text-sm leading-relaxed">
             America's trusted residential and commercial plumbing contractor. Fully licensed master plumbers, bonded, insured, and dedicated to transparent upfront flat-rate pricing.
