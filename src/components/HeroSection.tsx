@@ -62,11 +62,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenBooking, onSelec
 
             {/* Main Headline */}
             <h1 className="font-extrabold tracking-tight text-white leading-tight">
-              <span className="text-2xl sm:text-3xl lg:text-4xl">
+              <span className="block text-2xl sm:text-3xl lg:text-4xl">
                 Professional Plumbing Services
               </span>
               <br className="hidden sm:inline" />
-              <span className="text-4xl sm:text-5xl lg:text-6xl text-transparent bg-clip-text bg-linear-to-r from-sky-400 via-blue-300 to-amber-300">
+              <span className="block whitespace-nowrap text-3xl text-transparent bg-clip-text bg-linear-to-r from-sky-400 via-blue-300 to-amber-300 sm:text-5xl lg:text-6xl">
                 You Can Count On
               </span>
             </h1>

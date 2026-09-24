@@ -342,31 +342,35 @@ export const Header: React.FC<HeaderProps> = ({
 
       {mobileMenuOpen && (
         <div className="absolute left-0 right-0 top-full max-h-[calc(100vh-5.5rem)] overflow-y-auto border-t border-white/15 bg-(--color-navy) px-4 pb-6 pt-3 shadow-2xl xl:hidden">
-          <div className="grid grid-cols-3 gap-2 border-b border-white/15 pb-3">
-            <a
-              href={`tel:${COMPANY_INFO.phoneRaw}`}
-              className="site-emergency flex items-center justify-center gap-2 rounded-xl px-3 py-2.5 text-sm font-bold"
-            >
-              <Phone className="h-4 w-4" />
-              <span>Emergency Call</span>
-            </a>
-            <button
-              onClick={() => {
-                setMobileMenuOpen(false);
-                onOpenBooking();
-              }}
-              className="site-cta flex items-center justify-center gap-2 rounded-xl px-3 py-2.5 text-sm font-bold"
-            >
-              <Calendar className="h-4 w-4" />
-              <span>Book Online</span>
-            </button>
-            <button
-              onClick={() => handleNavClick('staff')}
-              className="site-nav flex items-center justify-center gap-2 rounded-xl px-3 py-2.5 text-sm font-bold text-white"
-            >
-              <UserCheck className="h-4 w-4" />
-              <span>Staff Login</span>
-            </button>
+          <div className="space-y-2 border-b border-white/15 pb-3">
+            <div className="grid grid-cols-2 gap-2">
+              <a
+                href={`tel:${COMPANY_INFO.phoneRaw}`}
+                className="site-emergency flex items-center justify-center gap-2 rounded-xl px-3 py-2.5 text-sm font-bold"
+              >
+                <Phone className="h-4 w-4" />
+                <span>Emergency Call</span>
+              </a>
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  onOpenBooking();
+                }}
+                className="site-cta flex items-center justify-center gap-2 rounded-xl px-3 py-2.5 text-sm font-bold"
+              >
+                <Calendar className="h-4 w-4" />
+                <span>Book Online</span>
+              </button>
+            </div>
+            <div className="flex justify-center">
+              <button
+                onClick={() => handleNavClick('staff')}
+                className="site-nav flex w-1/2 items-center justify-center gap-2 rounded-xl px-3 py-2.5 text-sm font-bold text-white"
+              >
+                <UserCheck className="h-4 w-4" />
+                <span>Staff Login</span>
+              </button>
+            </div>
           </div>
 
           <form onSubmit={handleSearchSubmit} className="mt-3 flex h-11 items-center rounded-xl bg-white px-2 text-slate-900">
