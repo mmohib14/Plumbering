@@ -38,7 +38,7 @@ export const Footer: React.FC<FooterProps> = ({
                 Plumbing emergency? We are ready to help.
               </h3>
               <p className="site-footer-muted mt-1 max-w-xl text-sm leading-relaxed">
-                Fast dispatch, upfront pricing, and licensed technicians available around the clock.
+                Fast dispatch and licensed technicians, 24/7.
               </p>
             </div>
           </div>
@@ -67,7 +67,7 @@ export const Footer: React.FC<FooterProps> = ({
           <BrandLogo compact />
 
           <p className="site-footer-muted max-w-sm text-sm leading-relaxed">
-            America's trusted residential and commercial plumbing contractor. Fully licensed master plumbers, bonded, insured, and dedicated to transparent upfront flat-rate pricing.
+            Licensed, insured plumbing professionals with clear, upfront pricing.
           </p>
 
           <div className="space-y-2 pt-2 text-xs">
@@ -104,7 +104,7 @@ export const Footer: React.FC<FooterProps> = ({
             Plumbing Services
           </h4>
           <ul className="site-footer-muted space-y-2 text-sm">
-            {SERVICES_DATA.slice(0, 6).map((s) => (
+            {SERVICES_DATA.slice(0, 4).map((s) => (
               <li key={s.id}>
                 <button
                   onClick={() => onSelectTab('services')}
@@ -131,7 +131,7 @@ export const Footer: React.FC<FooterProps> = ({
             Service Areas
           </h4>
           <ul className="site-footer-muted space-y-2 text-sm">
-            {SERVICE_AREAS_DATA.slice(0, 6).map((area) => (
+            {SERVICE_AREAS_DATA.slice(0, 4).map((area) => (
               <li key={area.id}>
                 <button
                   onClick={() => onSelectTab('service-areas')}
