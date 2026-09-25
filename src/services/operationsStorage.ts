@@ -68,18 +68,24 @@ export const operationsStorage = {
   saveCategories: (categories: string[]) => write(KEYS.categories, categories),
   getSession: () => read<AuthUser | null>(KEYS.session, null),
   saveSession: (user: AuthUser | null) => user ? write(KEYS.session, user) : localStorage.removeItem(KEYS.session),
-  ensureSeeded: (bookings: BookingRequest[]) => {
+  ensureSeeded: (bookings: BookingRequest[], availableStaff: StaffMember[] = []) => {
     const staff = read<StaffMember[]>(KEYS.users, []);
     if (staff.length === 0) write(KEYS.users, defaultStaff);
     const admins = read<AdminMember[]>(KEYS.admins, []);
     if (admins.length === 0) write(KEYS.admins, defaultAdmins);
 
     const complaints = read<Complaint[]>(KEYS.complaints, []);
-    const existingIds = new Set(complaints.map(complaint => complaint.id));
+    const bookingsById = new Map(bookings.map(booking => [booking.id, booking]));
+    const complaintsWithEmail = complaints.map(complaint => {
+      const booking = bookingsById.get(complaint.id);
+      return booking && !complaint.customerEmail ? { ...complaint, customerEmail: booking.email } : complaint;
+    });
+    const existingIds = new Set(complaintsWithEmail.map(complaint => complaint.id));
     const fromBookings = bookings.filter(booking => !existingIds.has(booking.id)).map<Complaint>(booking => ({
       id: booking.id,
       customerId: `CUS-${booking.id.replace(/\D/g, '').slice(-6) || '000001'}`,
       customerName: booking.customerName,
+      customerEmail: booking.email,
       customerPhone: booking.phone,
       customerAddress: `${booking.address}, ${booking.city}, ${booking.state} ${booking.zip}`,
       serviceCategory: booking.serviceName,
@@ -87,10 +93,13 @@ export const operationsStorage = {
       priority: booking.urgency === 'emergency' ? 'urgent' : booking.urgency === 'same_day' ? 'high' : 'medium',
       status: booking.status === 'new' ? 'pending' : booking.status === 'dispatched' ? 'assigned' : booking.status,
       createdAt: booking.createdAt,
+      assignedStaffId: availableStaff.find(member => member.fullName === booking.assignedTechnician)?.id,
       assignedStaffName: booking.assignedTechnician,
       adminNotes: booking.notes
     }));
-    if (fromBookings.length > 0) write(KEYS.complaints, [...complaints, ...fromBookings]);
+    if (fromBookings.length > 0 || complaintsWithEmail.some((complaint, index) => complaint !== complaints[index])) {
+      write(KEYS.complaints, [...complaintsWithEmail, ...fromBookings]);
+    }
   }
 };
 

@@ -95,6 +95,7 @@ export interface Complaint {
   id: string;
   customerId: string;
   customerName: string;
+  customerEmail?: string;
   customerPhone: string;
   customerAddress: string;
   serviceCategory: string;
@@ -108,6 +109,9 @@ export interface Complaint {
   completedAt?: string;
   staffNotes?: string;
   adminNotes?: string;
+  customerReply?: string;
+  repliedBy?: string;
+  repliedAt?: string;
 }
 
 export interface ReviewItem {

@@ -1,8 +1,10 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { CheckCircle2, ClipboardList, LogOut, Plus, Search, ShieldCheck, UserPlus, Users, X } from 'lucide-react';
 import { AdminMember, BookingRequest, Complaint, ComplaintStatus, AuthUser, Customer, StaffMember } from '../types';
 import { operationsStorage } from '../services/operationsStorage';
 import { AdminPanel } from './AdminPanel';
+import { ComplaintResponsePanel } from './ComplaintResponsePanel';
+import { COMPANY_INFO } from '../data/plumbingData';
 
 interface OperationsDashboardProps {
   currentUser: AuthUser;
@@ -17,12 +19,14 @@ const statusLabels: Record<ComplaintStatus, string> = {
 };
 
 export const OperationsDashboard: React.FC<OperationsDashboardProps> = ({ currentUser, bookings, onLogout }) => {
-  operationsStorage.ensureSeeded(bookings);
   const [view, setView] = useState<View>('overview');
   const [staff, setStaff] = useState<StaffMember[]>(operationsStorage.getStaff());
     const [admins, setAdmins] = useState<AdminMember[]>(operationsStorage.getAdmins());
   const [customers, setCustomers] = useState<Customer[]>(operationsStorage.getCustomers());
-  const [complaints, setComplaints] = useState<Complaint[]>(operationsStorage.getComplaints());
+  const [complaints, setComplaints] = useState<Complaint[]>(() => {
+    operationsStorage.ensureSeeded(bookings, operationsStorage.getStaff());
+    return operationsStorage.getComplaints();
+  });
   const [categories, setCategories] = useState<string[]>(operationsStorage.getCategories());
   const [query, setQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -41,6 +45,22 @@ export const OperationsDashboard: React.FC<OperationsDashboardProps> = ({ curren
     setCustomers(operationsStorage.getCustomers());
     setComplaints(operationsStorage.getComplaints());
   };
+
+  useEffect(() => {
+    operationsStorage.ensureSeeded(bookings, staff);
+    setComplaints(operationsStorage.getComplaints());
+  }, [bookings, staff]);
+
+  useEffect(() => {
+    const handleStorageChange = (event: StorageEvent) => {
+      if (event.key && !['usa_plumbing_staff', 'usa_plumbing_complaints', 'usa_plumbing_customers'].includes(event.key)) return;
+      setStaff(operationsStorage.getStaff());
+      setCustomers(operationsStorage.getCustomers());
+      setComplaints(operationsStorage.getComplaints());
+    };
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
 
   const ownComplaints = currentUser.role === 'staff'
     ? complaints.filter(complaint => complaint.assignedStaffId === currentUser.id)
@@ -90,6 +110,12 @@ export const OperationsDashboard: React.FC<OperationsDashboardProps> = ({ curren
       status: 'assigned'
     });
   };
+
+  const replyingUserPhone = currentUser.role === 'staff'
+    ? staff.find(member => member.id === currentUser.id)?.phone
+    : currentUser.role === 'admin'
+      ? admins.find(member => member.id === currentUser.id)?.phone
+      : COMPANY_INFO.localPhone;
 
   const addStaff = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -176,6 +202,7 @@ export const OperationsDashboard: React.FC<OperationsDashboardProps> = ({ curren
       id: `CMP-${Date.now().toString().slice(-7)}`,
       customerId: String(form.get('customerId') || `CUS-${Date.now().toString().slice(-6)}`),
       customerName: String(form.get('customerName') || '').trim(),
+      customerEmail: String(form.get('customerEmail') || '').trim(),
       customerPhone: String(form.get('customerPhone') || '').trim(),
       customerAddress: String(form.get('customerAddress') || '').trim(),
       serviceCategory: String(form.get('serviceCategory') || '').trim(),
@@ -260,7 +287,7 @@ export const OperationsDashboard: React.FC<OperationsDashboardProps> = ({ curren
               <select value={categoryFilter} onChange={event => setCategoryFilter(event.target.value)} className="mt-3 rounded-xl border border-slate-800 bg-slate-900 px-3 py-2 text-sm text-white"><option value="all">All categories</option>{categories.map(category => <option key={category} value={category}>{category}</option>)}</select>
               <div className="mt-3 space-y-2">{visibleComplaints.map(item => <button key={item.id} onClick={() => setSelectedId(item.id)} className={`w-full rounded-2xl border p-4 text-left ${selectedId === item.id ? 'border-sky-500 bg-slate-800' : 'border-slate-800 bg-slate-900 hover:border-slate-700'}`}><div className="flex justify-between gap-3"><span><span className="block text-xs font-bold text-sky-400">{item.id}</span><span className="block text-sm font-bold text-white">{item.customerName}</span></span><span className="text-xs font-bold text-orange-300">{statusLabels[item.status]}</span></div><p className="mt-2 truncate text-xs text-slate-400">{item.description}</p><p className="mt-2 text-[11px] text-slate-500">{item.assignedStaffName || 'Unassigned'} · {item.serviceCategory}</p></button>)}{visibleComplaints.length === 0 && <div className="rounded-2xl border border-dashed border-slate-800 py-12 text-center text-sm text-slate-500">No matching complaints.</div>}</div>
             </div>
-            <ComplaintPanel complaint={selectedComplaint} currentUser={currentUser} staff={staff} onAssign={assignComplaint} onUpdate={updateComplaint} />
+            <ComplaintResponsePanel complaint={selectedComplaint} currentUser={currentUser} staff={staff} staffPhone={replyingUserPhone || COMPANY_INFO.localPhone} onAssign={assignComplaint} onUpdate={updateComplaint} />
           </section>
         )}
 
@@ -278,8 +305,11 @@ export const OperationsDashboard: React.FC<OperationsDashboardProps> = ({ curren
 interface ComplaintPanelProps { complaint?: Complaint; currentUser: AuthUser; staff: StaffMember[]; onAssign: (complaint: Complaint, staffId: string) => void; onUpdate: (id: string, changes: Partial<Complaint>) => void; }
 const ComplaintPanel: React.FC<ComplaintPanelProps> = ({ complaint, currentUser, staff, onAssign, onUpdate }) => {
   const [notes, setNotes] = useState(complaint?.staffNotes || '');
+  useEffect(() => {
+    setNotes(complaint?.staffNotes || '');
+  }, [complaint?.id, complaint?.staffNotes]);
   if (!complaint) return <div className="rounded-2xl border border-dashed border-slate-800 p-12 text-center text-sm text-slate-500">Select a complaint to view details.</div>;
-  const canEdit = currentUser.role === 'admin' || complaint.assignedStaffId === currentUser.id;
+  const canEdit = currentUser.role !== 'staff' || complaint.assignedStaffId === currentUser.id;
   return <div className="rounded-2xl border border-slate-800 bg-slate-900 p-5"><div className="flex justify-between"><div><p className="text-xs font-bold text-sky-400">{complaint.id}</p><h2 className="text-xl font-black text-white">{complaint.customerName}</h2></div><span className="rounded-full bg-slate-800 px-2 py-1 text-xs font-bold text-orange-300">{statusLabels[complaint.status]}</span></div><div className="mt-4 space-y-3 rounded-2xl bg-slate-950 p-4 text-sm"><p><b className="text-slate-400">Phone:</b> {complaint.customerPhone}</p><p><b className="text-slate-400">Address:</b> {complaint.customerAddress}</p><p><b className="text-slate-400">Category:</b> {complaint.serviceCategory}</p><p><b className="text-slate-400">Priority:</b> {complaint.priority}</p><p><b className="text-slate-400">Description:</b> {complaint.description}</p></div>{canEdit && <div className="mt-4 space-y-3">{currentUser.role === 'admin' && <select value={complaint.assignedStaffId || ''} onChange={event => onAssign(complaint, event.target.value)} className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm"><option value="">Assign active staff</option>{staff.filter(member => member.status === 'active').map(member => <option key={member.id} value={member.id}>{member.fullName} · {member.field}</option>)}</select>}<select value={complaint.status} onChange={event => onUpdate(complaint.id, { status: event.target.value as ComplaintStatus, completedAt: event.target.value === 'completed' ? new Date().toISOString() : complaint.completedAt })} className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm"><option value="pending">Pending</option><option value="assigned">Assigned</option><option value="in_progress">In Progress</option><option value="completed">Completed</option><option value="cancelled">Cancelled</option></select><textarea value={notes} onChange={event => setNotes(event.target.value)} placeholder="Work notes" className="min-h-24 w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm" /><button onClick={() => onUpdate(complaint.id, { staffNotes: notes })} className="w-full rounded-xl bg-(--color-orange) px-3 py-2 text-sm font-black text-slate-950">Save work notes</button></div>}</div>;
 };
 
