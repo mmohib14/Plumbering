@@ -22,7 +22,7 @@ export const WhyChooseUs: React.FC = () => {
       desc: "Our GPS-tracked fleet is distributed throughout metropolitan hubs to reach your home rapidly before minor leaks cause catastrophic flooding."
     },
     {
-      icon: <Award className="w-6 h-6 text-blue-600" />,
+      icon: <Award className="w-6 h-6 text-(--color-orange-dark)" />,
       title: "Licensed Master Plumbers",
       desc: "Every technician is state-licensed, background-checked, drug-tested, and brings over 10+ years of hands-on mechanical experience."
     },
@@ -32,7 +32,7 @@ export const WhyChooseUs: React.FC = () => {
       desc: "You receive a transparent quote in writing before any wrench turns. No hourly guessing, no hidden travel charges, and no overtime surprises."
     },
     {
-      icon: <Wrench className="w-6 h-6 text-indigo-600" />,
+      icon: <Wrench className="w-6 h-6 text-(--color-orange-dark)" />,
       title: "Rolling Warehouse Vans",
       desc: "Our heavy-duty vans carry over 1,200 OEM replacement parts, brass fittings, water heaters, and hydro-jetters for 94% same-day job completion."
     },
@@ -54,7 +54,7 @@ export const WhyChooseUs: React.FC = () => {
         
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <span className="text-blue-600 font-bold text-xs uppercase tracking-widest bg-blue-100/70 px-3 py-1 rounded-full">
+          <span className="text-orange-950 font-bold text-xs uppercase tracking-widest bg-orange-100 px-3 py-1 rounded-full">
             The USA Pro Standard
           </span>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mt-3">
@@ -84,7 +84,7 @@ export const WhyChooseUs: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setExpandedFeature(expandedFeature === idx ? null : idx)}
-                className="mt-3 self-start text-xs font-bold text-blue-600 transition-colors hover:text-blue-800"
+                className="mt-3 self-start text-xs font-bold text-orange-900 transition-colors hover:text-orange-700"
                 aria-expanded={expandedFeature === idx}
               >
                 {expandedFeature === idx ? 'Hide details' : 'View details'}
@@ -94,22 +94,22 @@ export const WhyChooseUs: React.FC = () => {
         </div>
 
         {/* Bottom Trust Stat Bar */}
-        <div className="mt-14 bg-linear-to-r from-slate-900 to-blue-950 text-white rounded-3xl p-6 sm:p-8 shadow-xl grid grid-cols-2 sm:grid-cols-4 gap-6 text-center">
+        <div className="mt-14 bg-orange-50 text-slate-900 rounded-2xl p-6 sm:p-8 border border-orange-200 grid grid-cols-2 sm:grid-cols-4 gap-6 text-center">
           <div>
-            <div className="text-3xl sm:text-4xl font-black text-amber-400">14,800+</div>
-            <div className="text-xs text-slate-300 font-medium mt-1">Jobs Fixed Since 2008</div>
+            <div className="text-3xl sm:text-4xl font-black text-orange-900">14,800+</div>
+            <div className="text-xs text-slate-600 font-medium mt-1">Jobs Fixed Since 2008</div>
           </div>
           <div>
-            <div className="text-3xl sm:text-4xl font-black text-white">4.9★</div>
-            <div className="text-xs text-slate-300 font-medium mt-1">Average Google Rating</div>
+            <div className="text-3xl sm:text-4xl font-black text-slate-900">4.9★</div>
+            <div className="text-xs text-slate-600 font-medium mt-1">Average Google Rating</div>
           </div>
           <div>
-            <div className="text-3xl sm:text-4xl font-black text-sky-400">&lt; 45m</div>
-            <div className="text-xs text-slate-300 font-medium mt-1">Average Dispatch Arrival</div>
+            <div className="text-3xl sm:text-4xl font-black text-orange-900">&lt; 45m</div>
+            <div className="text-xs text-slate-600 font-medium mt-1">Average Dispatch Arrival</div>
           </div>
           <div>
-            <div className="text-3xl sm:text-4xl font-black text-emerald-400">100%</div>
-            <div className="text-xs text-slate-300 font-medium mt-1">Upfront Pricing Guarantee</div>
+            <div className="text-3xl sm:text-4xl font-black text-emerald-800">100%</div>
+            <div className="text-xs text-slate-600 font-medium mt-1">Upfront Pricing Guarantee</div>
           </div>
         </div>
 

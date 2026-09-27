@@ -60,18 +60,18 @@ export const BeforeAfterSlider: React.FC = () => {
   };
 
   return (
-    <section className="py-16 sm:py-24 bg-slate-900 text-white border-b border-slate-800">
+    <section className="py-16 sm:py-24 bg-slate-50 text-slate-900 border-b border-slate-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Heading */}
         <div className="text-center max-w-3xl mx-auto mb-10">
-          <span className="text-blue-400 font-bold text-xs uppercase tracking-widest bg-blue-900/60 border border-blue-700/50 px-3 py-1 rounded-full">
+          <span className="text-orange-950 font-bold text-xs uppercase tracking-widest bg-orange-100 border border-orange-200 px-3 py-1 rounded-full">
             Real Proof Of Quality
           </span>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mt-3">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mt-3">
             Before & After Project Visualizer
           </h2>
-          <p className="text-base text-slate-300 mt-2">
+          <p className="text-base text-slate-600 mt-2">
             See the real craftsmanship of our licensed plumbers. Drag the slider to compare deteriorated piping systems with our completed installations.
           </p>
 
@@ -86,8 +86,8 @@ export const BeforeAfterSlider: React.FC = () => {
                 }}
                 className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
                   selectedIdx === idx
-                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30'
-                    : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                    ? 'bg-(--color-orange) text-slate-950 shadow-lg shadow-orange-600/20'
+                    : 'bg-white text-slate-700 hover:bg-orange-50 border border-slate-200'
                 }`}
               >
                 {comp.title.split(' vs.')[0]}
@@ -97,12 +97,12 @@ export const BeforeAfterSlider: React.FC = () => {
         </div>
 
         {/* Visualizer Container */}
-        <div className="bg-slate-950 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl">
+        <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             
             {/* Left Interactive Image Comparison (7 cols) */}
             <div className="lg:col-span-7">
-              <div className="relative w-full h-80 sm:h-96 rounded-2xl overflow-hidden select-none border border-slate-700 shadow-2xl">
+              <div className="relative w-full h-80 sm:h-96 rounded-2xl overflow-hidden select-none border border-slate-200 shadow-lg">
                 
                 {/* AFTER Image (Full background) */}
                 <img
@@ -153,9 +153,9 @@ export const BeforeAfterSlider: React.FC = () => {
               </div>
 
               {/* Slider instruction */}
-              <div className="flex items-center justify-between text-xs text-slate-400 mt-3 px-1">
+              <div className="flex items-center justify-between text-xs text-slate-600 mt-3 px-1">
                 <span>◀ Slide left to reveal completed work</span>
-                <span className="font-semibold text-blue-400">Drag handle or tap image</span>
+                <span className="font-semibold text-orange-900">Drag handle or tap image</span>
                 <span>Slide right to see original issue ▶</span>
               </div>
             </div>
@@ -163,29 +163,29 @@ export const BeforeAfterSlider: React.FC = () => {
             {/* Right Project Details (5 cols) */}
             <div className="lg:col-span-5 space-y-4">
               <div>
-                <span className="text-xs font-bold text-amber-400 uppercase tracking-wider">
+                <span className="text-xs font-bold text-orange-900 uppercase tracking-wider">
                   Case Study
                 </span>
-                <h3 className="text-xl sm:text-2xl font-bold text-white mt-1">
+                <h3 className="text-xl sm:text-2xl font-bold text-slate-900 mt-1">
                   {activeComp.title}
                 </h3>
-                <p className="text-xs text-slate-400 mt-1">
+                <p className="text-xs text-slate-600 mt-1">
                   {activeComp.subtitle}
                 </p>
               </div>
 
-              <p className="text-sm text-slate-300 leading-relaxed">
+              <p className="text-sm text-slate-700 leading-relaxed">
                 {activeComp.description}
               </p>
 
-              <div className="space-y-2 pt-2 border-t border-slate-800">
-                <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+              <div className="space-y-2 pt-2 border-t border-slate-200">
+                <span className="text-xs font-bold uppercase tracking-wider text-slate-600">
                   Customer Results:
                 </span>
                 <ul className="space-y-2">
                   {activeComp.results.map((res, i) => (
-                    <li key={i} className="flex items-start text-xs sm:text-sm text-slate-200">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-400 mr-2 shrink-0 mt-0.5" />
+                    <li key={i} className="flex items-start text-xs sm:text-sm text-slate-700">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600 mr-2 shrink-0 mt-0.5" />
                       <span>{res}</span>
                     </li>
                   ))}
@@ -193,9 +193,9 @@ export const BeforeAfterSlider: React.FC = () => {
               </div>
 
               <div className="pt-2">
-                <div className="p-3.5 bg-slate-900 rounded-xl border border-slate-800 text-xs text-slate-300 flex items-center justify-between">
+                <div className="p-3.5 bg-orange-50 rounded-xl border border-orange-200 text-xs text-slate-700 flex items-center justify-between">
                   <span>Need similar work done?</span>
-                  <span className="text-blue-400 font-bold">Free Estimates on Site</span>
+                  <span className="text-orange-900 font-bold">Free Estimates on Site</span>
                 </div>
               </div>
             </div>

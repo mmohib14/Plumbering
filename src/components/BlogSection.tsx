@@ -16,12 +16,12 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ onOpenBooking }) => {
         
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-12">
-          <span className="text-blue-600 font-bold text-xs uppercase tracking-widest bg-blue-100/70 px-3 py-1 rounded-full">
+          <span className="text-orange-950 font-bold text-xs uppercase tracking-widest bg-orange-100 px-3 py-1 rounded-full">
             Homeowner Knowledge Center
           </span>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mt-3">
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mt-3">
             Plumbing Advice & Educational Guides
-          </h2>
+          </h1>
           <p className="text-base text-slate-600 mt-2">
             Expert articles from our Master Plumbers on preventing expensive water damage, maintaining hot water systems, and managing emergency shutoffs.
           </p>
@@ -61,7 +61,7 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ onOpenBooking }) => {
 
                   <h3 
                     onClick={() => setSelectedPost(post)}
-                    className="text-lg font-bold text-slate-900 group-hover:text-blue-600 transition-colors cursor-pointer leading-snug line-clamp-2"
+                    className="text-lg font-bold text-slate-900 group-hover:text-orange-900 transition-colors cursor-pointer leading-snug line-clamp-2"
                   >
                     {post.title}
                   </h3>
@@ -86,7 +86,7 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ onOpenBooking }) => {
 
                   <button
                     onClick={() => setSelectedPost(post)}
-                    className="text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center"
+                    className="text-xs font-bold text-orange-900 hover:text-orange-700 flex items-center"
                   >
                     <span>Read Article</span>
                     <ArrowRight className="w-3.5 h-3.5 ml-1" />
@@ -111,7 +111,7 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ onOpenBooking }) => {
                 alt={selectedPost.title}
                 className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+              <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
 
               <button
                 onClick={() => setSelectedPost(null)}

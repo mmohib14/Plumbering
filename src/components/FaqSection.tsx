@@ -59,11 +59,25 @@ export const FaqSection: React.FC<{ onOpenBooking: () => void }> = ({ onOpenBook
 
   return (
     <section className="py-16 sm:py-24 bg-white text-slate-900 border-b border-slate-200">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'FAQPage',
+            mainEntity: FAQS_LIST.map(faq => ({
+              '@type': 'Question',
+              name: faq.question,
+              acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+            })),
+          }),
+        }}
+      />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
         <div className="text-center mb-12">
-          <span className="text-blue-600 font-bold text-xs uppercase tracking-widest bg-blue-100/70 px-3 py-1 rounded-full">
+          <span className="text-orange-950 font-bold text-xs uppercase tracking-widest bg-orange-100 px-3 py-1 rounded-full">
             Answers To Common Questions
           </span>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mt-3">
@@ -91,7 +105,7 @@ export const FaqSection: React.FC<{ onOpenBooking: () => void }> = ({ onOpenBook
                     {faq.question}
                   </span>
                   <div className={`p-1.5 rounded-full bg-white border border-slate-200 text-slate-600 transition-transform duration-200 shrink-0 ${
-                    isOpen ? 'rotate-180 bg-blue-50 text-blue-600' : ''
+                    isOpen ? 'rotate-180 bg-orange-50 text-orange-900' : ''
                   }`}>
                     <ChevronDown className="w-4 h-4" />
                   </div>
@@ -128,7 +142,7 @@ export const FaqSection: React.FC<{ onOpenBooking: () => void }> = ({ onOpenBook
             </a>
             <button
               onClick={onOpenBooking}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-2.5 rounded-xl text-xs"
+              className="bg-(--color-orange) hover:bg-(--color-orange-dark) text-slate-950 font-bold px-4 py-2.5 rounded-xl text-xs"
             >
               Book Service
             </button>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { MapPin, CheckCircle2, Phone, Clock, Users, Search, AlertCircle } from 'lucide-react';
 import { SERVICE_AREAS_DATA, COMPANY_INFO } from '../data/plumbingData';
+import { useZipCodeLookup } from '../services/useZipCodeLookup';
 
 interface ServiceAreaCheckerProps {
   onOpenBooking: () => void;
@@ -8,6 +9,8 @@ interface ServiceAreaCheckerProps {
 
 export const ServiceAreaChecker: React.FC<ServiceAreaCheckerProps> = ({ onOpenBooking }) => {
   const [searchZip, setSearchZip] = useState('');
+  const { location: zipLocation, isLoading: isLookingUpZip, lookupUnavailable } = useZipCodeLookup(searchZip);
+  const matchingZipLocation = zipLocation?.zip === searchZip ? zipLocation : null;
   const [matchResult, setMatchResult] = useState<{
     matched: boolean;
     hub?: typeof SERVICE_AREAS_DATA[0];
@@ -18,7 +21,7 @@ export const ServiceAreaChecker: React.FC<ServiceAreaCheckerProps> = ({ onOpenBo
     e.preventDefault();
     const cleanZip = searchZip.trim();
 
-    if (!cleanZip || cleanZip.length < 5) {
+    if (!/^\d{5}$/.test(cleanZip)) {
       setMatchResult({
         matched: false,
         message: 'Please enter a valid 5-digit United States ZIP code.'
@@ -27,9 +30,7 @@ export const ServiceAreaChecker: React.FC<ServiceAreaCheckerProps> = ({ onOpenBo
     }
 
     // Check if zip belongs to any hub
-    const foundHub = SERVICE_AREAS_DATA.find(area => 
-      area.zipCodes.includes(cleanZip) || area.zipCodes.some(z => z.slice(0, 3) === cleanZip.slice(0, 3))
-    );
+    const foundHub = SERVICE_AREAS_DATA.find(area => area.zipCodes.includes(cleanZip));
 
     if (foundHub) {
       setMatchResult({
@@ -39,8 +40,8 @@ export const ServiceAreaChecker: React.FC<ServiceAreaCheckerProps> = ({ onOpenBo
       });
     } else {
       setMatchResult({
-        matched: true, // We still service nationally through partner network
-        message: `Technician network available for ZIP ${cleanZip}. Our regional dispatch can have an on-call licensed plumber to your address within 60-90 minutes.`
+        matched: false,
+        message: `Coverage is not confirmed for ZIP ${cleanZip} in our current area list. Call dispatch to check before scheduling.`
       });
     }
   };
@@ -51,12 +52,12 @@ export const ServiceAreaChecker: React.FC<ServiceAreaCheckerProps> = ({ onOpenBo
         
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-12">
-          <span className="text-blue-600 font-bold text-xs uppercase tracking-widest bg-blue-100/70 px-3 py-1 rounded-full">
+          <span className="text-orange-950 font-bold text-xs uppercase tracking-widest bg-orange-100 px-3 py-1 rounded-full">
             Local Technicians Near You
           </span>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mt-3">
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mt-3">
             Proudly Serving Local Communities
-          </h2>
+          </h1>
           <p className="text-base text-slate-600 mt-3">
             Our local service trucks are staged strategically across major metropolitan areas to ensure fast arrival when minutes matter.
           </p>
@@ -65,23 +66,49 @@ export const ServiceAreaChecker: React.FC<ServiceAreaCheckerProps> = ({ onOpenBo
           <div className="mt-8 max-w-lg mx-auto">
             <form onSubmit={handleSearch} className="flex flex-col sm:flex-row items-center gap-2 bg-slate-50 p-2 rounded-2xl border border-slate-300 shadow-sm">
               <div className="flex items-center w-full px-3">
-                <MapPin className="w-5 h-5 text-blue-600 mr-2 shrink-0" />
+                <MapPin className="w-5 h-5 text-(--color-orange-dark) mr-2 shrink-0" />
                 <input
                   type="text"
                   maxLength={5}
                   value={searchZip}
-                  onChange={(e) => setSearchZip(e.target.value.replace(/\D/g, ''))}
+                  onChange={(e) => {
+                    setSearchZip(e.target.value.replace(/\D/g, '').slice(0, 5));
+                    setMatchResult(null);
+                  }}
                   placeholder="Enter your 5-digit ZIP code (e.g. 75201)..."
                   className="w-full bg-transparent text-sm text-slate-800 placeholder-slate-400 focus:outline-none py-2"
+                  aria-label="Enter your five-digit ZIP code"
                 />
               </div>
               <button
                 type="submit"
-                className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs sm:text-sm px-6 py-3 rounded-xl shrink-0 transition-colors shadow-sm"
+                className="w-full sm:w-auto bg-(--color-orange) hover:bg-(--color-orange-dark) text-slate-950 font-bold text-xs sm:text-sm px-6 py-3 rounded-xl shrink-0 transition-colors shadow-sm"
               >
                 Verify Coverage
               </button>
             </form>
+
+            {(matchingZipLocation || isLookingUpZip || lookupUnavailable) && (
+              <div className="mt-3 flex min-h-14 items-center gap-3 rounded-xl border border-orange-200 bg-white px-4 py-2.5 text-left shadow-sm" role="status" aria-live="polite">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-orange-100">
+                  <MapPin className="h-4 w-4 text-(--color-orange-dark)" />
+                </span>
+                {matchingZipLocation ? (
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-bold text-slate-900">{matchingZipLocation.city}, {matchingZipLocation.state}</p>
+                    <p className="text-xs text-slate-600">ZIP code {matchingZipLocation.zip}</p>
+                  </div>
+                ) : isLookingUpZip ? (
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-semibold text-slate-800">Finding your city</p>
+                    <p className="text-xs text-slate-500">Looking up ZIP code {searchZip}</p>
+                  </div>
+                ) : (
+                  <p className="min-w-0 flex-1 text-xs font-medium text-slate-600">We couldn't find that ZIP right now. Check the number and try again.</p>
+                )}
+                {matchingZipLocation && <span className="rounded-full bg-orange-100 px-2.5 py-1 text-[10px] font-bold text-orange-950">Location found</span>}
+              </div>
+            )}
 
             {matchResult && (
               <div className={`mt-3 p-3.5 rounded-xl text-xs sm:text-sm font-medium text-left flex items-start space-x-2.5 ${
@@ -101,6 +128,11 @@ export const ServiceAreaChecker: React.FC<ServiceAreaCheckerProps> = ({ onOpenBo
                     >
                       Book Plumber for this location now →
                     </button>
+                  )}
+                  {!matchResult.matched && searchZip.length === 5 && (
+                    <a href={`tel:${COMPANY_INFO.phoneRaw}`} className="mt-2 inline-flex text-xs font-bold text-orange-900 underline hover:text-orange-700">
+                      Call dispatch to confirm coverage
+                    </a>
                   )}
                 </div>
               </div>
@@ -154,14 +186,14 @@ export const ServiceAreaChecker: React.FC<ServiceAreaCheckerProps> = ({ onOpenBo
               <div className="mt-4 pt-3 border-t border-slate-200/70 flex items-center justify-between">
                 <a
                   href={`tel:${area.phone.replace(/\D/g, '')}`}
-                  className="text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center"
+                  className="text-xs font-bold text-orange-900 hover:text-orange-700 flex items-center"
                 >
                   <Phone className="w-3 h-3 mr-1" />
                   {area.phone}
                 </a>
                 <button
                   onClick={onOpenBooking}
-                  className="text-xs font-semibold text-slate-600 hover:text-blue-600"
+                  className="text-xs font-semibold text-slate-600 hover:text-orange-900"
                 >
                   Schedule →
                 </button>
@@ -171,8 +203,8 @@ export const ServiceAreaChecker: React.FC<ServiceAreaCheckerProps> = ({ onOpenBo
         </div>
 
         {/* National Network Footnote */}
-        <div className="mt-8 text-center text-xs text-slate-500">
-          📍 Don't see your city listed above? We provide nationwide emergency dispatch through our verified network of 2,400+ licensed contractors across all 50 states.
+        <div className="mt-8 text-center text-xs text-slate-600">
+          Coverage shown here reflects the ZIP codes configured for this service. If your ZIP is not listed, call dispatch to confirm availability before booking.
         </div>
 
       </div>

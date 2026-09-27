@@ -40,7 +40,7 @@ export const ServiceDetailModal: React.FC<ServiceDetailModalProps> = ({
             alt={service.title}
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+          <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
 
           {/* Close Button */}
           <button
@@ -60,7 +60,7 @@ export const ServiceDetailModal: React.FC<ServiceDetailModalProps> = ({
                   24/7 Rapid Emergency Dispatch
                 </span>
               )}
-              <span className="bg-blue-600/90 text-white text-[11px] font-bold px-2 py-0.5 rounded-full">
+              <span className="bg-(--color-orange) text-slate-950 text-[11px] font-bold px-2 py-0.5 rounded-full">
                 Certified Master Plumbers
               </span>
             </div>
@@ -93,7 +93,7 @@ export const ServiceDetailModal: React.FC<ServiceDetailModalProps> = ({
                   onClose();
                   onBookService(service.id);
                 }}
-                className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold px-5 py-2.5 rounded-xl text-sm transition-colors shadow-md shadow-blue-600/20"
+                className="w-full sm:w-auto bg-(--color-orange) hover:bg-(--color-orange-dark) text-slate-950 font-bold px-5 py-2.5 rounded-xl text-sm transition-colors shadow-md shadow-orange-600/20"
               >
                 Book This Service
               </button>
@@ -143,7 +143,7 @@ export const ServiceDetailModal: React.FC<ServiceDetailModalProps> = ({
           {service.faqs && service.faqs.length > 0 && (
             <div className="border-t border-slate-200 pt-6 space-y-3">
               <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center">
-                <HelpCircle className="w-4 h-4 mr-1.5 text-blue-600" />
+                <HelpCircle className="w-4 h-4 mr-1.5 text-(--color-orange-dark)" />
                 Frequently Asked Questions
               </h3>
               <div className="space-y-3">
@@ -173,7 +173,7 @@ export const ServiceDetailModal: React.FC<ServiceDetailModalProps> = ({
           <div className="flex items-center space-x-2 w-full sm:w-auto">
             <a
               href={`tel:${COMPANY_INFO.phoneRaw}`}
-              className="flex-1 sm:flex-initial bg-red-600 hover:bg-red-700 text-white font-bold px-4 py-2.5 rounded-xl text-xs flex items-center justify-center space-x-1.5 transition-colors shadow-sm"
+              className="flex-1 sm:flex-initial bg-(--color-orange) hover:bg-(--color-orange-dark) text-slate-950 font-bold px-4 py-2.5 rounded-xl text-xs flex items-center justify-center space-x-1.5 transition-colors shadow-sm"
             >
               <Phone className="w-3.5 h-3.5" />
               <span>Call Now</span>
@@ -184,7 +184,7 @@ export const ServiceDetailModal: React.FC<ServiceDetailModalProps> = ({
                 onClose();
                 onBookService(service.id);
               }}
-              className="flex-1 sm:flex-initial bg-blue-600 hover:bg-blue-700 text-white font-bold px-5 py-2.5 rounded-xl text-xs transition-colors shadow-md shadow-blue-600/20"
+              className="flex-1 sm:flex-initial border border-slate-300 bg-white hover:bg-orange-50 text-slate-800 font-bold px-5 py-2.5 rounded-xl text-xs transition-colors"
             >
               Book Online
             </button>

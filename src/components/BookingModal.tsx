@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
   X, 
   CheckCircle2, 
@@ -14,7 +14,9 @@ import {
   FileCheck
 } from 'lucide-react';
 import { SERVICES_DATA, COMPANY_INFO } from '../data/plumbingData';
+import { useCityZipLookup } from '../services/useCityZipLookup';
 import { BookingRequest, PropertyType, UrgencyLevel } from '../types';
+import { useZipCodeLookup } from '../services/useZipCodeLookup';
 
 interface BookingModalProps {
   isOpen: boolean;
@@ -35,8 +37,6 @@ export const BookingModal: React.FC<BookingModalProps> = ({
   estimateDetails,
   onSubmitBooking
 }) => {
-  if (!isOpen) return null;
-
   // Form Fields
   const [customerName, setCustomerName] = useState('');
   const [phone, setPhone] = useState('');
@@ -45,17 +45,61 @@ export const BookingModal: React.FC<BookingModalProps> = ({
   const [city, setCity] = useState('');
   const [state, setState] = useState('TX');
   const [zip, setZip] = useState('');
+  const [cityInputDirty, setCityInputDirty] = useState(false);
+  const [locationSyncMessage, setLocationSyncMessage] = useState('');
   const [propertyType, setPropertyType] = useState<PropertyType>('residential');
-  const [serviceId, setServiceId] = useState(preselectedServiceId || 'emergency-plumbing');
-  const [urgency, setUrgency] = useState<UrgencyLevel>('emergency');
-  const [preferredDate, setPreferredDate] = useState('Today');
-  const [preferredTimeSlot, setPreferredTimeSlot] = useState('Next Available (Emergency)');
+  const [serviceId, setServiceId] = useState(preselectedServiceId || 'general-plumbing');
+  const [urgency, setUrgency] = useState<UrgencyLevel>('flexible');
+  const [preferredDate, setPreferredDate] = useState('Tomorrow');
+  const [preferredTimeSlot, setPreferredTimeSlot] = useState('Morning (8:00 AM - 12:00 PM)');
   const [description, setDescription] = useState(estimateDetails ? estimateDetails.notes : '');
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   
   // Status states
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submittedBooking, setSubmittedBooking] = useState<BookingRequest | null>(null);
+  const { location: zipLocation } = useZipCodeLookup(zip);
+  const cityLookup = useCityZipLookup(city, state, cityInputDirty);
+  const matchingZipLocation = zipLocation?.zip === zip ? zipLocation : null;
+
+  useEffect(() => {
+    if (!isOpen) return;
+    setCustomerName('');
+    setPhone('');
+    setEmail('');
+    setAddress('');
+    setCity('');
+    setState('TX');
+    setZip('');
+    setCityInputDirty(false);
+    setLocationSyncMessage('');
+    setPropertyType('residential');
+    const nextServiceId = preselectedServiceId || 'general-plumbing';
+    const isEmergencyService = Boolean(SERVICES_DATA.find(service => service.id === nextServiceId)?.isEmergency);
+    setServiceId(nextServiceId);
+    setUrgency(isEmergencyService ? 'emergency' : 'flexible');
+    setPreferredDate(isEmergencyService ? 'Today (Immediate)' : 'Tomorrow');
+    setPreferredTimeSlot(isEmergencyService ? 'Next Available (Emergency)' : 'Morning (8:00 AM - 12:00 PM)');
+    setDescription(estimateDetails ? estimateDetails.notes : '');
+    setPhotoPreview(null);
+    setIsSubmitting(false);
+    setSubmittedBooking(null);
+  }, [isOpen, preselectedServiceId, estimateDetails]);
+
+  useEffect(() => {
+    if (!isOpen || !matchingZipLocation || cityInputDirty) return;
+    setCity(matchingZipLocation.city);
+    setState(matchingZipLocation.state);
+    setLocationSyncMessage(`Location matched: ${matchingZipLocation.city}, ${matchingZipLocation.state} · ZIP ${matchingZipLocation.zip}`);
+  }, [isOpen, matchingZipLocation, cityInputDirty]);
+
+  useEffect(() => {
+    if (!isOpen || !cityInputDirty || !cityLookup.suggestion) return;
+    setZip(cityLookup.suggestion.zip);
+    setState(cityLookup.suggestion.state);
+    setCityInputDirty(false);
+    setLocationSyncMessage(`Location matched: ${cityLookup.suggestion.city}, ${cityLookup.suggestion.state} · ZIP ${cityLookup.suggestion.zip}`);
+  }, [isOpen, cityInputDirty, cityLookup.suggestion]);
 
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -105,9 +149,9 @@ export const BookingModal: React.FC<BookingModalProps> = ({
       preferredTimeSlot,
       description,
       photoUrl: photoPreview || undefined,
-      status: urgency === 'emergency' ? 'dispatched' : 'new',
+      status: 'new',
       estimatedCost: estimateDetails ? estimateDetails.estimatedCost : (selectedServiceObj?.priceRange || '$150 - $350'),
-      notes: urgency === 'emergency' ? 'Priority Emergency Lead flagged by customer' : undefined
+      notes: urgency === 'emergency' ? 'Priority emergency request; dispatch follow-up required.' : undefined
     };
 
     setTimeout(() => {
@@ -117,23 +161,25 @@ export const BookingModal: React.FC<BookingModalProps> = ({
     }, 700);
   };
 
+  if (!isOpen) return null;
+
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6 animate-in fade-in duration-200">
+    <div className="booking-modal fixed inset-0 z-50 overflow-y-auto bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6 animate-in fade-in duration-200">
       <div 
         className="relative bg-white w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden border border-slate-200 animate-in zoom-in-95 duration-150 max-h-[92vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Top Header Bar */}
-        <div className="bg-slate-900 text-white p-5 sm:p-6 shrink-0 relative flex items-center justify-between border-b border-slate-800">
+        <div className="bg-orange-50 text-slate-900 p-5 sm:p-6 shrink-0 relative flex items-center justify-between border-b border-orange-200">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-md">
+            <div className="w-10 h-10 rounded-xl bg-(--color-orange) flex items-center justify-center text-slate-950 shadow-md">
               <Calendar className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-xl font-extrabold text-white tracking-tight">
+              <h2 className="text-xl font-extrabold text-slate-900 tracking-tight">
                 Request Service & Book Appointment
               </h2>
-              <p className="text-xs text-slate-300">
+              <p className="text-xs text-slate-600">
                 Guaranteed Upfront Pricing • Licensed & Insured Plumbers
               </p>
             </div>
@@ -141,7 +187,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
 
           <button
             onClick={onClose}
-            className="text-slate-400 hover:text-white p-1.5 rounded-full transition-colors"
+            className="text-slate-600 hover:text-slate-950 p-1.5 rounded-full transition-colors"
             aria-label="Close"
           >
             <X className="w-6 h-6" />
@@ -165,7 +211,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                   Thank You, {submittedBooking.customerName}!
                 </h3>
                 <p className="text-sm text-slate-600 mt-1 max-w-md mx-auto">
-                  Your plumbing request has been received by our national dispatch system. Our lead coordinator is reviewing the details now.
+                  Your request has been saved in this browser's operations queue. This site cannot notify dispatch; call us to confirm service and timing.
                 </p>
               </div>
 
@@ -173,7 +219,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
               <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 text-left text-xs sm:text-sm space-y-2.5 max-w-md mx-auto">
                 <div className="flex justify-between pb-2 border-b border-slate-200 font-semibold">
                   <span className="text-slate-500">Dispatch Reference:</span>
-                  <span className="font-mono text-blue-700 font-extrabold">{submittedBooking.id}</span>
+                  <span className="font-mono text-orange-900 font-extrabold">{submittedBooking.id}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-500">Service:</span>
@@ -197,20 +243,20 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                 </div>
               </div>
 
-              <div className="p-4 bg-blue-50 border border-blue-200 rounded-xl text-xs text-blue-900 max-w-md mx-auto">
-                📱 <strong>What happens next:</strong> A dispatcher is calling or texting {submittedBooking.phone} within 10-15 minutes with technician ETA and live tracking link.
+              <div className="p-4 bg-orange-50 border border-orange-200 rounded-xl text-xs text-orange-950 max-w-md mx-auto">
+                <strong>For immediate help:</strong> call dispatch at {COMPANY_INFO.phone} to verify coverage and scheduling.
               </div>
 
               <div className="pt-2 flex justify-center space-x-3">
                 <button
                   onClick={onClose}
-                  className="bg-slate-900 hover:bg-slate-800 text-white font-bold py-2.5 px-6 rounded-xl text-xs transition-colors"
+                  className="bg-slate-800 hover:bg-slate-700 text-white font-bold py-2.5 px-6 rounded-xl text-xs transition-colors"
                 >
                   Done
                 </button>
                 <a
                   href={`tel:${COMPANY_INFO.phoneRaw}`}
-                  className="bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 px-5 rounded-xl text-xs flex items-center space-x-1.5"
+                  className="bg-(--color-orange) hover:bg-(--color-orange-dark) text-slate-950 font-bold py-2.5 px-5 rounded-xl text-xs flex items-center space-x-1.5"
                 >
                   <Phone className="w-3.5 h-3.5" />
                   <span>Call Dispatcher Direct</span>
@@ -230,7 +276,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                       Immediate Emergency Dispatch?
                     </span>
                     <span className="text-[11px] text-red-700">
-                      Need a plumber on site within 45 minutes?
+                      Call to confirm emergency availability and timing.
                     </span>
                   </div>
                 </div>
@@ -243,25 +289,37 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                       if (e.target.checked) {
                         setPreferredDate('Today (Immediate)');
                         setPreferredTimeSlot('Next Available (Emergency)');
+                      } else {
+                        setPreferredDate('Today (Afternoon)');
+                        setPreferredTimeSlot('Afternoon (12:00 PM - 4:00 PM)');
                       }
                     }}
                     className="sr-only peer"
                   />
-                  <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
+                  <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-(--color-orange)"></div>
                 </label>
               </div>
 
               {/* Service & Property Type Selection */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                  <label htmlFor="booking-service" className="text-xs font-bold text-slate-700 block mb-1">
                     Select Plumbing Service *
                   </label>
                   <select
+                    id="booking-service"
                     value={serviceId}
-                    onChange={(e) => setServiceId(e.target.value)}
-                    className="w-full text-xs sm:text-sm p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white font-medium text-slate-800"
+                    onChange={(e) => {
+                      const nextServiceId = e.target.value;
+                      const isEmergencyService = Boolean(SERVICES_DATA.find(service => service.id === nextServiceId)?.isEmergency);
+                      setServiceId(nextServiceId);
+                      setUrgency(isEmergencyService ? 'emergency' : 'flexible');
+                      setPreferredDate(isEmergencyService ? 'Today (Immediate)' : 'Tomorrow');
+                      setPreferredTimeSlot(isEmergencyService ? 'Next Available (Emergency)' : 'Morning (8:00 AM - 12:00 PM)');
+                    }}
+                    className="w-full text-xs sm:text-sm p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-orange-300 focus:outline-none bg-white font-medium text-slate-800"
                   >
+                    <option value="general-plumbing">General Plumbing Request</option>
                     {SERVICES_DATA.map((srv) => (
                       <option key={srv.id} value={srv.id}>
                         {srv.title} ({srv.priceRange})
@@ -271,16 +329,16 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                 </div>
 
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                  <span id="booking-property-label" className="text-xs font-bold text-slate-700 block mb-1">
                     Property Type *
-                  </label>
-                  <div className="grid grid-cols-2 gap-2">
+                  </span>
+                  <div className="grid grid-cols-2 gap-2" role="group" aria-labelledby="booking-property-label">
                     <button
                       type="button"
                       onClick={() => setPropertyType('residential')}
                       className={`py-2.5 px-3 rounded-xl text-xs font-bold border transition-colors ${
                         propertyType === 'residential'
-                          ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
+                          ? 'bg-(--color-orange) text-slate-950 border-(--color-orange) shadow-sm'
                           : 'bg-white text-slate-700 border-slate-300'
                       }`}
                     >
@@ -291,7 +349,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                       onClick={() => setPropertyType('commercial')}
                       className={`py-2.5 px-3 rounded-xl text-xs font-bold border transition-colors ${
                         propertyType === 'commercial'
-                          ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
+                          ? 'bg-(--color-orange) text-slate-950 border-(--color-orange) shadow-sm'
                           : 'bg-white text-slate-700 border-slate-300'
                       }`}
                     >
@@ -304,13 +362,14 @@ export const BookingModal: React.FC<BookingModalProps> = ({
               {/* Preferred Schedule */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                  <label htmlFor="booking-date" className="text-xs font-bold text-slate-700 block mb-1">
                     Preferred Service Date *
                   </label>
                   <select
+                    id="booking-date"
                     value={preferredDate}
                     onChange={(e) => setPreferredDate(e.target.value)}
-                    className="w-full text-xs sm:text-sm p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white"
+                    className="w-full text-xs sm:text-sm p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-orange-300 focus:outline-none bg-white"
                   >
                     <option value="Today (Immediate)">Today (Urgent Dispatch)</option>
                     <option value="Today (Afternoon)">Today (Afternoon)</option>
@@ -321,15 +380,16 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                 </div>
 
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                  <label htmlFor="booking-time" className="text-xs font-bold text-slate-700 block mb-1">
                     Preferred Time Window *
                   </label>
                   <select
+                    id="booking-time"
                     value={preferredTimeSlot}
                     onChange={(e) => setPreferredTimeSlot(e.target.value)}
-                    className="w-full text-xs sm:text-sm p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white"
+                    className="w-full text-xs sm:text-sm p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-orange-300 focus:outline-none bg-white"
                   >
-                    <option value="Next Available (Emergency)">Next Available (Under 45 Mins)</option>
+                    <option value="Next Available (Emergency)">Next Available (Confirm by Phone)</option>
                     <option value="Morning (8:00 AM - 12:00 PM)">Morning (8:00 AM - 12:00 PM)</option>
                     <option value="Afternoon (12:00 PM - 4:00 PM)">Afternoon (12:00 PM - 4:00 PM)</option>
                     <option value="Evening (4:00 PM - 8:00 PM)">Evening (4:00 PM - 8:00 PM)</option>
@@ -345,11 +405,12 @@ export const BookingModal: React.FC<BookingModalProps> = ({
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="text-xs font-bold text-slate-700 block mb-1">
+                    <label htmlFor="booking-name" className="text-xs font-bold text-slate-700 block mb-1">
                       Full Name *
                     </label>
                     <input
                       type="text"
+                      id="booking-name"
                       required
                       value={customerName}
                       onChange={(e) => setCustomerName(e.target.value)}
@@ -359,11 +420,12 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                   </div>
 
                   <div>
-                    <label className="text-xs font-bold text-slate-700 block mb-1">
-                      Phone Number (for SMS Tracking) *
+                    <label htmlFor="booking-phone" className="text-xs font-bold text-slate-700 block mb-1">
+                      Phone Number (for service follow-up) *
                     </label>
                     <input
                       type="tel"
+                      id="booking-phone"
                       required
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
@@ -375,11 +437,12 @@ export const BookingModal: React.FC<BookingModalProps> = ({
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div className="sm:col-span-2">
-                    <label className="text-xs font-bold text-slate-700 block mb-1">
+                    <label htmlFor="booking-address" className="text-xs font-bold text-slate-700 block mb-1">
                       Street Address *
                     </label>
                     <input
                       type="text"
+                      id="booking-address"
                       required
                       value={address}
                       onChange={(e) => setAddress(e.target.value)}
@@ -389,40 +452,73 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                   </div>
 
                   <div>
-                    <label className="text-xs font-bold text-slate-700 block mb-1">
+                    <label htmlFor="booking-zip" className="text-xs font-bold text-slate-700 block mb-1">
                       ZIP Code *
                     </label>
                     <input
                       type="text"
+                      id="booking-zip"
                       required
                       maxLength={5}
                       value={zip}
-                      onChange={(e) => setZip(e.target.value.replace(/\D/g, ''))}
+                      onChange={(e) => {
+                        setZip(e.target.value.replace(/\D/g, '').slice(0, 5));
+                        setCity('');
+                        setCityInputDirty(false);
+                        setLocationSyncMessage('');
+                      }}
                       placeholder="e.g. 75201"
                       className="w-full text-xs sm:text-sm p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                     />
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div>
-                    <label className="text-xs font-bold text-slate-700 block mb-1">
+                    <label htmlFor="booking-city" className="text-xs font-bold text-slate-700 block mb-1">
                       City
                     </label>
                     <input
                       type="text"
+                      id="booking-city"
                       value={city}
-                      onChange={(e) => setCity(e.target.value)}
-                      placeholder="e.g. Dallas"
+                      onChange={(e) => {
+                        setCity(e.target.value);
+                        setZip('');
+                        setCityInputDirty(true);
+                        setLocationSyncMessage('');
+                      }}
+                      placeholder="e.g. Dallas or Denver"
                       className="w-full text-xs sm:text-sm p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-bold text-slate-700 block mb-1">
+                    <label htmlFor="booking-state" className="text-xs font-bold text-slate-700 block mb-1">
+                      State
+                    </label>
+                    <input
+                      type="text"
+                      id="booking-state"
+                      maxLength={2}
+                      value={state}
+                      onChange={(e) => {
+                        setState(e.target.value.replace(/[^a-z]/gi, '').slice(0, 2).toUpperCase());
+                        setZip('');
+                        setCityInputDirty(true);
+                        setLocationSyncMessage('');
+                      }}
+                      placeholder="TX"
+                      autoComplete="address-level1"
+                      className="w-full text-xs sm:text-sm p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-orange-300 focus:outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="booking-email" className="text-xs font-bold text-slate-700 block mb-1">
                       Email Address (Optional for Invoice)
                     </label>
                     <input
                       type="email"
+                      id="booking-email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="e.g. sarah@example.com"
@@ -430,15 +526,23 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                     />
                   </div>
                 </div>
+                {(locationSyncMessage || (cityInputDirty && cityLookup.isLoading) || (cityInputDirty && cityLookup.lookupUnavailable)) && (
+                  <p className={`mt-2 text-xs ${cityLookup.lookupUnavailable && cityInputDirty ? 'text-amber-800' : 'text-emerald-800'}`} role="status" aria-live="polite">
+                    {locationSyncMessage || (cityLookup.isLoading
+                      ? 'Finding the matching ZIP code...'
+                      : 'ZIP lookup failed for this city. Check the city and state, or enter the ZIP code directly.')}
+                  </p>
+                )}
               </div>
 
               {/* Description & Photo Attachment */}
               <div className="border-t border-slate-100 pt-4 space-y-3">
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                  <label htmlFor="booking-description" className="text-xs font-bold text-slate-700 block mb-1">
                     Describe the Plumbing Problem:
                   </label>
                   <textarea
+                    id="booking-description"
                     rows={2}
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
@@ -449,7 +553,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
 
                 {/* Optional Photo Upload */}
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1 flex items-center">
+                  <label className="flex items-center text-xs font-bold text-slate-700 mb-1">
                     <Camera className="w-3.5 h-3.5 mr-1 text-slate-500" />
                     Attach Photo of Leaking Pipe / Fixture (Optional):
                   </label>
@@ -490,18 +594,14 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className={`w-full font-bold py-4 px-4 rounded-xl text-sm transition-all shadow-lg flex items-center justify-center space-x-2 text-white ${
-                    urgency === 'emergency'
-                      ? 'bg-red-600 hover:bg-red-700 active:bg-red-800 shadow-red-600/30 emergency-glow'
-                      : 'bg-blue-600 hover:bg-blue-700 active:bg-blue-800 shadow-blue-600/25'
-                  }`}
+                  className="w-full bg-(--color-orange) hover:bg-(--color-orange-dark) active:bg-orange-800 text-slate-950 font-bold py-4 px-4 rounded-xl text-sm transition-all shadow-lg shadow-orange-600/20 flex items-center justify-center space-x-2"
                 >
                   <Calendar className="w-4 h-4" />
                   <span>
                     {isSubmitting 
-                      ? 'Contacting Nearest Dispatch Van...' 
+                      ? 'Saving service request...'
                       : urgency === 'emergency' 
-                        ? 'Dispatch Emergency Plumber Now (Under 45 Mins)' 
+                        ? 'Save Emergency Service Request'
                         : 'Confirm & Schedule Appointment'
                     }
                   </span>

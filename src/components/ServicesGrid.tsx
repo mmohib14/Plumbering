@@ -37,19 +37,19 @@ export const ServicesGrid: React.FC<ServicesGridProps> = ({
   const getServiceIcon = (iconName: string) => {
     switch (iconName) {
       case 'FlameAlert':
-        return <AlertTriangle className="w-5 h-5 text-red-600" />;
+        return <AlertTriangle className="w-5 h-5 text-(--color-orange-dark)" />;
       case 'Waves':
-        return <Waves className="w-5 h-5 text-blue-600" />;
+        return <Waves className="w-5 h-5 text-(--color-orange-dark)" />;
       case 'Flame':
-        return <Flame className="w-5 h-5 text-amber-600" />;
+        return <Flame className="w-5 h-5 text-(--color-orange-dark)" />;
       case 'Disc':
-        return <Disc className="w-5 h-5 text-indigo-600" />;
+        return <Disc className="w-5 h-5 text-(--color-orange-dark)" />;
       case 'SearchCheck':
-        return <SearchCheck className="w-5 h-5 text-sky-600" />;
+        return <SearchCheck className="w-5 h-5 text-(--color-orange-dark)" />;
       case 'Building2':
         return <Building2 className="w-5 h-5 text-emerald-600" />;
       default:
-        return <Wrench className="w-5 h-5 text-blue-600" />;
+        return <Wrench className="w-5 h-5 text-(--color-orange-dark)" />;
     }
   };
 
@@ -59,12 +59,12 @@ export const ServicesGrid: React.FC<ServicesGridProps> = ({
         
         {/* Section Heading */}
         <div className="text-center max-w-3xl mx-auto mb-12">
-          <span className="text-blue-600 font-bold text-xs uppercase tracking-widest bg-blue-100/70 px-3 py-1 rounded-full">
+          <span className="text-orange-950 font-bold text-xs uppercase tracking-widest bg-orange-100 px-3 py-1 rounded-full">
             Complete Plumbing Capabilities
           </span>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mt-3">
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mt-3">
             Our Professional Plumbing Services
-          </h2>
+          </h1>
           <p className="text-base text-slate-600 mt-3">
             From midnight emergency pipe bursts to tankless water heaters and trenchless sewer repair, our licensed master plumbers get the job done right the first time.
           </p>
@@ -73,7 +73,7 @@ export const ServicesGrid: React.FC<ServicesGridProps> = ({
           <div className="flex flex-wrap items-center justify-center gap-2 mt-8">
             {[
               { id: 'all', label: 'All Plumbing Services' },
-              { id: 'emergency', label: '🚨 Emergency 24/7' },
+              { id: 'emergency', label: 'Emergency 24/7' },
               { id: 'drain-sewer', label: 'Drain & Sewer' },
               { id: 'water-heater', label: 'Water Heaters' },
               { id: 'residential', label: 'Residential' },
@@ -84,7 +84,7 @@ export const ServicesGrid: React.FC<ServicesGridProps> = ({
                 onClick={() => setActiveCategory(tab.id)}
                 className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
                   activeCategory === tab.id
-                    ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20'
+                    ? 'bg-(--color-orange) text-slate-950 shadow-md shadow-orange-600/20'
                     : 'bg-white text-slate-700 hover:bg-slate-200 border border-slate-200'
                 }`}
               >
@@ -109,7 +109,7 @@ export const ServicesGrid: React.FC<ServicesGridProps> = ({
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   loading="lazy"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent"></div>
+                <div className="absolute inset-0 bg-linear-to-t from-slate-950/80 via-transparent to-transparent"></div>
                 
                 {/* Badges on Image */}
                 <div className="absolute top-3 left-3 flex flex-wrap gap-1.5">
@@ -126,7 +126,7 @@ export const ServicesGrid: React.FC<ServicesGridProps> = ({
 
                 {/* Price Pill */}
                 <div className="absolute bottom-3 right-3 bg-white/95 backdrop-blur-sm text-slate-900 font-extrabold text-xs px-2.5 py-1 rounded-lg shadow-sm border border-slate-200">
-                  Est: <span className="text-blue-700">{service.priceRange}</span>
+                  Est: <span className="text-orange-900">{service.priceRange}</span>
                 </div>
               </div>
 
@@ -137,8 +137,8 @@ export const ServicesGrid: React.FC<ServicesGridProps> = ({
                     <div className="p-2 rounded-xl bg-slate-100 text-slate-800">
                       {getServiceIcon(service.iconName)}
                     </div>
-                    <h3 className="text-lg font-bold text-slate-900 group-hover:text-blue-600 transition-colors leading-snug">
-                      {service.title}
+                    <h3 className="text-lg font-bold text-slate-900 group-hover:text-orange-900 transition-colors leading-snug">
+                       {service.title}
                     </h3>
                   </div>
 
@@ -173,9 +173,9 @@ export const ServicesGrid: React.FC<ServicesGridProps> = ({
 
                   <button
                     onClick={() => onOpenBooking(service.id)}
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs py-2.5 px-3 rounded-xl transition-colors shadow-sm flex items-center justify-center space-x-1"
+                    className="w-full bg-(--color-orange) hover:bg-(--color-orange-dark) text-slate-950 font-bold text-xs py-2.5 px-3 rounded-xl transition-colors shadow-sm flex items-center justify-center space-x-1"
                   >
-                    <span>Book Service</span>
+                      <span>Book Service</span>
                     <ArrowRight className="w-3 h-3" />
                   </button>
                 </div>
@@ -191,12 +191,12 @@ export const ServicesGrid: React.FC<ServicesGridProps> = ({
               Don't see your exact plumbing problem listed above?
             </h4>
             <p className="text-sm text-slate-600">
-              We service all residential, commercial, gas, and sewer plumbing systems in the United States.
+                We handle residential, commercial, gas, and sewer plumbing across our listed service areas. Call us to check an unlisted location.
             </p>
           </div>
           <button
             onClick={() => onOpenBooking()}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-3 rounded-xl text-sm transition-colors shadow-md shadow-blue-600/20 shrink-0"
+            className="bg-(--color-orange) hover:bg-(--color-orange-dark) text-slate-950 font-bold px-6 py-3 rounded-xl text-sm transition-colors shadow-md shadow-orange-600/20 shrink-0"
           >
             Describe Your Problem & Get Instant Quote
           </button>

@@ -9,15 +9,15 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ onOpenBooking })
   const steps = [
     {
       step: "01",
-      icon: <PhoneCall className="w-6 h-6 text-blue-600" />,
+      icon: <PhoneCall className="w-6 h-6 text-(--color-orange-dark)" />,
       title: "Contact or Book Online",
-      desc: "Call our 24/7 dispatch desk or book online in 60 seconds with your preferred time slot and issue description."
+      desc: "Describe the plumbing issue and preferred appointment window. Call dispatch to confirm service and availability."
     },
     {
       step: "02",
       icon: <Truck className="w-6 h-6 text-amber-500" />,
       title: "Swift GPS Dispatch",
-      desc: "We send the closest rolling warehouse van. You receive an SMS notification with the technician's photo, name, and live ETA."
+      desc: "Dispatch checks your ZIP against the active service-area list and confirms the available appointment window by phone."
     },
     {
       step: "03",
@@ -27,7 +27,7 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ onOpenBooking })
     },
     {
       step: "04",
-      icon: <CheckCircle2 className="w-6 h-6 text-indigo-600" />,
+      icon: <CheckCircle2 className="w-6 h-6 text-(--color-orange-dark)" />,
       title: "Done Right & Guaranteed",
       desc: "We complete the repair, test pressure thoroughly, tidy up the workspace, and back the work with our 1-year warranty."
     }
@@ -39,7 +39,7 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ onOpenBooking })
         
         {/* Section Heading */}
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <span className="text-blue-600 font-bold text-xs uppercase tracking-widest bg-blue-100/70 px-3 py-1 rounded-full">
+          <span className="text-orange-950 font-bold text-xs uppercase tracking-widest bg-orange-100 px-3 py-1 rounded-full">
             Simple 4-Step Process
           </span>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mt-3">
@@ -75,7 +75,7 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ onOpenBooking })
                 </p>
               </div>
 
-              <div className="mt-4 pt-3 border-t border-slate-100 text-xs font-semibold text-blue-600 flex items-center">
+              <div className="mt-4 pt-3 border-t border-slate-100 text-xs font-semibold text-orange-900 flex items-center">
                 <span>Step {idx + 1} of 4</span>
               </div>
             </div>
@@ -86,7 +86,7 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ onOpenBooking })
         <div className="mt-12 text-center">
           <button
             onClick={onOpenBooking}
-            className="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white font-bold px-7 py-3.5 rounded-xl shadow-lg shadow-blue-600/25 transition-all text-sm group"
+            className="inline-flex items-center bg-(--color-orange) hover:bg-(--color-orange-dark) text-slate-950 font-bold px-7 py-3.5 rounded-xl shadow-lg shadow-orange-600/20 transition-all text-sm group"
           >
             <span>Schedule Your Service Call Now</span>
             <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />

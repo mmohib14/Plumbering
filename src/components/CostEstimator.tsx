@@ -61,12 +61,12 @@ export const CostEstimator: React.FC<CostEstimatorProps> = ({
         
         {/* Section Heading */}
         <div className="text-center max-w-3xl mx-auto mb-12">
-          <span className="text-blue-600 font-bold text-xs uppercase tracking-widest bg-blue-100/70 px-3 py-1 rounded-full">
+          <span className="text-orange-950 font-bold text-xs uppercase tracking-widest bg-orange-100 px-3 py-1 rounded-full">
             Transparent Pricing Tool
           </span>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mt-3">
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mt-3">
             Instant Plumbing Cost Estimator
-          </h2>
+          </h1>
           <p className="text-base text-slate-600 mt-3">
             Get an instant, realistic price estimate for common plumbing repairs based on national US labor averages and OEM parts. No email required to view your estimate.
           </p>
@@ -91,9 +91,9 @@ export const CostEstimator: React.FC<CostEstimatorProps> = ({
                       setSelectedCategoryIdx(idx);
                       setSelectedOptionId(cat.options[0].id);
                     }}
-                    className={`flex h-16 min-h-16 min-w-0 items-center justify-center rounded-xl border p-2 text-center text-xs font-semibold leading-snug break-words transition-all sm:text-sm ${
+                    className={`flex h-16 min-h-16 min-w-0 items-center justify-center rounded-xl border p-2 text-center text-xs font-semibold leading-snug wrap-break-word transition-all sm:text-sm ${
                       selectedCategoryIdx === idx
-                        ? 'bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-600/20'
+                        ? 'bg-(--color-orange) text-slate-950 border-(--color-orange) shadow-md shadow-orange-600/20'
                         : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'
                     }`}
                   >
@@ -115,13 +115,13 @@ export const CostEstimator: React.FC<CostEstimatorProps> = ({
                     onClick={() => setSelectedOptionId(opt.id)}
                     className={`flex min-h-14 items-center justify-between gap-3 p-3 rounded-xl border cursor-pointer transition-all ${
                       selectedOptionId === opt.id
-                        ? 'bg-blue-50/80 border-blue-600 ring-2 ring-blue-600/20 text-blue-900 font-bold'
+                        ? 'bg-orange-50 border-orange-700 ring-2 ring-orange-700/20 text-orange-950 font-bold'
                         : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-100'
                     }`}
                   >
                     <div className="flex min-w-0 flex-1 items-center space-x-3">
                       <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${
-                        selectedOptionId === opt.id ? 'border-blue-600 bg-blue-600' : 'border-slate-300'
+                        selectedOptionId === opt.id ? 'border-orange-700 bg-(--color-orange)' : 'border-slate-300'
                       }`}>
                         {selectedOptionId === opt.id && <div className="w-1.5 h-1.5 bg-white rounded-full"></div>}
                       </div>
@@ -147,7 +147,7 @@ export const CostEstimator: React.FC<CostEstimatorProps> = ({
                     onClick={() => setPropertyType('residential')}
                     className={`flex h-12 items-center justify-center px-2 rounded-xl text-[11px] font-bold border text-center transition-colors ${
                       propertyType === 'residential'
-                        ? 'bg-blue-600 text-white border-blue-600'
+                        ? 'bg-(--color-orange) text-slate-950 border-(--color-orange)'
                         : 'bg-white text-slate-700 border-slate-200'
                     }`}
                   >
@@ -157,7 +157,7 @@ export const CostEstimator: React.FC<CostEstimatorProps> = ({
                     onClick={() => setPropertyType('commercial')}
                     className={`flex h-12 items-center justify-center px-2 rounded-xl text-[11px] font-bold border text-center transition-colors ${
                       propertyType === 'commercial'
-                        ? 'bg-blue-600 text-white border-blue-600'
+                        ? 'bg-(--color-orange) text-slate-950 border-(--color-orange)'
                         : 'bg-white text-slate-700 border-slate-200'
                     }`}
                   >
@@ -175,7 +175,7 @@ export const CostEstimator: React.FC<CostEstimatorProps> = ({
                     onClick={() => setUrgency('standard')}
                     className={`flex h-12 items-center justify-center px-1.5 rounded-xl text-[11px] font-bold border text-center transition-colors ${
                       urgency === 'standard'
-                        ? 'bg-blue-600 text-white border-blue-600'
+                        ? 'bg-(--color-orange) text-slate-950 border-(--color-orange)'
                         : 'bg-white text-slate-700 border-slate-200'
                     }`}
                   >
@@ -195,7 +195,7 @@ export const CostEstimator: React.FC<CostEstimatorProps> = ({
                     onClick={() => setUrgency('emergency')}
                     className={`flex h-12 items-center justify-center px-1.5 rounded-xl text-[11px] font-bold border text-center transition-colors ${
                       urgency === 'emergency'
-                        ? 'bg-red-600 text-white border-red-600'
+                        ? 'bg-orange-900 text-white border-orange-900'
                         : 'bg-white text-slate-700 border-slate-200'
                     }`}
                   >
@@ -208,9 +208,9 @@ export const CostEstimator: React.FC<CostEstimatorProps> = ({
           </div>
 
           {/* Right Summary Card (5 cols) */}
-          <div className="lg:col-span-5 bg-white border border-blue-200 rounded-2xl p-6 sm:p-8 shadow-md space-y-6">
+          <div className="lg:col-span-5 bg-white border border-orange-200 rounded-2xl p-6 sm:p-8 shadow-md space-y-6">
             <div className="flex items-center justify-between pb-4 border-b border-slate-100">
-              <span className="text-xs font-extrabold text-blue-600 uppercase tracking-wider">
+              <span className="text-xs font-extrabold text-orange-900 uppercase tracking-wider">
                 Live Price Calculation
               </span>
               <span className="bg-emerald-100 text-emerald-800 text-[10px] font-black px-2 py-0.5 rounded-full">
@@ -251,7 +251,7 @@ export const CostEstimator: React.FC<CostEstimatorProps> = ({
             <div className="pt-2 space-y-2">
               <button
                 onClick={handleBookEstimate}
-                className="w-full bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold py-3 px-4 rounded-xl shadow-lg shadow-blue-600/25 transition-all text-sm flex items-center justify-center space-x-2"
+                className="w-full bg-(--color-orange) hover:bg-(--color-orange-dark) active:bg-orange-800 text-slate-950 font-bold py-3 px-4 rounded-xl shadow-lg shadow-orange-600/20 transition-all text-sm flex items-center justify-center space-x-2"
               >
                 <span>Book This Estimate</span>
                 <ArrowRight className="w-4 h-4" />

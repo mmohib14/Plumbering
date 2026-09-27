@@ -41,6 +41,47 @@ const NAV_TABS = new Set([
   'staff'
 ]);
 
+const PAGE_METADATA: Record<string, { title: string; description: string }> = {
+  home: {
+    title: 'Dallas Plumber & 24/7 Emergency Plumbing | USA Pro',
+    description: 'Emergency plumbing, drain cleaning, water-heater repair, leak detection, and upfront estimates across our listed service hubs. Call to confirm ZIP coverage.',
+  },
+  services: {
+    title: 'Plumbing Services | USA Pro Plumbing',
+    description: 'Explore emergency plumbing, drain and sewer repair, water heaters, leak detection, repiping, and fixture services from USA Pro.',
+  },
+  emergency: {
+    title: '24/7 Emergency Plumber | USA Pro Plumbing',
+    description: 'Call USA Pro for urgent burst pipes, active leaks, sewage backups, and overflowing fixtures. Confirm dispatch availability for your ZIP.',
+  },
+  commercial: {
+    title: 'Commercial Plumbing | USA Pro Plumbing',
+    description: 'Commercial plumbing repairs, grease traps, backflow testing, and maintenance for businesses in our listed service hubs.',
+  },
+  calculator: {
+    title: 'Plumbing Cost Estimator | USA Pro Plumbing',
+    description: 'Review typical plumbing repair price ranges and request an upfront estimate for your home or business.',
+  },
+  'service-areas': {
+    title: 'Plumbing Service Areas | USA Pro Plumbing',
+    description: 'Check configured plumbing service ZIP codes and active metro hubs. Call dispatch to verify any location not listed.',
+  },
+  reviews: {
+    title: 'Customer Reviews & Plumbing Projects | USA Pro',
+    description: 'Read customer feedback and explore plumbing repair and replacement project examples from USA Pro.',
+  },
+  blog: {
+    title: 'Plumbing Guides & Advice | USA Pro Plumbing',
+    description: 'Practical plumbing guidance on emergency water shutoffs, drain care, water heaters, and home maintenance.',
+  },
+  contact: {
+    title: 'Contact USA Pro Plumbing | Request Service',
+    description: 'Contact USA Pro Plumbing to ask about service availability, request an estimate, or get help with an urgent plumbing issue.',
+  },
+  admin: { title: 'Operations Sign In | USA Pro Plumbing', description: 'Secure operations sign-in for USA Pro Plumbing administrators.' },
+  staff: { title: 'Staff Sign In | USA Pro Plumbing', description: 'Secure operations sign-in for USA Pro Plumbing field staff.' },
+};
+
 export default function App() {
   const [currentTab, setCurrentTab] = useState<string>(() => {
     const requestedTab = window.location.hash.replace(/^#\/?/, '');
@@ -77,6 +118,28 @@ export default function App() {
       // ignore
     }
   }, [bookings]);
+
+  useEffect(() => {
+    const metadata = (currentTab === 'admin' || currentTab === 'staff') && currentUser
+      ? {
+          title: `${currentUser.role === 'owner' ? 'Owner' : currentUser.role === 'admin' ? 'Admin' : 'Staff'} Operations | USA Pro`,
+          description: 'USA Pro Plumbing local operations dashboard for customer requests and staff management.',
+        }
+      : PAGE_METADATA[currentTab] || PAGE_METADATA.home;
+    document.title = metadata.title;
+    const descriptionTag = document.querySelector<HTMLMetaElement>('meta[name="description"]');
+    if (descriptionTag) descriptionTag.content = metadata.description;
+    const socialMetadata: [string, string][] = [
+      ['meta[property="og:title"]', metadata.title],
+      ['meta[property="og:description"]', metadata.description],
+      ['meta[name="twitter:title"]', metadata.title],
+      ['meta[name="twitter:description"]', metadata.description],
+    ];
+    socialMetadata.forEach(([selector, content]) => {
+      const tag = document.querySelector<HTMLMetaElement>(selector);
+      if (tag) tag.content = content;
+    });
+  }, [currentTab, currentUser]);
 
   useEffect(() => {
     const handleHashChange = () => {
@@ -254,7 +317,28 @@ export default function App() {
         )}
 
         {currentTab === 'contact' && (
-          <ContactPage />
+          <ContactPage
+            onSubmitInquiry={({ name, phone, email, message }) => handleAddBooking({
+              id: `USA-${Date.now()}`,
+              createdAt: new Date().toISOString(),
+              customerName: name,
+              phone,
+              email,
+              address: 'To be confirmed',
+              city: '',
+              state: '',
+              zip: '',
+              propertyType: 'residential',
+              serviceId: 'general-plumbing',
+              serviceName: 'General Plumbing Inquiry',
+              urgency: 'flexible',
+              preferredDate: 'To be scheduled',
+              preferredTimeSlot: 'Customer requested follow-up',
+              description: message,
+              status: 'new',
+              estimatedCost: 'Pending estimate',
+            })}
+          />
         )}
 
         {(currentTab === 'admin' || currentTab === 'staff') && !currentUser && (
@@ -286,9 +370,11 @@ export default function App() {
       />
 
       {/* Mobile Sticky Call / Request Bar */}
-      <MobileStickyBar
-        onOpenBooking={() => handleOpenBooking()}
-      />
+      {currentTab !== 'admin' && currentTab !== 'staff' && (
+        <MobileStickyBar
+          onOpenBooking={() => handleOpenBooking()}
+        />
+      )}
 
       {/* Service Detail Modal */}
       <ServiceDetailModal

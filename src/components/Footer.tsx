@@ -27,14 +27,14 @@ export const Footer: React.FC<FooterProps> = ({
   return (
     <footer className="site-footer border-t border-white/10 pb-8 pt-12">
       {/* Top Banner inside Footer */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 border-b border-slate-800/80">
-        <div className="flex flex-col items-center justify-between gap-5 rounded-2xl border border-white/10 bg-white/5 p-5 shadow-[0_18px_45px_rgba(0,0,0,0.16)] sm:p-6 lg:flex-row">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 border-b border-slate-200">
+        <div className="flex flex-col items-center justify-between gap-5 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6 lg:flex-row">
           <div className="flex min-w-0 items-center space-x-4">
             <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-(--color-orange) text-(--color-charcoal) shadow-lg shadow-orange-500/20">
               <ShieldCheck className="w-8 h-8" />
             </div>
             <div className="min-w-0">
-              <h3 className="text-lg font-bold tracking-tight text-white sm:text-xl">
+              <h3 className="text-lg font-bold tracking-tight text-slate-900 sm:text-xl">
                 Plumbing emergency? We are ready to help.
               </h3>
               <p className="site-footer-muted mt-1 max-w-xl text-sm leading-relaxed">
@@ -52,7 +52,7 @@ export const Footer: React.FC<FooterProps> = ({
             </a>
             <button
               onClick={() => onOpenBooking()}
-              className="inline-flex min-h-12 flex-1 items-center justify-center whitespace-nowrap rounded-xl border border-white/15 bg-white/10 px-5 py-3 text-sm font-semibold text-white transition-all hover:bg-white/15 sm:flex-initial"
+              className="inline-flex min-h-12 flex-1 items-center justify-center whitespace-nowrap rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-800 transition-all hover:border-orange-300 hover:bg-orange-50 sm:flex-initial"
             >
               Schedule Online
             </button>
@@ -64,7 +64,7 @@ export const Footer: React.FC<FooterProps> = ({
       <div className="mx-auto grid max-w-7xl grid-cols-1 gap-x-10 gap-y-10 px-4 py-12 sm:px-6 lg:grid-cols-5 lg:px-8">
         {/* Column 1: Brand & Credentials */}
         <div className="lg:col-span-2 space-y-4">
-          <BrandLogo compact />
+              <BrandLogo compact light />
 
           <p className="site-footer-muted max-w-sm text-sm leading-relaxed">
             Licensed, insured plumbing professionals with clear, upfront pricing.
@@ -173,7 +173,7 @@ export const Footer: React.FC<FooterProps> = ({
               <Mail className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
               <div>
                 <div className="text-xs font-semibold uppercase text-slate-400">Electronic Inquiries</div>
-                <span className="text-slate-300">{COMPANY_INFO.email}</span>
+                <span className="break-all text-slate-300">{COMPANY_INFO.email}</span>
               </div>
             </div>
 

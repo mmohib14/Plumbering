@@ -58,12 +58,12 @@ export const ReviewsSection: React.FC<ReviewsSectionProps> = ({ onAddReview }) =
         {/* Section Header with Overall Rating Badge */}
         <div className="flex flex-col lg:flex-row items-center justify-between gap-6 mb-12">
           <div>
-            <span className="text-blue-600 font-bold text-xs uppercase tracking-widest bg-blue-100/70 px-3 py-1 rounded-full">
+            <span className="text-orange-950 font-bold text-xs uppercase tracking-widest bg-orange-100 px-3 py-1 rounded-full">
               Verified Client Feedback
             </span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mt-2">
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mt-2">
               What Our Customers Say
-            </h2>
+            </h1>
             <p className="text-base text-slate-600 mt-1">
               Read real reviews from homeowners and business managers who trust USA Pro Plumbing.
             </p>
@@ -90,7 +90,7 @@ export const ReviewsSection: React.FC<ReviewsSectionProps> = ({ onAddReview }) =
               </p>
               <button
                 onClick={() => setIsModalOpen(true)}
-                className="mt-1 text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center"
+                className="mt-1 text-xs font-bold text-orange-900 hover:text-orange-700 flex items-center"
               >
                 <PlusCircle className="w-3.5 h-3.5 mr-1" />
                 Leave Your Review
@@ -106,7 +106,7 @@ export const ReviewsSection: React.FC<ReviewsSectionProps> = ({ onAddReview }) =
             <button
               onClick={() => setFilterRating('all')}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
-                filterRating === 'all' ? 'bg-blue-600 text-white' : 'bg-white text-slate-700 hover:bg-slate-200 border border-slate-200'
+                filterRating === 'all' ? 'bg-(--color-orange) text-slate-950' : 'bg-white text-slate-700 hover:bg-slate-200 border border-slate-200'
               }`}
             >
               All Ratings ({reviewsList.length})
@@ -114,7 +114,7 @@ export const ReviewsSection: React.FC<ReviewsSectionProps> = ({ onAddReview }) =
             <button
               onClick={() => setFilterRating(5)}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
-                filterRating === 5 ? 'bg-blue-600 text-white' : 'bg-white text-slate-700 hover:bg-slate-200 border border-slate-200'
+                filterRating === 5 ? 'bg-(--color-orange) text-slate-950' : 'bg-white text-slate-700 hover:bg-slate-200 border border-slate-200'
               }`}
             >
               5 Stars Only ★
@@ -123,7 +123,7 @@ export const ReviewsSection: React.FC<ReviewsSectionProps> = ({ onAddReview }) =
 
           <button
             onClick={() => setIsModalOpen(true)}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs py-2 px-4 rounded-xl transition-colors shadow-sm flex items-center space-x-1.5"
+            className="bg-(--color-orange) hover:bg-(--color-orange-dark) text-slate-950 font-bold text-xs py-2 px-4 rounded-xl transition-colors shadow-sm flex items-center space-x-1.5"
           >
             <MessageSquare className="w-3.5 h-3.5" />
             <span>Write a Customer Review</span>

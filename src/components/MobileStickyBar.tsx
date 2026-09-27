@@ -12,7 +12,7 @@ export const MobileStickyBar: React.FC<MobileStickyBarProps> = ({ onOpenBooking 
       <div className="max-w-md mx-auto grid grid-cols-2 gap-2">
         <a
           href={`tel:${COMPANY_INFO.phoneRaw}`}
-          className="flex min-h-12 items-center justify-center space-x-2 rounded-xl bg-red-600 px-3 py-3 text-sm font-bold whitespace-nowrap text-white shadow-md shadow-red-600/30 transition-transform active:bg-red-700 active:scale-95"
+          className="flex min-h-12 items-center justify-center space-x-2 rounded-xl bg-(--color-orange) px-3 py-3 text-sm font-bold whitespace-nowrap text-slate-950 shadow-md shadow-orange-600/20 transition-transform active:bg-(--color-orange-dark) active:scale-95"
         >
           <Phone className="w-4 h-4 animate-pulse" />
           <span>Call Now</span>
@@ -20,7 +20,7 @@ export const MobileStickyBar: React.FC<MobileStickyBarProps> = ({ onOpenBooking 
 
         <button
           onClick={onOpenBooking}
-          className="flex min-h-12 items-center justify-center space-x-2 rounded-xl bg-blue-600 px-3 py-3 text-sm font-bold whitespace-nowrap text-white shadow-md shadow-blue-600/30 transition-transform active:bg-blue-700 active:scale-95"
+          className="flex min-h-12 items-center justify-center space-x-2 rounded-xl border border-slate-300 bg-white px-3 py-3 text-sm font-bold whitespace-nowrap text-slate-800 transition-transform active:bg-orange-50 active:scale-95"
         >
           <Calendar className="w-4 h-4" />
           <span>Book Online</span>
