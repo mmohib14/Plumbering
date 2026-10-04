@@ -38,7 +38,7 @@ export const ContactInquiryForm: React.FC<ContactInquiryFormProps> = ({ variant 
       </p>
 
       {submitted ? (
-        <div className="space-y-3 rounded-2xl border border-emerald-200 bg-emerald-50 p-6 text-center sm:p-8">
+        <div role="status" aria-live="polite" className="space-y-3 rounded-2xl border border-emerald-200 bg-emerald-50 p-6 text-center sm:p-8">
           <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
             <CheckCircle2 className="h-6 w-6" />
           </div>
@@ -56,6 +56,7 @@ export const ContactInquiryForm: React.FC<ContactInquiryFormProps> = ({ variant 
                 type="text"
                 id="contact-name"
                 required
+                autoComplete="name"
                 value={name}
                 onChange={event => setName(event.target.value)}
                 placeholder="e.g. John Adams"
@@ -84,6 +85,7 @@ export const ContactInquiryForm: React.FC<ContactInquiryFormProps> = ({ variant 
             <input
               type="email"
               id="contact-email"
+              autoComplete="email"
               value={email}
               onChange={event => setEmail(event.target.value)}
               placeholder="e.g. john@example.com"

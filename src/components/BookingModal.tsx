@@ -258,7 +258,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
               </div>
 
               <div className="p-4 bg-orange-50 border border-orange-200 rounded-xl text-xs text-orange-950 max-w-md mx-auto">
-                <strong>For immediate help:</strong> call dispatch at {COMPANY_INFO.phone} to verify coverage and scheduling.
+                <strong>For immediate help:</strong> call dispatch at <a href={`tel:${COMPANY_INFO.phoneRaw}`} className="font-bold underline underline-offset-2">{COMPANY_INFO.phone}</a> to verify coverage and scheduling.
               </div>
 
               <div className="pt-2 flex justify-center space-x-3">

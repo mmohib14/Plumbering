@@ -59,7 +59,7 @@ export const CommercialPage: React.FC<CommercialPageProps> = ({ onOpenBooking })
           <h2 className="text-3xl font-extrabold text-slate-900 mt-1">Trusted By Leading US Businesses</h2>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
           {[
             { name: "Restaurants & Bars", desc: "Grease traps, floor sinks, high-temp dish lines", icon: <Utensils className="w-5 h-5 text-amber-400" /> },
             { name: "Hotels & Hospitality", desc: "Commercial boilers, multi-story water risers", icon: <Hotel className="w-5 h-5 text-blue-400" /> },

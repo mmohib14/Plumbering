@@ -1,0 +1,52 @@
+{
+  "rewrites": [
+    {
+      "source": "/services",
+      "destination": "/"
+    },
+    {
+      "source": "/services/:slug",
+      "destination": "/"
+    },
+    {
+      "source": "/service-areas",
+      "destination": "/"
+    },
+    {
+      "source": "/service-areas/:slug",
+      "destination": "/"
+    },
+    {
+      "source": "/contact",
+      "destination": "/"
+    },
+    {
+      "source": "/emergency",
+      "destination": "/"
+    },
+    {
+      "source": "/commercial",
+      "destination": "/"
+    },
+    {
+      "source": "/calculator",
+      "destination": "/"
+    },
+    {
+      "source": "/reviews",
+      "destination": "/"
+    },
+    {
+      "source": "/blog",
+      "destination": "/"
+    },
+    {
+      "source": "/admin",
+      "destination": "/"
+    },
+    {
+      "source": "/staff",
+      "destination": "/"
+    }
+  ]
+}

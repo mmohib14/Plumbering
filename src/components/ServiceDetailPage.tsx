@@ -151,7 +151,7 @@ export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
             <p className="mt-3 text-sm leading-6 text-slate-600">{service.fullDesc}</p>
             <div className="mt-5 flex flex-wrap items-center gap-4">
               <a href={`tel:${COMPANY_INFO.phoneRaw}`} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-amber-400 px-4 text-sm font-extrabold text-slate-950 transition hover:bg-amber-300"><Phone className="h-4 w-4" />Call dispatch</a>
-              <span className="text-xs font-semibold text-slate-600">{COMPANY_INFO.phone}</span>
+              <a href={`tel:${COMPANY_INFO.phoneRaw}`} className="text-xs font-semibold text-slate-600 underline decoration-slate-300 underline-offset-2 hover:text-(--color-navy)">{COMPANY_INFO.phone}</a>
             </div>
             <div className="mt-6 flex items-start gap-3 border-t border-slate-200 pt-4">
               <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-amber-50 text-orange-900"><Clock3 className="h-4 w-4" /></span>

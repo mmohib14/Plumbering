@@ -64,11 +64,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenBooking, onSelec
             {/* Main Headline */}
             <h1 className="font-extrabold tracking-tight text-white leading-tight">
               <span className="block text-2xl sm:text-3xl lg:text-4xl text-slate-900">
-                Professional Plumbing Services
+                Reliable Plumbing Services
               </span>
               <br className="hidden sm:inline" />
               <span className="block text-3xl font-black text-(--color-orange-dark) sm:text-4xl lg:text-5xl">
-                You Can Count On
+                Across the USA
               </span>
             </h1>
 
