@@ -98,7 +98,7 @@ export const ProblemFinderSection: React.FC<ProblemFinderSectionProps> = ({
           </p>
         </div>
 
-        <div className="grid items-start gap-6 lg:grid-cols-[1.65fr_0.85fr]">
+        <div className="grid items-stretch gap-6 lg:grid-cols-[1.65fr_0.85fr]">
           <div className="grid gap-3 sm:grid-cols-2">
             {commonIssues.map((issue) => (
               <button
@@ -135,7 +135,7 @@ export const ProblemFinderSection: React.FC<ProblemFinderSectionProps> = ({
                     </div>
                     <div className="min-w-0">
                       <p className="text-sm font-bold text-white">{item.title}</p>
-                      <p className="mt-0.5 text-xs leading-relaxed text-slate-300">{item.description}</p>
+                      <p className="mt-0.5 line-clamp-2 text-xs leading-relaxed text-slate-300" title={item.description}>{item.description}</p>
                     </div>
                   </div>
                 ))}

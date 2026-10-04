@@ -180,7 +180,7 @@ export const ReviewsSection: React.FC<ReviewsSectionProps> = ({ onAddReview }) =
                 </div>
 
                 {/* Review Text */}
-                <p className="text-sm text-slate-600 leading-relaxed italic">
+                <p className="line-clamp-2 text-sm text-slate-600 leading-relaxed italic" title={rev.review}>
                   "{rev.review}"
                 </p>
               </div>

@@ -17,6 +17,7 @@ import {
 import { COMPANY_INFO, SERVICES_DATA, SERVICE_AREAS_DATA } from '../data/plumbingData';
 import { ServiceArea, ServiceItem } from '../types';
 import { BrandLogo } from './BrandLogo';
+import { getShortAreaName, getShortServiceName } from '../services/displayLabels';
 
 type SpeechResultEvent = { results: ArrayLike<ArrayLike<{ transcript: string }>> };
 type SpeechRecognitionLike = {
@@ -349,37 +350,37 @@ export const Header: React.FC<HeaderProps> = ({
 
                 <div className="absolute left-0 top-full z-40 h-2" aria-hidden="true" />
                 {servicesDropdownOpen && (
-                  <div id="services-mega-menu" className="fixed left-1/2 top-[6.5rem] z-[60] w-[min(92vw,78rem)] -translate-x-1/2 overflow-hidden rounded-2xl border border-slate-200 border-t-4 border-t-(--color-orange) bg-white text-(--color-navy) shadow-[0_24px_60px_rgba(13,44,84,0.2)]">
-                    <div className="grid grid-cols-[repeat(4,minmax(0,1fr))_0.9fr] gap-0">
+                  <div id="services-mega-menu" className="fixed left-1/2 top-[6.5rem] z-[60] w-[min(94vw,74rem)] -translate-x-1/2 overflow-hidden rounded-2xl border border-slate-200 border-t-4 border-t-(--color-orange) bg-white text-(--color-navy) shadow-[0_24px_60px_rgba(13,44,84,0.2)]">
+                    <div className="grid grid-cols-[repeat(4,minmax(0,1fr))_0.85fr] gap-0">
                       {serviceGroups.map(group => (
-                        <div key={group.label} className="space-y-2 border-r border-slate-200 p-4">
-                          <div className="text-[10px] font-black uppercase tracking-[0.16em] text-(--color-orange-dark)">{group.label}</div>
+                        <div key={group.label} className="space-y-1 border-r border-slate-200 p-3">
+                          <div className="mb-1 text-[9px] font-black uppercase tracking-[0.14em] text-(--color-orange-dark)">{group.label}</div>
                           {group.services.map(service => (
-                            <button key={service.id} type="button" onClick={() => handleServiceClick(service)} className="block w-full rounded-md px-2 py-1.5 text-left text-sm font-semibold text-slate-700 transition-colors hover:bg-(--color-ice) hover:text-(--color-navy)">
-                              {service.title}
+                            <button key={service.id} type="button" onClick={() => handleServiceClick(service)} className="block w-full rounded-md px-2 py-1.5 text-left transition-colors hover:bg-(--color-ice) hover:text-(--color-navy)">
+                              <span className="block text-xs font-bold leading-4 text-slate-800">{getShortServiceName(service)}</span>
                             </button>
                           ))}
                         </div>
                       ))}
 
-                      <div className="flex flex-col justify-between bg-(--color-ice) p-4">
+                      <div className="flex flex-col justify-between bg-(--color-ice) p-3">
                         <div>
-                          <div className="text-[10px] font-black uppercase tracking-[0.16em] text-(--color-orange-dark)">Need help now?</div>
-                          <div className="mt-2 text-2xl font-black tracking-tight text-(--color-navy)">24/7</div>
-                          <div className="mt-1 text-sm font-semibold text-slate-700">Emergency plumbing</div>
+                          <div className="text-[9px] font-black uppercase tracking-[0.14em] text-(--color-orange-dark)">Need help now?</div>
+                          <div className="mt-2 text-xl font-black tracking-tight text-(--color-navy)">24/7</div>
+                          <div className="mt-0.5 text-xs font-semibold text-slate-700">Emergency plumbing</div>
                         </div>
-                        <div className="mt-5 space-y-2">
+                        <div className="mt-4 space-y-2">
                           <button
                             type="button"
                             onClick={() => handleNavClick('emergency')}
-                            className="block w-full rounded-lg bg-(--color-orange) px-3 py-2.5 text-sm font-black text-(--color-charcoal) transition-colors hover:brightness-95"
+                            className="block min-h-9 w-full rounded-lg bg-(--color-orange) px-2.5 py-2 text-xs font-black text-(--color-charcoal) transition-colors hover:brightness-95"
                           >
                             Emergency service
                           </button>
                           <button
                             type="button"
                             onClick={() => handleNavClick('services')}
-                            className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm font-bold text-(--color-navy) transition-colors hover:border-(--color-orange)"
+                            className="block min-h-9 w-full rounded-lg border border-slate-300 bg-white px-2.5 py-2 text-xs font-bold text-(--color-navy) transition-colors hover:border-(--color-orange)"
                           >
                             All services
                           </button>
@@ -422,37 +423,37 @@ export const Header: React.FC<HeaderProps> = ({
 
                 <div className="absolute left-0 top-full z-40 h-2" aria-hidden="true" />
                 {serviceAreasDropdownOpen && (
-                  <div id="service-areas-mega-menu" className="fixed left-1/2 top-[6.5rem] z-[60] w-[min(92vw,42rem)] -translate-x-1/2 overflow-hidden rounded-2xl border border-slate-200 border-t-4 border-t-(--color-orange) bg-white text-(--color-navy) shadow-[0_24px_60px_rgba(13,44,84,0.2)]">
-                    <div className="grid grid-cols-[1fr_220px]">
-                      <div className="p-5">
-                        <p className="text-[10px] font-black uppercase tracking-[0.16em] text-(--color-orange-dark)">Service coverage</p>
-                        <h3 className="mt-1 text-lg font-black text-(--color-navy)">Find a plumber near you</h3>
-                        <div className="mt-4 grid grid-cols-2 gap-2">
+                  <div id="service-areas-mega-menu" className="fixed left-1/2 top-[6.5rem] z-[60] w-[min(94vw,38rem)] -translate-x-1/2 overflow-hidden rounded-2xl border border-slate-200 border-t-4 border-t-(--color-orange) bg-white text-(--color-navy) shadow-[0_24px_60px_rgba(13,44,84,0.2)]">
+                    <div className="grid grid-cols-[minmax(0,1fr)_10rem]">
+                      <div className="p-4">
+                        <p className="text-[9px] font-black uppercase tracking-[0.14em] text-(--color-orange-dark)">Service coverage</p>
+                        <h3 className="mt-1 text-base font-black text-(--color-navy)">Find a plumber near you</h3>
+                        <div className="mt-3 grid grid-cols-2 gap-1.5">
                         {SERVICE_AREAS_DATA.map((area) => (
                           <button
                             key={area.id}
                             type="button"
                             onClick={() => handleServiceAreaClick(area)}
-                            className="rounded-lg border border-slate-200 px-3 py-2.5 text-left text-sm font-semibold text-slate-700 transition-colors hover:border-(--color-orange) hover:bg-(--color-ice) hover:text-(--color-navy)"
+                            className="min-w-0 rounded-md border border-slate-200 px-2.5 py-2 text-left transition-colors hover:border-(--color-orange) hover:bg-(--color-ice) hover:text-(--color-navy)"
                           >
-                            {area.city}
+                            <span className="block truncate text-xs font-bold leading-4 text-slate-800">{getShortAreaName(area)}</span>
                           </button>
                         ))}
                         </div>
                         <button
                           type="button"
                           onClick={() => handleNavClick('service-areas')}
-                          className="mt-4 text-sm font-bold text-(--color-navy) underline decoration-(--color-orange) underline-offset-4 hover:text-(--color-orange-dark)"
+                          className="mt-3 inline-flex min-h-8 items-center text-xs font-bold text-(--color-navy) underline decoration-(--color-orange) underline-offset-4 hover:text-(--color-orange-dark)"
                         >
                           Check your ZIP code
                         </button>
                       </div>
 
-                      <div className="flex flex-col justify-between border-l border-slate-200 bg-(--color-ice) p-5">
+                      <div className="flex flex-col justify-between border-l border-slate-200 bg-(--color-ice) p-4">
                         <div>
-                          <div className="text-[10px] font-black uppercase tracking-[0.16em] text-(--color-orange-dark)">Fast response</div>
-                          <div className="mt-3 text-3xl font-black tracking-tight text-(--color-navy)">24/7</div>
-                          <div className="mt-1 text-sm font-semibold text-slate-700">Emergency service</div>
+                          <div className="text-[9px] font-black uppercase tracking-[0.14em] text-(--color-orange-dark)">Fast response</div>
+                          <div className="mt-2 text-2xl font-black tracking-tight text-(--color-navy)">24/7</div>
+                          <div className="mt-1 text-xs font-semibold text-slate-700">Emergency service</div>
                         </div>
                         <a
                           href={`tel:${COMPANY_INFO.phoneRaw}`}
@@ -627,10 +628,10 @@ export const Header: React.FC<HeaderProps> = ({
             {mobileServicesOpen && (
               <div className="grid gap-1 border-l-2 border-orange-300 pl-3 sm:col-start-2">
                 {SERVICES_DATA.map(service => (
-                  <button key={service.id} type="button" onClick={() => handleServiceClick(service)} className="w-full rounded-lg px-3 py-2 text-left text-sm font-medium text-slate-700 hover:bg-orange-50 hover:text-orange-900">
-                    {service.title}
-                  </button>
-                ))}
+                <button key={service.id} type="button" onClick={() => handleServiceClick(service)} className="w-full rounded-lg px-3 py-1.5 text-left hover:bg-orange-50 hover:text-orange-900">
+                  <span className="block text-xs font-semibold leading-4 text-slate-800">{getShortServiceName(service)}</span>
+                </button>
+              ))}
               </div>
             )}
 
@@ -666,8 +667,8 @@ export const Header: React.FC<HeaderProps> = ({
             {mobileAreasOpen && (
               <div className="grid gap-1 border-l-2 border-orange-300 pl-3 sm:col-start-1">
                 {SERVICE_AREAS_DATA.map(area => (
-                  <button key={area.id} type="button" onClick={() => handleServiceAreaClick(area)} className="w-full rounded-lg px-3 py-2 text-left text-sm font-medium text-slate-700 hover:bg-orange-50 hover:text-orange-900">
-                    {area.city}
+                  <button key={area.id} type="button" onClick={() => handleServiceAreaClick(area)} className="w-full rounded-lg px-3 py-1.5 text-left hover:bg-orange-50 hover:text-orange-900">
+                    <span className="block text-xs font-semibold leading-4 text-slate-800">{getShortAreaName(area)}</span>
                   </button>
                 ))}
               </div>
@@ -846,9 +847,7 @@ const HeaderSearchControl: React.FC<HeaderSearchControlProps> = ({
                     )}
                   </div>
                   <div className="p-3">
-                    <h3 className="line-clamp-1 text-sm font-bold text-slate-900">{service.title}</h3>
-                    <p className="mt-1 line-clamp-2 min-h-9 text-xs leading-relaxed text-slate-600">{service.shortDesc}</p>
-                    <p className="mt-2 text-xs font-semibold text-slate-700">From {service.priceRange}</p>
+                    <h3 className="line-clamp-1 text-sm font-bold text-slate-900">{getShortServiceName(service)}</h3>
                     <div className="mt-3 grid grid-cols-2 gap-2">
                       <button type="button" onClick={() => onSelectService(service)} className="rounded-lg border border-slate-300 px-2 py-2 text-xs font-bold text-slate-800 hover:border-(--color-orange) hover:bg-orange-50 focus-visible:outline-2 focus-visible:outline-(--color-orange)">
                         View Service

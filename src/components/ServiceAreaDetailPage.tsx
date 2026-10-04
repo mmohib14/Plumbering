@@ -1,8 +1,9 @@
 import React from 'react';
-import { ArrowRight, Check, Clock3, MapPin, Phone, ShieldCheck, Star, Users } from 'lucide-react';
+import { ArrowRight, Check, Clock3, MapPin, Phone, ShieldCheck, Users } from 'lucide-react';
 import { COMPANY_INFO, REVIEWS_DATA, SERVICE_AREAS_DATA, SERVICES_DATA } from '../data/plumbingData';
 import { ServiceArea, ServiceItem } from '../types';
 import { getServiceAreaSlug } from '../services/routes';
+import { FeaturedReview } from './FeaturedReview';
 
 interface ServiceAreaDetailPageProps {
   area: ServiceArea;
@@ -60,18 +61,25 @@ export const ServiceAreaDetailPage: React.FC<ServiceAreaDetailPageProps> = ({
 
       <section className="border-b border-slate-200 bg-slate-50">
         <div className="mx-auto grid max-w-7xl gap-8 px-4 py-9 sm:px-6 md:grid-cols-2 lg:px-8">
-          <div>
+          <div className="flex flex-col justify-center">
             <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-orange-800">Neighborhood coverage</p>
             <h2 className="mt-2 text-xl font-extrabold text-(--color-navy)">Communities around {area.city}</h2>
+            <p className="mt-2 text-sm leading-6 text-slate-600">Local coverage includes these nearby communities and configured ZIP codes.</p>
           </div>
           <div>
-            <ul className="flex flex-wrap gap-2">
-              {neighboringPlaces.map(place => <li key={place} className="inline-flex min-h-9 items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 text-xs font-semibold text-slate-700"><MapPin className="h-3.5 w-3.5 text-orange-800" />{place}</li>)}
+            <ul className="flex flex-wrap items-center gap-x-2 gap-y-1.5">
+              {neighboringPlaces.map(place => (
+                <li key={place} className="inline-flex items-center gap-2 text-sm font-semibold text-slate-700">
+                  <span className="inline-flex items-center gap-1.5"><MapPin className="h-3.5 w-3.5 text-orange-800" />{place}</span>
+                </li>
+              ))}
             </ul>
-            <p className="mt-4 text-xs font-bold uppercase tracking-wider text-slate-500">Configured ZIP codes</p>
-            <ul className="mt-2 flex flex-wrap gap-2" aria-label={`Listed ZIP codes for ${area.city}`}>
-              {area.zipCodes.map(zip => <li key={zip} className="rounded-md bg-(--color-navy) px-2.5 py-1.5 font-mono text-xs font-bold text-white">{zip}</li>)}
-            </ul>
+            <div className="mt-5 border-t border-slate-200 pt-4">
+              <p className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-slate-500">Configured ZIP codes</p>
+              <ul className="mt-2 flex flex-wrap gap-1.5" aria-label={`Listed ZIP codes for ${area.city}`}>
+                {area.zipCodes.map(zip => <li key={zip} className="rounded bg-(--color-navy) px-2 py-1 font-mono text-[11px] font-bold text-white">{zip}</li>)}
+              </ul>
+            </div>
           </div>
         </div>
       </section>
@@ -87,16 +95,16 @@ export const ServiceAreaDetailPage: React.FC<ServiceAreaDetailPageProps> = ({
               <p className="text-xs leading-5 text-slate-600">{COMPANY_INFO.license}<br />Licensed, bonded &amp; insured.</p>
             </div>
           </div>
-          <div className="divide-y divide-slate-200 border-y border-slate-200 lg:col-span-2">
+          <div className="grid gap-x-8 lg:col-span-2 lg:grid-cols-2">
             {SERVICES_DATA.map((service, index) => (
-              <article key={service.id} className="grid gap-3 py-5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:gap-6">
+              <article key={service.id} className="flex flex-col items-start border-t border-slate-200 py-4 transition-colors hover:bg-slate-50 sm:px-2">
                 <div>
-                  <p className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-slate-500">0{index + 1} · {service.priceRange}</p>
-                  <h3 className="mt-1 text-base font-extrabold text-(--color-navy)">{service.title}</h3>
-                  <p className="mt-1 max-w-2xl text-xs leading-5 text-slate-600">{service.shortDesc}</p>
-                  <p className="mt-2 flex items-start gap-1.5 text-[11px] leading-5 text-slate-600"><Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-700" />{service.features[0]}</p>
+                  <p className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-orange-800">0{index + 1}<span className="mx-1.5 text-slate-300">·</span><span className="text-slate-500">{service.priceRange}</span></p>
+                  <h3 className="mt-1 text-sm font-extrabold leading-5 text-(--color-navy)">{service.title}</h3>
+                  <p className="mt-1 line-clamp-2 max-w-2xl text-xs leading-5 text-slate-600" title={service.shortDesc}>{service.shortDesc}</p>
+                  <p className="mt-2 line-clamp-2 flex items-start gap-1.5 text-[11px] leading-5 text-slate-600" title={service.features[0]}><Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-700" />{service.features[0]}</p>
                 </div>
-                <button type="button" onClick={() => onSelectService(service)} className="inline-flex min-h-10 items-center gap-1 self-start text-xs font-extrabold text-(--color-navy) hover:text-orange-900 sm:self-center">View service <ArrowRight className="h-3.5 w-3.5" /></button>
+                <button type="button" onClick={() => onSelectService(service)} className="mt-3 inline-flex min-h-9 items-center gap-1 border-b border-amber-400 text-xs font-extrabold text-(--color-navy) transition-colors hover:text-orange-900">Explore service <ArrowRight className="h-3.5 w-3.5" /></button>
               </article>
             ))}
           </div>
@@ -104,19 +112,7 @@ export const ServiceAreaDetailPage: React.FC<ServiceAreaDetailPageProps> = ({
       </section>
 
       {featuredReview && (
-        <section className="bg-[#f3f5f5]">
-          <div className="mx-auto grid max-w-7xl gap-6 px-4 py-10 sm:px-6 md:grid-cols-2 md:gap-10 lg:px-8 lg:py-14">
-            <div>
-              <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-orange-800">Customer feedback</p>
-              <h2 className="mt-2 text-xl font-extrabold text-(--color-navy)">A local customer&apos;s experience</h2>
-            </div>
-            <blockquote className="border-l-4 border-amber-400 pl-5 sm:pl-7">
-              <div className="flex gap-1 text-amber-600" aria-label={`${featuredReview.rating} out of 5 stars`}>{Array.from({ length: featuredReview.rating }, (_, index) => <Star key={index} className="h-4 w-4 fill-current" />)}</div>
-              <p className="mt-3 text-base font-medium leading-7 text-slate-800 sm:text-lg">&ldquo;{featuredReview.review}&rdquo;</p>
-              <footer className="mt-4 text-xs font-bold text-slate-600">{featuredReview.author} · {featuredReview.location} · {featuredReview.serviceType}</footer>
-            </blockquote>
-          </div>
-        </section>
+        <FeaturedReview review={featuredReview} title="A local customer's experience" />
       )}
 
       <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
@@ -127,11 +123,26 @@ export const ServiceAreaDetailPage: React.FC<ServiceAreaDetailPageProps> = ({
             <button type="button" onClick={onOpenBooking} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-amber-400 px-4 text-sm font-extrabold text-slate-950 hover:bg-amber-300">Book service <ArrowRight className="h-4 w-4" /></button>
           </div>
         </div>
-        <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2">
-          <span className="text-xs font-extrabold uppercase tracking-wider text-slate-500">Other hubs</span>
-          {SERVICE_AREAS_DATA.filter(item => item.id !== area.id).map(item => (
-            <a key={item.id} href={`/service-areas/${getServiceAreaSlug(item)}`} className="text-xs font-semibold text-(--color-navy) underline decoration-slate-300 underline-offset-4 hover:decoration-amber-500">{item.city}</a>
-          ))}
+        <div className="mt-7 grid gap-4 border-t border-slate-200 pt-5 sm:grid-cols-4 sm:gap-8">
+          <div>
+            <h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-500">Other service hubs</h3>
+            <p className="mt-1 text-xs text-slate-500">Explore coverage in other regions.</p>
+          </div>
+          <div className="grid gap-4 sm:col-span-3 sm:grid-cols-2">
+            {[
+              { label: 'Texas', areas: SERVICE_AREAS_DATA.filter(item => item.state === 'TX' && item.id !== area.id) },
+              { label: 'Other regions', areas: SERVICE_AREAS_DATA.filter(item => item.state !== 'TX' && item.id !== area.id) },
+            ].filter(group => group.areas.length > 0).map(group => (
+              <div key={group.label}>
+                <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">{group.label}</p>
+                <ul className="mt-2 flex flex-wrap gap-x-3 gap-y-2">
+                  {group.areas.map(item => (
+                    <li key={item.id}><a href={`/service-areas/${getServiceAreaSlug(item)}`} className="text-xs font-semibold text-(--color-navy) underline decoration-slate-300 underline-offset-4 hover:decoration-amber-500">{item.city}</a></li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
     </div>

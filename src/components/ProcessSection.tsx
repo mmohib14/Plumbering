@@ -11,25 +11,25 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ onOpenBooking })
       step: "01",
       icon: <PhoneCall className="w-6 h-6 text-(--color-orange-dark)" />,
       title: "Contact or Book Online",
-      desc: "Describe the plumbing issue and preferred appointment window. Call dispatch to confirm service and availability."
+      desc: "Share the issue and preferred time; dispatch confirms service availability."
     },
     {
       step: "02",
       icon: <Truck className="w-6 h-6 text-amber-500" />,
       title: "Swift GPS Dispatch",
-      desc: "Dispatch checks your ZIP against the active service-area list and confirms the available appointment window by phone."
+      desc: "We check your ZIP and confirm the available appointment window by phone."
     },
     {
       step: "03",
       icon: <ClipboardCheck className="w-6 h-6 text-emerald-600" />,
       title: "Upfront Fixed Quote",
-      desc: "Our master plumber evaluates the problem on-site and presents a clear, flat-rate quote. Zero wrench turns without your approval."
+      desc: "Get an on-site flat-rate quote before any work begins."
     },
     {
       step: "04",
       icon: <CheckCircle2 className="w-6 h-6 text-(--color-orange-dark)" />,
       title: "Done Right & Guaranteed",
-      desc: "We complete the repair, test pressure thoroughly, tidy up the workspace, and back the work with our 1-year warranty."
+      desc: "We test the repair, tidy the workspace, and include a 1-year warranty."
     }
   ];
 

@@ -133,26 +133,26 @@ export const ServiceAreaChecker: React.FC<ServiceAreaCheckerProps> = ({ onOpenBo
               </div>
               <div className="divide-y divide-slate-200">
                 {areas.map(area => (
-                  <article key={area.id} className="grid gap-4 py-5 sm:grid-cols-3 sm:items-center sm:gap-6">
+                  <article key={area.id} className="grid gap-3 border-b border-slate-100 py-4 last:border-0 md:grid-cols-3 md:items-center md:gap-6">
                     <button type="button" onClick={() => onSelectArea(area)} className="group min-w-0 text-left">
                       <span className="flex items-start gap-3">
                         <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-orange-900 transition-colors group-hover:bg-amber-100"><MapPin className="h-4 w-4" /></span>
                         <span className="min-w-0">
-                          <span className="block text-base font-extrabold text-(--color-navy) group-hover:text-orange-900">{area.city}</span>
-                          <span className="mt-1 block text-xs leading-5 text-slate-600">{area.metroArea}</span>
-                          <span className="mt-2 block text-[10px] font-bold uppercase tracking-wider text-slate-500">{area.zipCodes.length} listed ZIP codes · {area.state}</span>
+                          <span className="block text-sm font-extrabold leading-5 text-(--color-navy) group-hover:text-orange-900">{area.city}, {area.state}</span>
+                          <span className="mt-0.5 line-clamp-1 block text-[11px] leading-4 text-slate-600">{area.metroArea}</span>
+                          <span className="mt-1 block text-[10px] font-bold uppercase tracking-wider text-slate-500">{area.zipCodes.length} listed ZIP codes</span>
                         </span>
                       </span>
                     </button>
-                    <div className="flex gap-6 pl-12 sm:pl-0">
+                    <div className="flex gap-6 pl-12 md:pl-0">
                       <div><span className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-slate-500"><Clock3 className="h-3 w-3" /> Response</span><span className="mt-1 block text-sm font-extrabold text-slate-800">~{area.averageResponseMinutes} min</span></div>
                       <div><span className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-slate-500"><Users className="h-3 w-3" /> Available</span><span className="mt-1 block text-sm font-extrabold text-slate-800">{area.techniciansAvailable} technicians</span></div>
                     </div>
-                    <div className="flex items-center gap-4 pl-12 sm:justify-end sm:pl-0">
+                    <div className="flex items-center gap-4 pl-12 md:justify-end md:pl-0">
                       <a href={`tel:${area.phone.replace(/\D/g, '')}`} className="inline-flex min-h-10 items-center gap-1.5 text-xs font-bold text-(--color-navy) hover:text-orange-900"><Phone className="h-3.5 w-3.5 text-orange-800" />{area.phone}</a>
                       <button type="button" onClick={() => onSelectArea(area)} aria-label={`View ${area.city} coverage details`} className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-slate-300 transition hover:border-amber-400 hover:bg-amber-50"><ArrowRight className="h-4 w-4 text-(--color-navy)" /></button>
                     </div>
-                    <p className="pl-12 text-[11px] text-slate-500 sm:col-span-3 sm:pl-0">Hub: {area.hubAddress}</p>
+                    <p className="pl-12 text-[11px] leading-4 text-slate-500 md:col-span-3 md:pl-0">Hub: {area.hubAddress}</p>
                   </article>
                 ))}
               </div>

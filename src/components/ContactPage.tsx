@@ -1,31 +1,13 @@
-import React, { useState } from 'react';
-import { Phone, Mail, MapPin, Clock, ShieldCheck, CheckCircle2, Send, MessageSquare } from 'lucide-react';
+import React from 'react';
+import { Phone, Mail, MapPin, Clock, ShieldCheck } from 'lucide-react';
 import { COMPANY_INFO } from '../data/plumbingData';
+import { ContactInquiryForm } from './ContactInquiryForm';
 
 interface ContactPageProps {
   onSubmitInquiry: (inquiry: { name: string; phone: string; email: string; message: string }) => void;
 }
 
 export const ContactPage: React.FC<ContactPageProps> = ({ onSubmitInquiry }) => {
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [email, setEmail] = useState('');
-  const [message, setMessage] = useState('');
-  const [submitted, setSubmitted] = useState(false);
-  const [phoneError, setPhoneError] = useState('');
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const phoneDigits = phone.replace(/\D/g, '');
-    if (phoneDigits.length < 10 || phoneDigits.length > 15) {
-      setPhoneError('Enter a valid phone number with 10 to 15 digits.');
-      return;
-    }
-    setPhoneError('');
-    onSubmitInquiry({ name: name.trim(), phone: phone.trim(), email: email.trim(), message: message.trim() });
-    setSubmitted(true);
-  };
-
   return (
     <div className="py-16 sm:py-24 bg-slate-50 text-slate-900 min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -109,100 +91,8 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onSubmitInquiry }) => 
           </div>
 
           {/* Right: Contact Inquiry Form (7 cols) */}
-          <div className="lg:col-span-7 bg-white rounded-3xl p-6 sm:p-10 border border-slate-200 shadow-lg">
-            <h3 className="text-xl font-bold text-slate-900 mb-1">
-              Send an Electronic Inquiry
-            </h3>
-            <p className="text-xs text-slate-500 mb-6">
-              For non-emergency estimates, commercial bid requests, or general plumbing questions.
-            </p>
-
-            {submitted ? (
-              <div className="p-8 text-center space-y-3 bg-emerald-50 rounded-2xl border border-emerald-200 animate-in zoom-in-95">
-                <div className="w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 mx-auto flex items-center justify-center">
-                  <CheckCircle2 className="w-6 h-6" />
-                </div>
-                <h4 className="text-lg font-bold text-emerald-900">Message Received!</h4>
-                <p className="text-xs text-emerald-700 max-w-sm mx-auto">
-                  This demo saved your inquiry in this browser only; it was not sent to dispatch. For help, call the number below.
-                </p>
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label htmlFor="contact-name" className="text-xs font-bold text-slate-700 block mb-1">
-                      Full Name *
-                    </label>
-                    <input
-                      type="text"
-                      id="contact-name"
-                      required
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      placeholder="e.g. John Adams"
-                      className="w-full text-xs sm:text-sm p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-orange-300 focus:outline-none"
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="contact-phone" className="text-xs font-bold text-slate-700 block mb-1">
-                      Phone Number *
-                    </label>
-                    <input
-                      type="tel"
-                      id="contact-phone"
-                      required
-                      autoComplete="tel"
-                      aria-invalid={Boolean(phoneError)}
-                      aria-describedby={phoneError ? 'contact-phone-error' : undefined}
-                      value={phone}
-                      onChange={(e) => { setPhone(e.target.value); setPhoneError(''); }}
-                      placeholder="e.g. (800) 555-7473"
-                      className="w-full text-xs sm:text-sm p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-orange-300 focus:outline-none"
-                    />
-                    {phoneError && <p id="contact-phone-error" role="alert" className="mt-1 text-xs font-medium text-red-700">{phoneError}</p>}
-                  </div>
-                </div>
-
-                <div>
-                  <label htmlFor="contact-email" className="text-xs font-bold text-slate-700 block mb-1">
-                    Email Address
-                  </label>
-                  <input
-                    type="email"
-                    id="contact-email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="e.g. john@example.com"
-                    className="w-full text-xs sm:text-sm p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-orange-300 focus:outline-none"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="contact-message" className="text-xs font-bold text-slate-700 block mb-1">
-                    How Can We Help? *
-                  </label>
-                  <textarea
-                    rows={4}
-                    id="contact-message"
-                    required
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    placeholder="Tell us about your plumbing project, symptoms, or requested estimate..."
-                    className="w-full text-xs sm:text-sm p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-orange-300 focus:outline-none"
-                  ></textarea>
-                </div>
-
-                <button
-                  type="submit"
-                  className="w-full bg-(--color-orange) hover:bg-(--color-orange-dark) text-slate-950 font-bold py-3.5 px-4 rounded-xl text-sm transition-colors shadow-md shadow-orange-600/20 flex items-center justify-center space-x-2"
-                >
-                  <Send className="w-4 h-4" />
-                  <span>Send Message to Dispatch</span>
-                </button>
-              </form>
-            )}
+          <div className="lg:col-span-7">
+            <ContactInquiryForm onSubmitInquiry={onSubmitInquiry} />
           </div>
 
         </div>

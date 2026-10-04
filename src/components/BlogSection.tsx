@@ -65,7 +65,7 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ onOpenBooking }) => {
                     {post.title}
                   </h3>
 
-                  <p className="text-sm text-slate-600 line-clamp-3 leading-relaxed">
+                  <p className="text-sm text-slate-600 line-clamp-2 leading-relaxed" title={post.excerpt}>
                     {post.excerpt}
                   </p>
                 </div>

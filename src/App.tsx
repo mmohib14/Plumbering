@@ -25,6 +25,7 @@ import { CommercialPage } from './components/CommercialPage';
 import { ContactPage } from './components/ContactPage';
 import { LegalModals } from './components/LegalModals';
 import { ExploreMoreSection } from './components/ExploreMoreSection';
+import { HomePageShowcases } from './components/HomePageShowcases';
 
 import { INITIAL_BOOKINGS, COMPANY_INFO, SERVICES_DATA, SERVICE_AREAS_DATA } from './data/plumbingData';
 import { ServiceItem, ServiceArea, BookingRequest, BookingStatus, ReviewItem, AuthUser } from './types';
@@ -367,6 +368,13 @@ export default function App() {
               onOpenBooking={handleOpenBooking}
             />
             <ExploreMoreSection onSelectTab={handleSelectTab} />
+            <HomePageShowcases
+              onOpenBooking={handleOpenBooking}
+              onSelectTab={handleSelectTab}
+              onSelectService={handleSelectServicePage}
+              onSelectServiceArea={handleSelectServiceAreaPage}
+              onSubmitInquiry={handleSubmitContactInquiry}
+            />
           </>
         )}
 

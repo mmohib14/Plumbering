@@ -64,7 +64,7 @@ export const EmergencyPage: React.FC<EmergencyPageProps> = ({ onOpenBooking }) =
               <span className="text-xs font-black text-(--color-orange-dark) uppercase">Emergency Protocol 1</span>
               <h3 className="text-base font-bold text-slate-900 mt-1">Shut Off Water Main</h3>
               <p className="text-xs text-slate-600 mt-1">
-                Turn your home's main water meter or street gate valve clockwise until it stops to prevent further flooding.
+                Close your home's main meter or street valve clockwise to limit flooding.
               </p>
             </div>
 
@@ -72,7 +72,7 @@ export const EmergencyPage: React.FC<EmergencyPageProps> = ({ onOpenBooking }) =
               <span className="text-xs font-black text-(--color-orange-dark) uppercase">Emergency Protocol 2</span>
               <h3 className="text-base font-bold text-slate-900 mt-1">Avoid Standing Water</h3>
               <p className="text-xs text-slate-600 mt-1">
-                If standing water reaches electrical baseboard heaters, outlets, or appliances, shut off power at the main electrical breaker panel.
+                If water reaches outlets, heaters, or appliances, switch off power at the main breaker.
               </p>
             </div>
 
@@ -80,7 +80,7 @@ export const EmergencyPage: React.FC<EmergencyPageProps> = ({ onOpenBooking }) =
               <span className="text-xs font-black text-(--color-orange-dark) uppercase">Emergency Protocol 3</span>
               <h3 className="text-base font-bold text-slate-900 mt-1">Stay On The Line</h3>
               <p className="text-xs text-slate-600 mt-1">
-                Call our dispatch desk immediately. Our coordinator will provide safety instructions while your assigned plumber drives.
+                Call dispatch for safety guidance while your plumber is on the way.
               </p>
             </div>
           </div>
@@ -102,32 +102,32 @@ export const EmergencyPage: React.FC<EmergencyPageProps> = ({ onOpenBooking }) =
           {[
             {
               title: "Burst & Split Frozen Pipes",
-              desc: "Immediate line freeze or mechanical crimp repairs to isolate damaged piping and restore household supply safely.",
+              desc: "Isolate damaged piping and restore the household water supply safely.",
               tag: "Under 45-Min Arrival"
             },
             {
               title: "Raw Sewage Main Backups",
-              desc: "Heavy-duty 4,000 PSI hydro jetters and mechanical root cutters clear main drain obstructions fast.",
+              desc: "4,000 PSI hydro jetting and root cutting clear main-line clogs.",
               tag: "Priority Sanitization"
             },
             {
               title: "Ruptured Water Heater Tanks",
-              desc: "Leaking 50-gallon tanks can dump hundreds of gallons of water. We pump out tanks and install code-compliant replacements.",
+              desc: "We pump out leaking tanks and install code-compliant replacements.",
               tag: "Same-Day Replacement"
             },
             {
               title: "Active Hidden Slab Leaks",
-              desc: "Ultrasonic acoustic locating pinpoints copper pipe pinholes under foundation concrete without tearing up floors.",
+              desc: "Acoustic detection locates slab leaks without tearing up floors.",
               tag: "Electronic Detection"
             },
             {
               title: "Overflowing Toilets & Cleanouts",
-              desc: "When shutoff angle stops fail or sewage bubbles up through bathtubs, our techs restore drainage immediately.",
+              desc: "We restore drainage for overflowing toilets and sewage backups.",
               tag: "24/7 Dispatch"
             },
             {
               title: "Commercial Restaurant Stoppages",
-              desc: "Grease trap overflows and restaurant kitchen drain blockages cleared quickly to prevent forced health code closures.",
+              desc: "Clear grease trap and kitchen drain blockages to limit downtime.",
               tag: "Commercial Priority"
             }
           ].map((item, idx) => (

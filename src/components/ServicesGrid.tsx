@@ -41,7 +41,7 @@ export const ServicesGrid: React.FC<ServicesGridProps> = ({ onSelectService, onO
                 <a href={`tel:${COMPANY_INFO.phoneRaw}`} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-lg border border-white/30 px-5 text-sm font-bold text-white hover:bg-white/10"><Phone className="h-4 w-4" />Call {COMPANY_INFO.phone}</a>
               </div>
             </div>
-            <button type="button" onClick={() => onSelectService(featured)} className="group relative aspect-[16/10] overflow-hidden rounded-2xl text-left lg:aspect-auto lg:h-80">
+            <button type="button" onClick={() => onSelectService(featured)} style={{ aspectRatio: '16 / 10' }} className="group relative overflow-hidden rounded-2xl text-left">
               <img src={featured.imageUrl} alt={featured.title} className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" fetchPriority="high" />
               <span className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/10 to-transparent" />
               <span className="absolute bottom-0 left-0 right-0 flex items-end justify-between gap-4 p-5 sm:p-7">
@@ -54,7 +54,7 @@ export const ServicesGrid: React.FC<ServicesGridProps> = ({ onSelectService, onO
       )}
 
       <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
-        <div className="flex flex-col gap-5 border-b border-slate-200 pb-6 sm:flex-row sm:items-end sm:justify-between">
+        <div className="flex flex-col gap-5 border-b border-slate-200 pb-6">
           <div>
             <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-orange-800">Explore our capabilities</p>
             <h2 className="mt-2 text-2xl font-extrabold text-(--color-navy) sm:text-3xl">
@@ -68,7 +68,7 @@ export const ServicesGrid: React.FC<ServicesGridProps> = ({ onSelectService, onO
             </button>
             {showFilters && <div className="absolute left-0 right-0 z-20 mt-1 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-lg">{FILTERS.map(filter => <button key={filter.id} type="button" onClick={() => { setActiveCategory(filter.id); setShowFilters(false); }} className={`block min-h-11 w-full px-4 text-left text-sm ${activeCategory === filter.id ? 'bg-amber-50 font-bold text-orange-900' : 'text-slate-700 hover:bg-slate-50'}`}>{filter.label}</button>)}</div>}
           </div>
-          <div className="hidden flex-wrap gap-2 sm:flex">
+          <div className="hidden flex-wrap justify-center gap-2 sm:flex">
             {FILTERS.map(filter => (
               <button key={filter.id} type="button" aria-pressed={activeCategory === filter.id} onClick={() => setActiveCategory(filter.id)} className={`min-h-10 rounded-full px-4 text-xs font-bold transition-colors ${activeCategory === filter.id ? 'bg-(--color-navy) text-white' : 'border border-slate-200 bg-white text-slate-700 hover:border-amber-400 hover:bg-amber-50'}`}>{filter.label}</button>
             ))}
@@ -78,7 +78,7 @@ export const ServicesGrid: React.FC<ServicesGridProps> = ({ onSelectService, onO
         <div className="divide-y divide-slate-200">
           {filteredServices.map((service, index) => (
             <article key={service.id} className="grid items-center gap-5 py-7 sm:py-9 md:grid-cols-2 md:gap-9 lg:gap-14">
-              <button type="button" onClick={() => onSelectService(service)} className={`group relative aspect-[16/10] overflow-hidden rounded-xl bg-slate-100 text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500 ${index % 2 ? 'md:order-2' : ''}`}>
+              <button type="button" onClick={() => onSelectService(service)} style={{ aspectRatio: '16 / 10' }} className={`group relative overflow-hidden rounded-xl bg-slate-100 text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500 ${index % 2 ? 'md:order-2' : ''}`}>
                 <img src={service.imageUrl} alt={service.title} loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" />
                 {service.isEmergency && <span className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full bg-amber-400 px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wide text-slate-950"><Flame className="h-3 w-3" /> Emergency available</span>}
               </button>

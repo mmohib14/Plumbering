@@ -2,6 +2,7 @@ import React from 'react';
 import { ArrowUpRight, Wrench } from 'lucide-react';
 import { SERVICES_DATA } from '../data/plumbingData';
 import { ServiceItem } from '../types';
+import { getShortServiceName } from '../services/displayLabels';
 
 interface ServiceHighlightsProps {
   onSelectService: (service: ServiceItem) => void;
@@ -60,7 +61,7 @@ export const ServiceHighlights: React.FC<ServiceHighlightsProps> = ({
               </div>
               <div className="p-4">
                 <h3 className="text-sm font-black leading-snug text-(--color-navy)">
-                  {service.title}
+                  {getShortServiceName(service)}
                 </h3>
                 <p className="mt-1.5 line-clamp-2 text-xs leading-relaxed text-slate-600">
                   {service.shortDesc}
