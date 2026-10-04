@@ -146,7 +146,7 @@ export const EmergencyPage: React.FC<EmergencyPageProps> = ({ onOpenBooking }) =
                   className="text-xs font-bold text-orange-900 hover:text-orange-700 flex items-center"
                 >
                   <Phone className="w-3.5 h-3.5 mr-1" />
-                  Call (800) 555-PIPE
+                  Call {COMPANY_INFO.phone}
                 </a>
                 <button
                   onClick={onOpenBooking}

@@ -3,9 +3,11 @@ import { Header } from './components/Header';
 import { Footer } from './components/Footer';
 import { MobileStickyBar } from './components/MobileStickyBar';
 import { HeroSection } from './components/HeroSection';
+import { ProblemFinderSection } from './components/ProblemFinderSection';
 import { EmergencyAlertBanner } from './components/EmergencyAlertBanner';
 import { ServicesGrid } from './components/ServicesGrid';
 import { ServiceDetailModal } from './components/ServiceDetailModal';
+import { ServiceDetailPage } from './components/ServiceDetailPage';
 import { CostEstimator } from './components/CostEstimator';
 import { BeforeAfterSlider } from './components/BeforeAfterSlider';
 import { WhyChooseUs } from './components/WhyChooseUs';
@@ -22,10 +24,13 @@ import { EmergencyPage } from './components/EmergencyPage';
 import { CommercialPage } from './components/CommercialPage';
 import { ContactPage } from './components/ContactPage';
 import { LegalModals } from './components/LegalModals';
+import { ExploreMoreSection } from './components/ExploreMoreSection';
 
-import { INITIAL_BOOKINGS, COMPANY_INFO } from './data/plumbingData';
-import { ServiceItem, BookingRequest, BookingStatus, ReviewItem, AuthUser } from './types';
+import { INITIAL_BOOKINGS, COMPANY_INFO, SERVICES_DATA, SERVICE_AREAS_DATA } from './data/plumbingData';
+import { ServiceItem, ServiceArea, BookingRequest, BookingStatus, ReviewItem, AuthUser } from './types';
 import { operationsStorage } from './services/operationsStorage';
+import { getServiceAreaSlug } from './services/routes';
+import { ServiceAreaDetailPage } from './components/ServiceAreaDetailPage';
 
 const NAV_TABS = new Set([
   'home',
@@ -40,6 +45,26 @@ const NAV_TABS = new Set([
   'admin',
   'staff'
 ]);
+
+const getTabFromLocation = (): string => {
+  const pathname = window.location.pathname.replace(/^\/|\/$/g, '');
+  if (pathname && NAV_TABS.has(pathname)) return pathname;
+  if (pathname.startsWith('services/')) return 'services';
+  if (pathname.startsWith('service-areas/')) return 'service-areas';
+
+  const requestedTab = window.location.hash.replace(/^#\/?/, '');
+  return NAV_TABS.has(requestedTab) ? requestedTab : 'home';
+};
+
+const getServiceSlugFromLocation = (): string | null => {
+  const match = window.location.pathname.match(/^\/services\/([^/?#]+)/i);
+  return match ? decodeURIComponent(match[1]) : null;
+};
+
+const getServiceAreaSlugFromLocation = (): string | null => {
+  const match = window.location.pathname.match(/^\/service-areas\/([^/?#]+)/i);
+  return match ? decodeURIComponent(match[1]) : null;
+};
 
 const PAGE_METADATA: Record<string, { title: string; description: string }> = {
   home: {
@@ -83,10 +108,9 @@ const PAGE_METADATA: Record<string, { title: string; description: string }> = {
 };
 
 export default function App() {
-  const [currentTab, setCurrentTab] = useState<string>(() => {
-    const requestedTab = window.location.hash.replace(/^#\/?/, '');
-    return NAV_TABS.has(requestedTab) ? requestedTab : 'home';
-  });
+  const [currentTab, setCurrentTab] = useState<string>(() => getTabFromLocation());
+  const [serviceRouteSlug, setServiceRouteSlug] = useState<string | null>(() => getServiceSlugFromLocation());
+  const [serviceAreaRouteSlug, setServiceAreaRouteSlug] = useState<string | null>(() => getServiceAreaSlugFromLocation());
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [selectedServiceForModal, setSelectedServiceForModal] = useState<ServiceItem | null>(null);
   const [preselectedBookingServiceId, setPreselectedBookingServiceId] = useState<string | undefined>();
@@ -120,7 +144,15 @@ export default function App() {
   }, [bookings]);
 
   useEffect(() => {
-    const metadata = (currentTab === 'admin' || currentTab === 'staff') && currentUser
+    const service = serviceRouteSlug ? SERVICES_DATA.find(item => item.slug === serviceRouteSlug) : null;
+    const serviceArea = serviceAreaRouteSlug
+      ? SERVICE_AREAS_DATA.find(area => getServiceAreaSlug(area) === serviceAreaRouteSlug)
+      : null;
+    const metadata = service
+      ? { title: `${service.title} | USA Pro Plumbing`, description: service.shortDesc }
+      : serviceArea
+        ? { title: `Plumber in ${serviceArea.city}, ${serviceArea.state} | USA Pro Plumbing`, description: `Explore plumbing services and coverage information for ${serviceArea.city}, ${serviceArea.state}. ${serviceArea.metroArea}.` }
+        : (currentTab === 'admin' || currentTab === 'staff') && currentUser
       ? {
           title: `${currentUser.role === 'owner' ? 'Owner' : currentUser.role === 'admin' ? 'Admin' : 'Staff'} Operations | USA Pro`,
           description: 'USA Pro Plumbing local operations dashboard for customer requests and staff management.',
@@ -139,22 +171,28 @@ export default function App() {
       const tag = document.querySelector<HTMLMetaElement>(selector);
       if (tag) tag.content = content;
     });
-  }, [currentTab, currentUser]);
+  }, [currentTab, currentUser, serviceRouteSlug, serviceAreaRouteSlug]);
 
   useEffect(() => {
-    const handleHashChange = () => {
-      const requestedTab = window.location.hash.replace(/^#\/?/, '');
+    const handleLocationChange = () => {
+      const requestedTab = getTabFromLocation();
       const guardedTab = requestedTab === 'admin' && currentUser?.role === 'staff'
         ? 'staff'
         : requestedTab === 'staff' && currentUser && currentUser.role !== 'staff'
           ? 'admin'
           : requestedTab;
       setCurrentTab(NAV_TABS.has(guardedTab) ? guardedTab : 'home');
+      setServiceRouteSlug(getServiceSlugFromLocation());
+      setServiceAreaRouteSlug(getServiceAreaSlugFromLocation());
       window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
+    window.addEventListener('hashchange', handleLocationChange);
+    window.addEventListener('popstate', handleLocationChange);
+    return () => {
+      window.removeEventListener('hashchange', handleLocationChange);
+      window.removeEventListener('popstate', handleLocationChange);
+    };
   }, [currentUser]);
 
   const handleSelectTab = (tab: string) => {
@@ -162,7 +200,33 @@ export default function App() {
     if (tab === 'admin' && currentUser?.role === 'staff') tab = 'staff';
     if (tab === 'staff' && currentUser && currentUser.role !== 'staff') tab = 'admin';
     setCurrentTab(tab);
-    window.location.hash = tab === 'home' ? '' : tab;
+    if (tab === 'home') {
+      window.history.pushState({}, '', '/');
+    } else {
+      window.history.pushState({}, '', `/${tab}`);
+    }
+    setServiceRouteSlug(null);
+    setServiceAreaRouteSlug(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleSelectServicePage = (service: ServiceItem) => {
+    const nextPath = `/services/${service.slug}`;
+    if (window.location.pathname !== nextPath) window.history.pushState({}, '', nextPath);
+    setCurrentTab('services');
+    setServiceRouteSlug(service.slug);
+    setServiceAreaRouteSlug(null);
+    setSelectedServiceForModal(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleSelectServiceAreaPage = (area: ServiceArea) => {
+    const slug = getServiceAreaSlug(area);
+    const nextPath = `/service-areas/${slug}`;
+    if (window.location.pathname !== nextPath) window.history.pushState({}, '', nextPath);
+    setCurrentTab('service-areas');
+    setServiceRouteSlug(null);
+    setServiceAreaRouteSlug(slug);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -198,6 +262,27 @@ export default function App() {
     setBookings(prev => [newBooking, ...prev]);
   };
 
+  const handleSubmitContactInquiry = ({ name, phone, email, message }: { name: string; phone: string; email: string; message: string }) => handleAddBooking({
+    id: `USA-${Date.now()}`,
+    createdAt: new Date().toISOString(),
+    customerName: name,
+    phone,
+    email,
+    address: 'To be confirmed',
+    city: '',
+    state: '',
+    zip: '',
+    propertyType: 'residential',
+    serviceId: 'general-plumbing',
+    serviceName: 'General Plumbing Inquiry',
+    urgency: 'flexible',
+    preferredDate: 'To be scheduled',
+    preferredTimeSlot: 'Customer requested follow-up',
+    description: message,
+    status: 'new',
+    estimatedCost: 'Pending estimate',
+  });
+
   const handleUpdateBookingStatus = (
     id: string, 
     newStatus: BookingStatus, 
@@ -222,6 +307,13 @@ export default function App() {
     console.log('New verified customer review:', newReview);
   };
 
+  const activeServiceRoute = serviceRouteSlug
+    ? SERVICES_DATA.find((service) => service.slug === serviceRouteSlug) ?? null
+    : null;
+  const activeServiceAreaRoute = serviceAreaRouteSlug
+    ? SERVICE_AREAS_DATA.find((area) => getServiceAreaSlug(area) === serviceAreaRouteSlug) ?? null
+    : null;
+
   return (
     <div className="min-h-screen flex flex-col bg-white text-slate-900 font-sans selection:bg-blue-600 selection:text-white">
       
@@ -230,15 +322,37 @@ export default function App() {
         currentTab={currentTab}
         setCurrentTab={handleSelectTab}
         onOpenBooking={handleOpenBooking}
-        onSelectService={(service) => setSelectedServiceForModal(service)}
+        onSelectService={handleSelectServicePage}
+        onSelectServiceArea={handleSelectServiceAreaPage}
         leadsCount={bookings.filter(b => b.status === 'new').length}
       />
 
       {/* Main Content Area based on currentTab */}
       <main className="flex-1">
-        {currentTab === 'home' && (
+        {activeServiceRoute ? (
+          <ServiceDetailPage
+            service={activeServiceRoute}
+            onSelectTab={handleSelectTab}
+            onSelectService={handleSelectServicePage}
+            onSelectServiceArea={handleSelectServiceAreaPage}
+            onBookService={(serviceId) => {
+              setSelectedServiceForModal(null);
+              handleOpenBooking(serviceId);
+            }}
+          />
+        ) : activeServiceAreaRoute ? (
+          <ServiceAreaDetailPage
+            area={activeServiceAreaRoute}
+            onSelectService={handleSelectServicePage}
+            onOpenBooking={handleOpenBooking}
+          />
+        ) : currentTab === 'home' && (
           <>
             <HeroSection
+              onOpenBooking={handleOpenBooking}
+              onSelectTab={handleSelectTab}
+            />
+            <ProblemFinderSection
               onOpenBooking={handleOpenBooking}
               onSelectTab={handleSelectTab}
             />
@@ -246,19 +360,20 @@ export default function App() {
               onOpenBooking={() => handleOpenBooking('emergency-plumbing')}
             />
             <ServiceHighlights
-              onSelectService={(service) => setSelectedServiceForModal(service)}
+              onSelectService={handleSelectServicePage}
               onSelectTab={handleSelectTab}
             />
             <ProcessSection
               onOpenBooking={handleOpenBooking}
             />
+            <ExploreMoreSection onSelectTab={handleSelectTab} />
           </>
         )}
 
-        {currentTab === 'services' && (
+        {currentTab === 'services' && !activeServiceRoute && (
           <div className="py-8">
             <ServicesGrid
-              onSelectService={(service) => setSelectedServiceForModal(service)}
+              onSelectService={handleSelectServicePage}
               onOpenBooking={handleOpenBooking}
             />
             <CostEstimator
@@ -290,10 +405,11 @@ export default function App() {
           </div>
         )}
 
-        {currentTab === 'service-areas' && (
+        {currentTab === 'service-areas' && !activeServiceAreaRoute && (
           <div className="py-8">
             <ServiceAreaChecker
               onOpenBooking={handleOpenBooking}
+              onSelectArea={handleSelectServiceAreaPage}
             />
             <WhyChooseUs />
           </div>
@@ -318,26 +434,7 @@ export default function App() {
 
         {currentTab === 'contact' && (
           <ContactPage
-            onSubmitInquiry={({ name, phone, email, message }) => handleAddBooking({
-              id: `USA-${Date.now()}`,
-              createdAt: new Date().toISOString(),
-              customerName: name,
-              phone,
-              email,
-              address: 'To be confirmed',
-              city: '',
-              state: '',
-              zip: '',
-              propertyType: 'residential',
-              serviceId: 'general-plumbing',
-              serviceName: 'General Plumbing Inquiry',
-              urgency: 'flexible',
-              preferredDate: 'To be scheduled',
-              preferredTimeSlot: 'Customer requested follow-up',
-              description: message,
-              status: 'new',
-              estimatedCost: 'Pending estimate',
-            })}
+            onSubmitInquiry={handleSubmitContactInquiry}
           />
         )}
 
@@ -377,11 +474,13 @@ export default function App() {
       )}
 
       {/* Service Detail Modal */}
-      <ServiceDetailModal
-        service={selectedServiceForModal}
-        onClose={() => setSelectedServiceForModal(null)}
-        onBookService={(serviceId) => handleOpenBooking(serviceId)}
-      />
+      {!activeServiceRoute && (
+        <ServiceDetailModal
+          service={selectedServiceForModal}
+          onClose={() => setSelectedServiceForModal(null)}
+          onBookService={(serviceId) => handleOpenBooking(serviceId)}
+        />
+      )}
 
       {/* Booking / Appointment Modal */}
       <BookingModal

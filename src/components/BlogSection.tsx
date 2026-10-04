@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { BookOpen, Clock, Calendar, ArrowRight, User, X, Tag, Sparkles } from 'lucide-react';
 import { BLOG_POSTS_DATA } from '../data/plumbingData';
 import { BlogPost } from '../types';
+import { useModalAccessibility } from '../services/useModalAccessibility';
 
 interface BlogSectionProps {
   onOpenBooking: () => void;
@@ -9,6 +10,7 @@ interface BlogSectionProps {
 
 export const BlogSection: React.FC<BlogSectionProps> = ({ onOpenBooking }) => {
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
+  const dialogRef = useModalAccessibility(Boolean(selectedPost), () => setSelectedPost(null));
 
   return (
     <section className="py-16 sm:py-24 bg-white text-slate-900 border-b border-slate-200">
@@ -59,10 +61,7 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ onOpenBooking }) => {
                     <span>{post.date}</span>
                   </div>
 
-                  <h3 
-                    onClick={() => setSelectedPost(post)}
-                    className="text-lg font-bold text-slate-900 group-hover:text-orange-900 transition-colors cursor-pointer leading-snug line-clamp-2"
-                  >
+                  <h3 className="text-lg font-bold leading-snug text-slate-900 line-clamp-2 transition-colors group-hover:text-orange-900">
                     {post.title}
                   </h3>
 
@@ -102,7 +101,7 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ onOpenBooking }) => {
       {/* Full Post Reader Modal */}
       {selectedPost && (
         <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/75 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-150">
-          <div className="relative bg-white w-full max-w-3xl rounded-3xl shadow-2xl overflow-hidden border border-slate-200 max-h-[90vh] flex flex-col animate-in zoom-in-95">
+          <div ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="article-dialog-title" tabIndex={-1} className="relative bg-white w-full max-w-3xl rounded-3xl shadow-2xl overflow-hidden border border-slate-200 max-h-[90vh] flex flex-col animate-in zoom-in-95">
             
             {/* Header image banner */}
             <div className="relative h-60 bg-slate-900 shrink-0">
@@ -125,7 +124,7 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ onOpenBooking }) => {
                 <span className="bg-blue-600 text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full uppercase">
                   {selectedPost.category}
                 </span>
-                <h2 className="text-xl sm:text-2xl font-black text-white leading-tight">
+                <h2 id="article-dialog-title" className="text-xl sm:text-2xl font-black text-white leading-tight">
                   {selectedPost.title}
                 </h2>
               </div>

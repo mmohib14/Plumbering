@@ -1,6 +1,7 @@
 import React from 'react';
 import { X, ShieldCheck, FileText, CheckCircle2 } from 'lucide-react';
 import { COMPANY_INFO } from '../data/plumbingData';
+import { useModalAccessibility } from '../services/useModalAccessibility';
 
 interface LegalModalsProps {
   modalType: 'privacy' | 'terms' | 'guarantee' | null;
@@ -8,17 +9,24 @@ interface LegalModalsProps {
 }
 
 export const LegalModals: React.FC<LegalModalsProps> = ({ modalType, onClose }) => {
+  const dialogRef = useModalAccessibility(Boolean(modalType), onClose);
   if (!modalType) return null;
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/75 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-150">
-      <div 
+      <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="legal-dialog-title"
+        tabIndex={-1}
         className="relative bg-white w-full max-w-2xl rounded-3xl shadow-2xl p-6 sm:p-8 border border-slate-200 max-h-[85vh] overflow-y-auto animate-in zoom-in-95 text-slate-800"
         onClick={(e) => e.stopPropagation()}
       >
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-slate-400 hover:text-slate-700 p-2 rounded-full"
+          aria-label="Close legal information"
         >
           <X className="w-5 h-5" />
         </button>
@@ -30,7 +38,7 @@ export const LegalModals: React.FC<LegalModalsProps> = ({ modalType, onClose }) 
                 <ShieldCheck className="w-6 h-6" />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-slate-900">
+                <h3 id="legal-dialog-title" className="text-xl font-bold text-slate-900">
                   Our 100% Satisfaction & 1-Year Workmanship Guarantee
                 </h3>
                 <p className="text-xs text-slate-500">
@@ -78,7 +86,7 @@ export const LegalModals: React.FC<LegalModalsProps> = ({ modalType, onClose }) 
                 <FileText className="w-6 h-6" />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-slate-900">Privacy Policy</h3>
+                <h3 id="legal-dialog-title" className="text-xl font-bold text-slate-900">Privacy Policy</h3>
                 <p className="text-xs text-slate-500">Last updated: September 2026</p>
               </div>
             </div>
@@ -104,7 +112,7 @@ export const LegalModals: React.FC<LegalModalsProps> = ({ modalType, onClose }) 
                 <FileText className="w-6 h-6" />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-slate-900">Terms of Service</h3>
+                <h3 id="legal-dialog-title" className="text-xl font-bold text-slate-900">Terms of Service</h3>
                 <p className="text-xs text-slate-500">Contractor Agreement Terms</p>
               </div>
             </div>

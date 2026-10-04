@@ -12,11 +12,10 @@ import {
   Calendar, 
   Flame, 
   MapPin,
-  FileText,
   UserCheck
 } from 'lucide-react';
-import { COMPANY_INFO, SERVICES_DATA } from '../data/plumbingData';
-import { ServiceItem } from '../types';
+import { COMPANY_INFO, SERVICES_DATA, SERVICE_AREAS_DATA } from '../data/plumbingData';
+import { ServiceArea, ServiceItem } from '../types';
 import { BrandLogo } from './BrandLogo';
 
 type SpeechResultEvent = { results: ArrayLike<ArrayLike<{ transcript: string }>> };
@@ -107,6 +106,7 @@ interface HeaderProps {
   setCurrentTab: (tab: string) => void;
   onOpenBooking: (serviceId?: string) => void;
   onSelectService: (service: ServiceItem) => void;
+  onSelectServiceArea: (area: ServiceArea) => void;
   leadsCount: number;
 }
 
@@ -115,10 +115,14 @@ export const Header: React.FC<HeaderProps> = ({
   setCurrentTab,
   onOpenBooking,
   onSelectService,
+  onSelectServiceArea,
   leadsCount
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
+  const [mobileAreasOpen, setMobileAreasOpen] = useState(false);
   const [servicesDropdownOpen, setServicesDropdownOpen] = useState(false);
+  const [serviceAreasDropdownOpen, setServiceAreasDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchOpen, setSearchOpen] = useState(false);
   const [isListening, setIsListening] = useState(false);
@@ -159,16 +163,35 @@ export const Header: React.FC<HeaderProps> = ({
     setCurrentTab(tab);
     setMobileMenuOpen(false);
     setServicesDropdownOpen(false);
+    setServiceAreasDropdownOpen(false);
     setSearchOpen(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleServiceClick = (service: ServiceItem) => {
+    const servicePath = `/services/${service.slug}`;
+    if (window.location.pathname !== servicePath) {
+      window.history.pushState({}, '', servicePath);
+    }
     onSelectService(service);
     setServicesDropdownOpen(false);
     setMobileMenuOpen(false);
     setSearchOpen(false);
   };
+
+  const handleServiceAreaClick = (area: ServiceArea) => {
+    onSelectServiceArea(area);
+    setServiceAreasDropdownOpen(false);
+    setMobileMenuOpen(false);
+    setSearchOpen(false);
+  };
+
+  const serviceGroups = [
+    { label: 'Drains & Sewer', services: SERVICES_DATA.filter(service => service.category === 'drain-sewer') },
+    { label: 'Water Heaters', services: SERVICES_DATA.filter(service => service.category === 'water-heater') },
+    { label: 'Emergency & Residential', services: SERVICES_DATA.filter(service => service.category === 'emergency' || service.category === 'residential') },
+    { label: 'Commercial', services: SERVICES_DATA.filter(service => service.category === 'commercial') },
+  ].filter(group => group.services.length > 0);
 
   const handleSearchSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -257,29 +280,32 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <header className="site-header sticky top-0 z-50 border-b transition-all">
-      <div className="site-announcement border-b text-center text-[10px] font-bold sm:text-xs">
-        <div className="mx-auto flex min-h-7 max-w-360 items-center justify-center gap-2 px-4 py-1">
-          <span>America's trusted plumbing team</span>
+      <div className="site-announcement border-b text-[10px] font-bold sm:text-xs">
+        <div className="mx-auto flex min-h-8 max-w-360 flex-wrap items-center justify-center gap-x-2 gap-y-0.5 px-4 py-1 sm:justify-between sm:px-6 lg:px-8">
+          <span className="tracking-wide">America&apos;s trusted plumbing team <span className="hidden sm:inline">· Licensed, insured, and available 24/7</span></span>
           <button
             onClick={() => handleNavClick('reviews')}
-            className="font-black underline decoration-1 underline-offset-2 hover:text-blue-900"
+            className="font-extrabold underline decoration-1 underline-offset-2 transition-colors hover:text-blue-900"
           >
-            See why homeowners choose us
+            {COMPANY_INFO.googleRating} / 5 · {COMPANY_INFO.totalReviewsCount} customer reviews
           </button>
         </div>
       </div>
 
       <div className="site-header-main">
         <div className="mx-auto max-w-360 px-4 sm:px-6 lg:px-8">
-          <div className="flex min-h-16 flex-wrap items-center justify-between gap-3 py-2 sm:min-h-18 sm:py-2.5">
-            <div
+          <div className="flex min-h-16 flex-wrap items-center justify-between gap-3 py-2 sm:min-h-18 sm:py-2.5 xl:flex-nowrap">
+            <button
+              type="button"
               onClick={() => handleNavClick('home')}
-              className="cursor-pointer"
+              aria-label="USA Pro Plumbing home"
+              className="shrink-0 p-0 text-left xl:order-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-orange)"
             >
               <BrandLogo light />
-            </div>
+            </button>
 
-            <nav className="site-nav order-3 hidden basis-full min-w-0 items-center justify-center gap-1 rounded-xl border-t px-2 py-1.5 xl:flex">
+            <nav className="order-3 hidden basis-full justify-center pt-1.5 xl:order-2 xl:flex xl:basis-auto xl:flex-1 xl:pt-0">
+              <div className="flex w-fit min-w-0 items-center justify-center gap-1">
               <button
                 onClick={() => handleNavClick('home')}
                 className={`rounded-lg px-3 py-1.5 text-sm font-semibold transition-all ${
@@ -293,11 +319,24 @@ export const Header: React.FC<HeaderProps> = ({
 
               <div
                 className="relative"
-                onMouseEnter={() => setServicesDropdownOpen(true)}
+                onMouseEnter={() => {
+                  setServicesDropdownOpen(true);
+                  setServiceAreasDropdownOpen(false);
+                }}
+                onFocus={() => {
+                  setServicesDropdownOpen(true);
+                  setServiceAreasDropdownOpen(false);
+                }}
+                onBlur={event => {
+                  if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setServicesDropdownOpen(false);
+                }}
                 onMouseLeave={() => setServicesDropdownOpen(false)}
               >
                 <button
                   onClick={() => handleNavClick('services')}
+                  aria-haspopup="true"
+                  aria-expanded={servicesDropdownOpen}
+                  aria-controls="services-mega-menu"
                     className={`flex items-center rounded-lg px-3 py-1.5 text-sm font-semibold transition-all ${
                     currentTab === 'services'
                       ? 'site-nav-active shadow-sm'
@@ -308,80 +347,139 @@ export const Header: React.FC<HeaderProps> = ({
                   <ChevronDown className="ml-1 h-3.5 w-3.5 text-slate-500" />
                 </button>
 
+                <div className="absolute left-0 top-full z-40 h-2" aria-hidden="true" />
                 {servicesDropdownOpen && (
-                  <div className="absolute left-0 top-full z-50 mt-2 w-80 rounded-2xl border border-slate-200 bg-white p-2 text-slate-900 shadow-2xl">
-                    <div className="mb-2 flex items-center justify-between border-b border-slate-100 px-3 pb-2">
-                      <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">Core Solutions</span>
-                      <button
-                        onClick={() => handleNavClick('services')}
-                        className="text-xs font-semibold text-blue-600 hover:text-blue-700"
-                      >
-                        View All
-                      </button>
-                    </div>
-                    <div className="max-h-96 overflow-y-auto">
-                      {SERVICES_DATA.map((srv) => (
-                        <button
-                          key={srv.id}
-                          onClick={() => handleServiceClick(srv)}
-                          className="flex w-full items-start gap-3 rounded-xl px-3 py-2.5 text-left transition-colors hover:bg-slate-50"
-                        >
-                          <div className={`mt-0.5 rounded-lg p-1.5 ${srv.isEmergency ? 'bg-red-50 text-red-600' : 'bg-blue-50 text-blue-600'}`}>
-                            <Wrench className="h-4 w-4" />
-                          </div>
-                          <div>
-                            <div className="flex items-center text-sm font-semibold text-slate-800">
-                              {srv.title}
-                              {srv.isEmergency && (
-                                <span className="ml-2 rounded bg-red-100 px-1.5 py-0.5 text-[9px] font-bold uppercase text-red-700">
-                                  24/7
-                                </span>
-                              )}
-                            </div>
-                            <div className="text-xs text-slate-500">{srv.shortDesc}</div>
-                          </div>
-                        </button>
+                  <div id="services-mega-menu" className="fixed left-1/2 top-[6.5rem] z-[60] w-[min(92vw,78rem)] -translate-x-1/2 overflow-hidden rounded-2xl border border-slate-200 border-t-4 border-t-(--color-orange) bg-white text-(--color-navy) shadow-[0_24px_60px_rgba(13,44,84,0.2)]">
+                    <div className="grid grid-cols-[repeat(4,minmax(0,1fr))_0.9fr] gap-0">
+                      {serviceGroups.map(group => (
+                        <div key={group.label} className="space-y-2 border-r border-slate-200 p-4">
+                          <div className="text-[10px] font-black uppercase tracking-[0.16em] text-(--color-orange-dark)">{group.label}</div>
+                          {group.services.map(service => (
+                            <button key={service.id} type="button" onClick={() => handleServiceClick(service)} className="block w-full rounded-md px-2 py-1.5 text-left text-sm font-semibold text-slate-700 transition-colors hover:bg-(--color-ice) hover:text-(--color-navy)">
+                              {service.title}
+                            </button>
+                          ))}
+                        </div>
                       ))}
+
+                      <div className="flex flex-col justify-between bg-(--color-ice) p-4">
+                        <div>
+                          <div className="text-[10px] font-black uppercase tracking-[0.16em] text-(--color-orange-dark)">Need help now?</div>
+                          <div className="mt-2 text-2xl font-black tracking-tight text-(--color-navy)">24/7</div>
+                          <div className="mt-1 text-sm font-semibold text-slate-700">Emergency plumbing</div>
+                        </div>
+                        <div className="mt-5 space-y-2">
+                          <button
+                            type="button"
+                            onClick={() => handleNavClick('emergency')}
+                            className="block w-full rounded-lg bg-(--color-orange) px-3 py-2.5 text-sm font-black text-(--color-charcoal) transition-colors hover:brightness-95"
+                          >
+                            Emergency service
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleNavClick('services')}
+                            className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm font-bold text-(--color-navy) transition-colors hover:border-(--color-orange)"
+                          >
+                            All services
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div
+                className="relative"
+                onMouseEnter={() => {
+                  setServiceAreasDropdownOpen(true);
+                  setServicesDropdownOpen(false);
+                }}
+                onFocus={() => {
+                  setServiceAreasDropdownOpen(true);
+                  setServicesDropdownOpen(false);
+                }}
+                onBlur={event => {
+                  if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setServiceAreasDropdownOpen(false);
+                }}
+                onMouseLeave={() => setServiceAreasDropdownOpen(false)}
+              >
+                <button
+                  onClick={() => handleNavClick('service-areas')}
+                  aria-haspopup="true"
+                  aria-expanded={serviceAreasDropdownOpen}
+                  aria-controls="service-areas-mega-menu"
+                  className={`flex items-center rounded-lg px-3 py-1.5 text-sm font-semibold transition-all ${
+                    currentTab === 'service-areas'
+                      ? 'site-nav-active shadow-sm'
+                      : 'text-slate-700 hover:bg-orange-50'
+                  }`}
+                >
+                  Service Areas
+                  <ChevronDown className="ml-1 h-3.5 w-3.5 text-slate-500" />
+                </button>
+
+                <div className="absolute left-0 top-full z-40 h-2" aria-hidden="true" />
+                {serviceAreasDropdownOpen && (
+                  <div id="service-areas-mega-menu" className="fixed left-1/2 top-[6.5rem] z-[60] w-[min(92vw,42rem)] -translate-x-1/2 overflow-hidden rounded-2xl border border-slate-200 border-t-4 border-t-(--color-orange) bg-white text-(--color-navy) shadow-[0_24px_60px_rgba(13,44,84,0.2)]">
+                    <div className="grid grid-cols-[1fr_220px]">
+                      <div className="p-5">
+                        <p className="text-[10px] font-black uppercase tracking-[0.16em] text-(--color-orange-dark)">Service coverage</p>
+                        <h3 className="mt-1 text-lg font-black text-(--color-navy)">Find a plumber near you</h3>
+                        <div className="mt-4 grid grid-cols-2 gap-2">
+                        {SERVICE_AREAS_DATA.map((area) => (
+                          <button
+                            key={area.id}
+                            type="button"
+                            onClick={() => handleServiceAreaClick(area)}
+                            className="rounded-lg border border-slate-200 px-3 py-2.5 text-left text-sm font-semibold text-slate-700 transition-colors hover:border-(--color-orange) hover:bg-(--color-ice) hover:text-(--color-navy)"
+                          >
+                            {area.city}
+                          </button>
+                        ))}
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => handleNavClick('service-areas')}
+                          className="mt-4 text-sm font-bold text-(--color-navy) underline decoration-(--color-orange) underline-offset-4 hover:text-(--color-orange-dark)"
+                        >
+                          Check your ZIP code
+                        </button>
+                      </div>
+
+                      <div className="flex flex-col justify-between border-l border-slate-200 bg-(--color-ice) p-5">
+                        <div>
+                          <div className="text-[10px] font-black uppercase tracking-[0.16em] text-(--color-orange-dark)">Fast response</div>
+                          <div className="mt-3 text-3xl font-black tracking-tight text-(--color-navy)">24/7</div>
+                          <div className="mt-1 text-sm font-semibold text-slate-700">Emergency service</div>
+                        </div>
+                        <a
+                          href={`tel:${COMPANY_INFO.phoneRaw}`}
+                          className="mt-5 inline-flex items-center justify-center rounded-lg bg-(--color-orange) px-3 py-2.5 text-sm font-black text-(--color-charcoal) transition-colors hover:brightness-95"
+                        >
+                          <Phone className="mr-2 h-4 w-4" /> Call Now
+                        </a>
+                      </div>
                     </div>
                   </div>
                 )}
               </div>
 
               <button
-                onClick={() => handleNavClick('emergency')}
-                className={`flex items-center rounded-lg px-3 py-1.5 text-sm font-bold transition-all ${
-                  currentTab === 'emergency'
-                    ? 'site-emergency shadow-sm'
-                    : 'text-slate-800 hover:bg-orange-50'
+                onClick={() => handleNavClick('contact')}
+                className={`rounded-lg px-3 py-1.5 text-sm font-semibold transition-all ${
+                  currentTab === 'contact'
+                    ? 'site-nav-active shadow-sm'
+                    : 'text-slate-700 hover:bg-orange-50'
                 }`}
               >
-                <Flame className="mr-1 h-3.5 w-3.5 text-red-400" />
-                Emergency 24/7
+                Contact
               </button>
-
-              {[
-                ['commercial', 'Commercial'],
-                ['calculator', 'Cost Estimator'],
-                ['service-areas', 'Service Areas'],
-                ['reviews', 'Reviews'],
-                ['blog', 'Guides & Blog'],
-                ['contact', 'Contact'],
-              ].map(([tab, label]) => (
-                <button
-                  key={tab}
-                  onClick={() => handleNavClick(tab)}
-                    className={`rounded-lg px-3 py-1.5 text-sm font-semibold transition-all ${
-                      currentTab === tab
-                        ? 'site-nav-active shadow-sm'
-                        : 'text-slate-700 hover:bg-orange-50'
-                  }`}
-                >
-                  {label}
-                </button>
-              ))}
+              </div>
             </nav>
 
-            <div className="hidden items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 p-1 lg:flex">
+            <div className="hidden items-center gap-2 xl:order-3 xl:flex">
               <HeaderSearchControl
                 variant="desktop"
                 query={searchQuery}
@@ -402,15 +500,15 @@ export const Header: React.FC<HeaderProps> = ({
               />
               <a
                 href={`tel:${COMPANY_INFO.phoneRaw}`}
-                className="site-surface group flex h-11 shrink-0 items-center gap-2 rounded-xl border border-white/25 px-2.5 text-left transition-all hover:-translate-y-0.5 hover:border-(--color-orange) hover:bg-white"
-                aria-label={`Call emergency plumbing at ${COMPANY_INFO.phone}`}
+                className="group flex h-11 shrink-0 items-center gap-2 rounded-xl border border-slate-200 bg-transparent px-2.5 text-left transition-all hover:-translate-y-0.5 hover:border-(--color-orange) hover:bg-white"
+                aria-label={`Call emergency plumbing 24/7 at ${COMPANY_INFO.phone}`}
               >
-                <div className="site-emergency flex h-8 w-8 items-center justify-center rounded-lg shadow-lg shadow-orange-500/20 transition-transform group-hover:scale-105">
-                  <Phone className="h-4 w-4" />
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg transition-transform group-hover:scale-105">
+                  <Flame className="h-4 w-4 text-(--color-orange-dark)" />
                 </div>
                 <div>
-                  <div className="text-[8px] font-black uppercase tracking-[0.14em] text-slate-500">Emergency</div>
-                  <div className="text-sm font-black leading-tight tracking-tight text-slate-900">{COMPANY_INFO.phone}</div>
+                  <div className="text-[10px] font-black uppercase leading-tight tracking-wide">Emergency 24/7</div>
+                  <div className="text-xs font-bold leading-tight text-slate-600">{COMPANY_INFO.phone}</div>
                 </div>
               </a>
 
@@ -426,7 +524,7 @@ export const Header: React.FC<HeaderProps> = ({
             <div className="flex items-center gap-2 xl:hidden">
               <a
                 href={`tel:${COMPANY_INFO.phoneRaw}`}
-                className="site-emergency flex h-10 w-10 items-center justify-center rounded-xl shadow-lg shadow-orange-500/20"
+                className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-300 bg-transparent text-(--color-orange-dark) hover:bg-white"
                 title="Call Plumber"
               >
                 <Phone className="h-4 w-4" />
@@ -435,6 +533,8 @@ export const Header: React.FC<HeaderProps> = ({
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-300 bg-white text-slate-800"
                 aria-label="Toggle menu"
+                aria-expanded={mobileMenuOpen}
+                aria-controls="mobile-navigation"
               >
                 {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
               </button>
@@ -444,7 +544,7 @@ export const Header: React.FC<HeaderProps> = ({
       </div>
 
       {mobileMenuOpen && (
-        <div className="absolute left-0 right-0 top-full max-h-[calc(100vh-5.5rem)] overflow-y-auto border-t border-slate-200 bg-white px-4 pb-6 pt-3 text-slate-900 shadow-2xl xl:hidden">
+        <div id="mobile-navigation" className="absolute left-0 right-0 top-full max-h-[calc(100dvh-5.5rem)] overflow-y-auto border-t border-slate-200 bg-white px-4 pb-5 pt-3 text-slate-900 shadow-xl xl:hidden sm:px-6">
           <div className="space-y-2 border-b border-white/15 pb-3">
             <div className="grid grid-cols-2 gap-2">
               <a
@@ -497,10 +597,10 @@ export const Header: React.FC<HeaderProps> = ({
             />
           </div>
 
-          <div className="mt-3 space-y-1.5">
+          <div className="mt-3 grid grid-cols-1 gap-x-4 gap-y-1 sm:grid-cols-2">
             <button
               onClick={() => handleNavClick('home')}
-              className={`w-full rounded-xl px-3 py-2.5 text-left text-sm font-semibold ${
+              className={`min-h-10 w-full rounded-lg px-3 py-2 text-left text-sm font-semibold ${
                 currentTab === 'home' ? 'bg-orange-100 text-orange-950' : 'text-slate-700 hover:bg-slate-100'
               }`}
             >
@@ -509,16 +609,34 @@ export const Header: React.FC<HeaderProps> = ({
 
             <button
               onClick={() => handleNavClick('services')}
-              className={`w-full rounded-xl px-3 py-2.5 text-left text-sm font-semibold ${
+              className={`min-h-10 w-full rounded-lg px-3 py-2 text-left text-sm font-semibold ${
                 currentTab === 'services' ? 'bg-orange-100 text-orange-950' : 'text-slate-700 hover:bg-slate-100'
               }`}
             >
-              All Plumbing Services
+              Services
             </button>
 
             <button
+              type="button"
+              onClick={() => setMobileServicesOpen(open => !open)}
+              aria-expanded={mobileServicesOpen}
+              className="flex min-h-10 w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm font-semibold text-slate-700 hover:bg-slate-100"
+            >
+              Browse services <ChevronDown className={`h-4 w-4 transition-transform ${mobileServicesOpen ? 'rotate-180' : ''}`} />
+            </button>
+            {mobileServicesOpen && (
+              <div className="grid gap-1 border-l-2 border-orange-300 pl-3 sm:col-start-2">
+                {SERVICES_DATA.map(service => (
+                  <button key={service.id} type="button" onClick={() => handleServiceClick(service)} className="w-full rounded-lg px-3 py-2 text-left text-sm font-medium text-slate-700 hover:bg-orange-50 hover:text-orange-900">
+                    {service.title}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            <button
               onClick={() => handleNavClick('emergency')}
-              className="flex w-full items-center justify-between rounded-xl bg-(--color-orange) px-3 py-2.5 text-left text-sm font-bold text-slate-950"
+              className="flex min-h-10 w-full items-center justify-between rounded-lg bg-(--color-orange) px-3 py-2 text-left text-sm font-bold text-slate-950 sm:col-span-2"
             >
               <span className="flex items-center">
                 <Flame className="mr-2 h-4 w-4 text-red-400" />
@@ -528,55 +646,36 @@ export const Header: React.FC<HeaderProps> = ({
             </button>
 
             <button
-              onClick={() => handleNavClick('commercial')}
-              className={`w-full rounded-xl px-3 py-2.5 text-left text-sm font-semibold ${
-                currentTab === 'commercial' ? 'bg-orange-100 text-orange-950' : 'text-slate-700 hover:bg-slate-100'
-              }`}
-            >
-              Commercial Plumbing
-            </button>
-
-            <button
-              onClick={() => handleNavClick('calculator')}
-              className={`w-full rounded-xl px-3 py-2.5 text-left text-sm font-semibold ${
-                currentTab === 'calculator' ? 'bg-orange-100 text-orange-950' : 'text-slate-700 hover:bg-slate-100'
-              }`}
-            >
-              Cost Estimator Calculator
-            </button>
-
-            <button
               onClick={() => handleNavClick('service-areas')}
-              className={`flex w-full items-center rounded-xl px-3 py-2.5 text-left text-sm font-semibold ${
+              className={`flex min-h-10 w-full items-center rounded-lg px-3 py-2 text-left text-sm font-semibold ${
                 currentTab === 'service-areas' ? 'bg-orange-100 text-orange-950' : 'text-slate-700 hover:bg-slate-100'
               }`}
             >
               <MapPin className="mr-2 h-4 w-4 text-(--color-orange-dark)" />
-              Service Areas & ZIP Checker
+              Service Areas
             </button>
 
             <button
-              onClick={() => handleNavClick('reviews')}
-              className={`w-full rounded-xl px-3 py-2.5 text-left text-sm font-semibold ${
-                currentTab === 'reviews' ? 'bg-orange-100 text-orange-950' : 'text-slate-700 hover:bg-slate-100'
-              }`}
+              type="button"
+              onClick={() => setMobileAreasOpen(open => !open)}
+              aria-expanded={mobileAreasOpen}
+              className="flex min-h-10 w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm font-semibold text-slate-700 hover:bg-slate-100"
             >
-              Customer Reviews ({COMPANY_INFO.googleRating}★)
+              Browse service areas <ChevronDown className={`h-4 w-4 transition-transform ${mobileAreasOpen ? 'rotate-180' : ''}`} />
             </button>
-
-            <button
-              onClick={() => handleNavClick('blog')}
-              className={`flex w-full items-center rounded-xl px-3 py-2.5 text-left text-sm font-semibold ${
-                currentTab === 'blog' ? 'bg-orange-100 text-orange-950' : 'text-slate-700 hover:bg-slate-100'
-              }`}
-            >
-              <FileText className="mr-2 h-4 w-4 text-(--color-orange-dark)" />
-              Plumbing Guides & Articles
-            </button>
+            {mobileAreasOpen && (
+              <div className="grid gap-1 border-l-2 border-orange-300 pl-3 sm:col-start-1">
+                {SERVICE_AREAS_DATA.map(area => (
+                  <button key={area.id} type="button" onClick={() => handleServiceAreaClick(area)} className="w-full rounded-lg px-3 py-2 text-left text-sm font-medium text-slate-700 hover:bg-orange-50 hover:text-orange-900">
+                    {area.city}
+                  </button>
+                ))}
+              </div>
+            )}
 
             <button
               onClick={() => handleNavClick('contact')}
-              className={`w-full rounded-xl px-3 py-2.5 text-left text-sm font-semibold ${
+              className={`min-h-10 w-full rounded-lg px-3 py-2 text-left text-sm font-semibold ${
                 currentTab === 'contact' ? 'bg-orange-100 text-orange-950' : 'text-slate-700 hover:bg-slate-100'
               }`}
             >
@@ -585,7 +684,7 @@ export const Header: React.FC<HeaderProps> = ({
 
             <button
               onClick={() => handleNavClick('admin')}
-              className="flex w-full items-center justify-between rounded-xl border border-orange-200 bg-orange-50 px-3 py-2.5 text-left text-sm font-semibold text-orange-950"
+              className="flex min-h-10 w-full items-center justify-between rounded-lg border border-orange-200 bg-orange-50 px-3 py-2 text-left text-sm font-semibold text-orange-950 sm:col-span-2"
             >
               <span className="flex items-center">
                 <UserCheck className="mr-2 h-4 w-4" />
@@ -649,7 +748,7 @@ const HeaderSearchControl: React.FC<HeaderSearchControlProps> = ({
   const panelId = `service-search-results-${variant}`;
 
   return (
-    <div className={`relative ${variant === 'mobile' ? 'w-full' : 'shrink-0 lg:w-56 xl:w-72'}`}>
+    <div className={`relative ${variant === 'mobile' ? 'w-full' : 'shrink-0 lg:w-48 xl:w-60'}`}>
       <form
         onSubmit={onSubmit}
         className={`flex h-11 items-center rounded-xl border border-slate-200 bg-white px-2 text-slate-900 shadow-sm transition-shadow focus-within:border-(--color-orange) focus-within:shadow-md ${variant === 'mobile' ? 'w-full' : ''}`}
@@ -660,7 +759,7 @@ const HeaderSearchControl: React.FC<HeaderSearchControlProps> = ({
           onChange={event => onQueryChange(event.target.value)}
           onFocus={() => onOpenChange(true)}
           onKeyDown={event => { if (event.key === 'Escape') onOpenChange(false); }}
-          placeholder={variant === 'mobile' ? 'Search or describe a plumbing issue' : 'Search plumbing services'}
+          placeholder={variant === 'mobile' ? 'Search or describe a plumbing issue' : 'Search...'}
           className="min-w-0 flex-1 bg-transparent px-2 text-sm font-medium outline-none placeholder:text-slate-400"
           aria-label="Search plumbing services and website sections"
           aria-controls={panelId}

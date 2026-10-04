@@ -5,12 +5,13 @@
   --color-ice: #F5F8F8;
   --color-charcoal: #172B3A;
   --color-orange: #FF6B35;
-  --color-orange-dark: #D94F22;
+  --color-orange-dark: #FF6B35;
   --shadow-navy: 0 8px 24px rgba(23, 43, 58, 0.08);
 }
 
 @layer base {
   body {
+    min-width: 320px;
     overflow-x: hidden;
     background: var(--color-ice);
     color: var(--color-charcoal);
@@ -18,19 +19,38 @@
 
   html {
     scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
     font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   }
   
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
   }
+
+  button:not(:disabled),
+  a[href],
+  [role="button"] {
+    cursor: pointer;
+  }
+
+  img,
+  video {
+    max-width: 100%;
+  }
 }
 
 /* Shared semantic surfaces keep the 60-30-10 palette consistent across pages. */
 .site-header {
   background: #fff;
-  border-color: #dce5e8;
-  box-shadow: var(--shadow-navy);
+  border-bottom: 1px solid rgba(255, 107, 53, 0.9);
+  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.04);
+}
+
+.page-shell {
+  width: 100%;
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .site-announcement {
@@ -40,7 +60,7 @@
 }
 
 .site-header-main {
-  background: #fff;
+  background: var(--color-ice);
   color: var(--color-charcoal);
 }
 
@@ -57,12 +77,12 @@
 .site-cta {
   background: var(--color-orange);
   color: var(--color-charcoal);
-  box-shadow: 0 8px 20px rgba(13, 44, 84, 0.28);
+  box-shadow: 0 8px 20px rgba(255, 107, 53, 0.22);
 }
 
 .site-cta:hover {
   background: var(--color-orange-dark);
-  color: #fff;
+  color: var(--color-charcoal);
 }
 
 .site-emergency {
@@ -117,7 +137,7 @@
 
 .site-footer-cta:hover {
   background: var(--color-orange-dark);
-  color: #fff;
+  color: var(--color-charcoal);
 }
 
 .field {
@@ -192,6 +212,28 @@
 
 :focus-visible {
   outline-color: var(--color-orange-dark);
+  outline-offset: 3px;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+::selection {
+  background: rgb(255 107 53 / 0.2);
+  color: var(--color-charcoal);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 /* Custom plumbing badge and pulse animations */
@@ -226,4 +268,3 @@
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-navy);
 }
-

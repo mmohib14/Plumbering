@@ -40,11 +40,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenBooking, onSelec
   };
 
   return (
-    <section className="relative overflow-hidden border-b border-slate-200 bg-[#f6f9f9] pt-8 pb-16 text-slate-900 lg:pt-14 lg:pb-24">
+    <section className="relative overflow-hidden border-b border-slate-200 bg-[#f6f9f9] py-12 text-slate-900 sm:py-16 lg:py-20">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(#94a3b8_0.7px,transparent_0.7px)] bg-size-[22px_22px] opacity-20" />
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+      <div className="page-shell relative mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-12">
           
           {/* Left Column: Headlines & Call to Actions */}
           <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
@@ -67,7 +67,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenBooking, onSelec
                 Professional Plumbing Services
               </span>
               <br className="hidden sm:inline" />
-              <span className="block text-3xl font-black text-(--color-orange-dark) sm:text-5xl lg:text-6xl">
+              <span className="block text-3xl font-black text-(--color-orange-dark) sm:text-4xl lg:text-5xl">
                 You Can Count On
               </span>
             </h1>
@@ -83,7 +83,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenBooking, onSelec
                 href={`tel:${COMPANY_INFO.phoneRaw}`}
                 className="w-full sm:w-auto inline-flex items-center justify-center bg-(--color-orange) hover:bg-(--color-orange-dark) active:bg-orange-800 text-slate-950 font-extrabold text-sm px-5 py-3 rounded-lg shadow-lg shadow-orange-600/20 transition-all transform hover:-translate-y-0.5"
               >
-                <Phone className="w-4 h-4 mr-2 animate-pulse" />
+                <Phone className="w-4 h-4 mr-2" />
                 <span>Call Now</span>
               </a>
 
@@ -181,7 +181,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenBooking, onSelec
                 <img
                   src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=1000&q=80"
                   alt="Professional American plumber repairing modern home plumbing system"
-                  className="w-full h-80 sm:h-96 lg:h-107.5 object-cover object-top hover:scale-105 transition-transform duration-500"
+                  className="h-72 w-full object-cover object-center transition-transform duration-500 hover:scale-[1.02] sm:h-96 lg:h-[27rem]"
                   loading="eager"
                 />
                 

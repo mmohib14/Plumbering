@@ -17,6 +17,7 @@ import { SERVICES_DATA, COMPANY_INFO } from '../data/plumbingData';
 import { useCityZipLookup } from '../services/useCityZipLookup';
 import { BookingRequest, PropertyType, UrgencyLevel } from '../types';
 import { useZipCodeLookup } from '../services/useZipCodeLookup';
+import { useModalAccessibility } from '../services/useModalAccessibility';
 
 interface BookingModalProps {
   isOpen: boolean;
@@ -58,9 +59,11 @@ export const BookingModal: React.FC<BookingModalProps> = ({
   // Status states
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submittedBooking, setSubmittedBooking] = useState<BookingRequest | null>(null);
+  const [phoneError, setPhoneError] = useState('');
   const { location: zipLocation } = useZipCodeLookup(zip);
   const cityLookup = useCityZipLookup(city, state, cityInputDirty);
   const matchingZipLocation = zipLocation?.zip === zip ? zipLocation : null;
+  const dialogRef = useModalAccessibility(isOpen, onClose);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -84,6 +87,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
     setPhotoPreview(null);
     setIsSubmitting(false);
     setSubmittedBooking(null);
+    setPhoneError('');
   }, [isOpen, preselectedServiceId, estimateDetails]);
 
   useEffect(() => {
@@ -114,7 +118,12 @@ export const BookingModal: React.FC<BookingModalProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!customerName || !phone || !address || !zip) return;
+    const phoneDigits = phone.replace(/\D/g, '');
+    if (phoneDigits.length < 10 || phoneDigits.length > 15) {
+      setPhoneError('Enter a valid phone number with 10 to 15 digits.');
+      return;
+    }
+    setPhoneError('');
 
     setIsSubmitting(true);
 
@@ -136,7 +145,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
       }),
       customerName,
       phone,
-      email: email || `${customerName.toLowerCase().replace(/\s+/g, '')}@client.com`,
+      email: email.trim(),
       address,
       city: city || 'Local Metro',
       state,
@@ -166,6 +175,11 @@ export const BookingModal: React.FC<BookingModalProps> = ({
   return (
     <div className="booking-modal fixed inset-0 z-50 overflow-y-auto bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6 animate-in fade-in duration-200">
       <div 
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="booking-dialog-title"
+        tabIndex={-1}
         className="relative bg-white w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden border border-slate-200 animate-in zoom-in-95 duration-150 max-h-[92vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
@@ -176,7 +190,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
               <Calendar className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-xl font-extrabold text-slate-900 tracking-tight">
+              <h2 id="booking-dialog-title" className="text-xl font-extrabold text-slate-900 tracking-tight">
                 Request Service & Book Appointment
               </h2>
               <p className="text-xs text-slate-600">
@@ -427,11 +441,15 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                       type="tel"
                       id="booking-phone"
                       required
+                      autoComplete="tel"
+                      aria-invalid={Boolean(phoneError)}
+                      aria-describedby={phoneError ? 'booking-phone-error' : undefined}
                       value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
+                      onChange={(e) => { setPhone(e.target.value); setPhoneError(''); }}
                       placeholder="e.g. (214) 555-0199"
                       className="w-full text-xs sm:text-sm p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                     />
+                    {phoneError && <p id="booking-phone-error" role="alert" className="mt-1 text-xs font-medium text-red-700">{phoneError}</p>}
                   </div>
                 </div>
 
@@ -459,6 +477,8 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                       type="text"
                       id="booking-zip"
                       required
+                      inputMode="numeric"
+                      pattern="[0-9]{5}"
                       maxLength={5}
                       value={zip}
                       onChange={(e) => {

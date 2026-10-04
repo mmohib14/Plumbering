@@ -10,7 +10,7 @@ import {
   CreditCard,
   Lock
 } from 'lucide-react';
-import { COMPANY_INFO, SERVICES_DATA, SERVICE_AREAS_DATA } from '../data/plumbingData';
+import { COMPANY_INFO, SERVICE_AREAS_DATA } from '../data/plumbingData';
 import { BrandLogo } from './BrandLogo';
 
 interface FooterProps {
@@ -25,7 +25,7 @@ export const Footer: React.FC<FooterProps> = ({
   onOpenLegal
 }) => {
   return (
-    <footer className="site-footer border-t border-white/10 pb-8 pt-12">
+    <footer className="site-footer border-t border-white/10 pb-[calc(5.5rem+env(safe-area-inset-bottom))] pt-12 xl:pb-8">
       {/* Top Banner inside Footer */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 border-b border-slate-200">
         <div className="flex flex-col items-center justify-between gap-5 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6 lg:flex-row">
@@ -35,10 +35,10 @@ export const Footer: React.FC<FooterProps> = ({
             </div>
             <div className="min-w-0">
               <h3 className="text-lg font-bold tracking-tight text-slate-900 sm:text-xl">
-                Plumbing emergency? We are ready to help.
+                Need a plumber now?
               </h3>
               <p className="site-footer-muted mt-1 max-w-xl text-sm leading-relaxed">
-                Fast dispatch and licensed technicians, 24/7.
+                Local help, available 24/7.
               </p>
             </div>
           </div>
@@ -60,57 +60,87 @@ export const Footer: React.FC<FooterProps> = ({
         </div>
       </div>
 
-      {/* 5-Column Grid */}
-      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-x-10 gap-y-10 px-4 py-12 sm:px-6 lg:grid-cols-5 lg:px-8">
+      {/* Footer Navigation Grid */}
+      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-x-6 gap-y-8 px-4 py-10 sm:grid-cols-2 sm:px-6 lg:grid-cols-3 xl:grid-cols-7 xl:px-8">
         {/* Column 1: Brand & Credentials */}
-        <div className="lg:col-span-2 space-y-4">
-              <BrandLogo compact light />
+        <div className="space-y-3 xl:col-span-2">
+          <BrandLogo compact light />
 
-          <p className="site-footer-muted max-w-sm text-sm leading-relaxed">
-            Licensed, insured plumbing professionals with clear, upfront pricing.
+          <p className="site-footer-muted max-w-sm text-xs leading-relaxed">
+            Licensed, insured plumbers. Upfront pricing.
           </p>
 
-          <div className="space-y-2 pt-2 text-xs">
-            <div className="flex items-center text-sm text-slate-200">
-              <CheckCircle2 className="w-4 h-4 mr-2 text-emerald-400 shrink-0" />
+          <div className="space-y-1.5 pt-1 text-xs">
+            <div className="flex items-center text-xs text-slate-200">
+              <CheckCircle2 className="mr-2 h-4 w-4 shrink-0 text-emerald-400" />
               <span>{COMPANY_INFO.license}</span>
             </div>
-            <div className="flex items-center text-sm text-slate-200">
-              <CheckCircle2 className="w-4 h-4 mr-2 text-emerald-400 shrink-0" />
-              <span>{COMPANY_INFO.insurance}</span>
+            <div className="flex items-center text-xs text-slate-200">
+              <CheckCircle2 className="mr-2 h-4 w-4 shrink-0 text-emerald-400" />
+              <span>Licensed, bonded & $2M insured</span>
             </div>
-            <div className="flex items-center text-sm text-slate-200">
-              <Award className="w-4 h-4 mr-2 text-amber-400 shrink-0" />
-              <span>{COMPANY_INFO.guarantee}</span>
+            <div className="flex items-center text-xs text-slate-200">
+              <Award className="mr-2 h-4 w-4 shrink-0 text-amber-400" />
+              <span>1-year parts & labor warranty</span>
             </div>
           </div>
 
-          <div className="site-footer-muted flex items-center space-x-3 pt-2 text-xs">
+          <div className="site-footer-muted flex flex-wrap items-center gap-x-2 pt-1 text-[10px]">
             <span className="inline-flex items-center">
-              <Lock className="w-3.5 h-3.5 mr-1 text-slate-500" />
-              Secure 256-Bit SSL Booking
+              <Lock className="mr-1 h-3.5 w-3.5 text-slate-500" />
+              Secure booking
             </span>
             <span>•</span>
             <span className="inline-flex items-center">
-              <CreditCard className="w-3.5 h-3.5 mr-1 text-slate-500" />
-              All Cards & Financing Accepted
+              <CreditCard className="mr-1 h-3.5 w-3.5 text-slate-500" />
+              Financing available
             </span>
           </div>
         </div>
 
-        {/* Column 2: Core Services */}
+        {/* Column 2: Quick Links / Company */}
         <div className="space-y-3">
-          <h4 className="text-sm font-black uppercase tracking-[0.16em] text-white">
+          <h4 className="text-xs font-black uppercase tracking-[0.14em] text-white">
+            Company
+          </h4>
+          <ul className="site-footer-muted space-y-1.5 text-xs">
+            {[
+              ['About Us', 'home'],
+              ['Recent Projects', 'reviews'],
+              ['Blog', 'blog'],
+              ['Offers', 'services'],
+              ['Contact Us', 'contact']
+            ].map(([label, target]) => (
+              <li key={label}>
+                <button
+                  onClick={() => onSelectTab(target)}
+                  className="site-footer-link text-left transition-colors"
+                >
+                  {label}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Column 3: Core Services */}
+        <div className="space-y-3">
+          <h4 className="text-xs font-black uppercase tracking-[0.14em] text-white">
             Plumbing Services
           </h4>
-          <ul className="site-footer-muted space-y-2 text-sm">
-            {SERVICES_DATA.slice(0, 4).map((s) => (
-              <li key={s.id}>
+          <ul className="site-footer-muted space-y-1.5 text-xs">
+            {[
+              'Emergency Plumbing',
+              'Drain Cleaning',
+              'Water Heaters',
+              'Sewer Repair'
+            ].map((service) => (
+              <li key={service}>
                 <button
                   onClick={() => onSelectTab('services')}
                   className="site-footer-link text-left transition-colors"
                 >
-                  {s.title}
+                  {service}
                 </button>
               </li>
             ))}
@@ -125,19 +155,19 @@ export const Footer: React.FC<FooterProps> = ({
           </ul>
         </div>
 
-        {/* Column 3: Top Service Metro Hubs */}
+        {/* Column 4: Top Service Metro Hubs */}
         <div className="space-y-3">
-          <h4 className="text-sm font-black uppercase tracking-[0.16em] text-white">
+          <h4 className="text-xs font-black uppercase tracking-[0.14em] text-white">
             Service Areas
           </h4>
-          <ul className="site-footer-muted space-y-2 text-sm">
-            {SERVICE_AREAS_DATA.slice(0, 4).map((area) => (
+          <ul className="site-footer-muted space-y-1.5 text-xs">
+            {SERVICE_AREAS_DATA.slice(0, 3).map((area) => (
               <li key={area.id}>
                 <button
                   onClick={() => onSelectTab('service-areas')}
                   className="site-footer-link flex items-center text-left transition-colors"
                 >
-                  <MapPin className="w-3.5 h-3.5 mr-1.5 text-slate-600" />
+                  <MapPin className="mr-1.5 h-3.5 w-3.5 shrink-0 text-slate-600" />
                   <span>{area.city}</span>
                 </button>
               </li>
@@ -153,45 +183,68 @@ export const Footer: React.FC<FooterProps> = ({
           </ul>
         </div>
 
-        {/* Column 4: 24/7 National Dispatch */}
+        {/* Column 5: Resources */}
         <div className="space-y-3">
-          <h4 className="text-sm font-black uppercase tracking-[0.16em] text-white">
-            Dispatch Center
+          <h4 className="text-xs font-black uppercase tracking-[0.14em] text-white">
+            Resources
           </h4>
-          <div className="site-footer-muted space-y-3 text-sm">
-            <div className="flex items-start space-x-2">
-              <Phone className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+          <ul className="site-footer-muted space-y-1.5 text-xs">
+            {[
+              ['Emergency 24/7', 'emergency'],
+              ['Reviews', 'reviews'],
+              ['Guides & Blog', 'blog'],
+              ['Cost Estimator', 'calculator'],
+              ['Commercial', 'commercial']
+            ].map(([label, target]) => (
+              <li key={label}>
+                <button
+                  onClick={() => onSelectTab(target)}
+                  className="site-footer-link text-left transition-colors"
+                >
+                  {label}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Column 6: 24/7 National Dispatch */}
+        <div className="space-y-3">
+          <h4 className="text-xs font-black uppercase tracking-[0.14em] text-white">
+            Contact
+          </h4>
+          <div className="site-footer-muted space-y-2.5 text-xs">
+            <div className="flex items-start gap-2">
+              <Phone className="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" />
               <div>
-                <div className="text-xs font-semibold uppercase text-slate-400">Toll-Free 24/7 Hotline</div>
                 <a href={`tel:${COMPANY_INFO.phoneRaw}`} className="font-bold text-white transition-colors hover:text-(--color-orange)">
                   {COMPANY_INFO.phone}
                 </a>
               </div>
             </div>
 
-            <div className="flex items-start space-x-2">
-              <Mail className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
+            <div className="flex items-start gap-2">
+              <Mail className="mt-0.5 h-4 w-4 shrink-0 text-blue-400" />
               <div>
-                <div className="text-xs font-semibold uppercase text-slate-400">Electronic Inquiries</div>
-                <span className="break-all text-slate-300">{COMPANY_INFO.email}</span>
+                <a href={`mailto:${COMPANY_INFO.email}`} className="break-all text-slate-300 transition-colors hover:text-(--color-orange)">
+                  Email us
+                </a>
               </div>
             </div>
 
-            <div className="flex items-start space-x-2">
-              <Clock className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+            <div className="flex items-start gap-2">
+              <Clock className="mt-0.5 h-4 w-4 shrink-0 text-amber-400" />
               <div>
-                <div className="text-xs font-semibold uppercase text-slate-400">Hours of Operation</div>
-                <span className="text-slate-300">Open 24 Hours / 7 Days</span>
-                <div className="text-xs text-emerald-400 font-medium">Holidays & Weekends Included</div>
+                <span className="text-slate-300">Open 24/7</span>
               </div>
             </div>
 
-            <div className="pt-2">
+            <div className="pt-1">
               <button
                 onClick={() => onOpenBooking()}
-                className="site-footer-cta w-full rounded-lg px-3 py-2 text-xs font-black transition-colors shadow-sm"
+                className="site-footer-cta w-full rounded-lg px-2.5 py-2 text-[11px] font-black transition-colors shadow-sm"
               >
-                Request Fast Callback
+                Request callback
               </button>
             </div>
           </div>

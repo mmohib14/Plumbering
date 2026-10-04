@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { ServiceItem } from '../types';
 import { COMPANY_INFO } from '../data/plumbingData';
+import { useModalAccessibility } from '../services/useModalAccessibility';
 
 interface ServiceDetailModalProps {
   service: ServiceItem | null;
@@ -25,11 +26,17 @@ export const ServiceDetailModal: React.FC<ServiceDetailModalProps> = ({
   onClose,
   onBookService
 }) => {
+  const dialogRef = useModalAccessibility(Boolean(service), onClose);
   if (!service) return null;
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/75 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-200">
-      <div 
+      <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="service-dialog-title"
+        tabIndex={-1}
         className="relative bg-white w-full max-w-3xl rounded-3xl shadow-2xl overflow-hidden border border-slate-200 animate-in zoom-in-95 duration-200 max-h-[90vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
@@ -64,7 +71,7 @@ export const ServiceDetailModal: React.FC<ServiceDetailModalProps> = ({
                 Certified Master Plumbers
               </span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+            <h2 id="service-dialog-title" className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
               {service.title}
             </h2>
           </div>

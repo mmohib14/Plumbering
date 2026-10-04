@@ -12,11 +12,17 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onSubmitInquiry }) => 
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [phoneError, setPhoneError] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !phone) return;
-    onSubmitInquiry({ name, phone, email, message });
+    const phoneDigits = phone.replace(/\D/g, '');
+    if (phoneDigits.length < 10 || phoneDigits.length > 15) {
+      setPhoneError('Enter a valid phone number with 10 to 15 digits.');
+      return;
+    }
+    setPhoneError('');
+    onSubmitInquiry({ name: name.trim(), phone: phone.trim(), email: email.trim(), message: message.trim() });
     setSubmitted(true);
   };
 
@@ -118,7 +124,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onSubmitInquiry }) => 
                 </div>
                 <h4 className="text-lg font-bold text-emerald-900">Message Received!</h4>
                 <p className="text-xs text-emerald-700 max-w-sm mx-auto">
-                  Your inquiry was saved to this browser's operations queue. For immediate assistance, call dispatch directly.
+                  This demo saved your inquiry in this browser only; it was not sent to dispatch. For help, call the number below.
                 </p>
               </div>
             ) : (
@@ -147,11 +153,15 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onSubmitInquiry }) => 
                       type="tel"
                       id="contact-phone"
                       required
+                      autoComplete="tel"
+                      aria-invalid={Boolean(phoneError)}
+                      aria-describedby={phoneError ? 'contact-phone-error' : undefined}
                       value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
+                      onChange={(e) => { setPhone(e.target.value); setPhoneError(''); }}
                       placeholder="e.g. (800) 555-7473"
                       className="w-full text-xs sm:text-sm p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-orange-300 focus:outline-none"
                     />
+                    {phoneError && <p id="contact-phone-error" role="alert" className="mt-1 text-xs font-medium text-red-700">{phoneError}</p>}
                   </div>
                 </div>
 

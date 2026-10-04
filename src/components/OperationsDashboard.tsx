@@ -241,14 +241,14 @@ export const OperationsDashboard: React.FC<OperationsDashboardProps> = ({ curren
   ];
 
   return (
-    <main className="operations-dashboard min-h-screen bg-slate-50 px-4 py-8 text-slate-800 sm:px-6 lg:px-8">
+    <section aria-labelledby="operations-dashboard-title" className="operations-dashboard min-h-screen bg-slate-50 px-4 py-8 text-slate-800 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <header className="flex flex-col justify-between gap-4 border-b border-slate-800 pb-6 sm:flex-row sm:items-center">
           <div>
             <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-sky-400">
               <ShieldCheck className="h-4 w-4" /> {currentUser.role !== 'staff' ? 'Admin Operations' : `${currentUser.field || 'Staff'} Workspace`}
             </div>
-            <h1 className="mt-1 text-2xl font-black text-white sm:text-3xl">{currentUser.role !== 'staff' ? 'Service Command Center' : `Welcome, ${currentUser.name}`}</h1>
+            <h1 id="operations-dashboard-title" className="mt-1 text-2xl font-black text-white sm:text-3xl">{currentUser.role !== 'staff' ? 'Service Command Center' : `Welcome, ${currentUser.name}`}</h1>
             <p className="mt-1 text-sm text-slate-400">Local development operations console with role-based access.</p>
           </div>
           <button onClick={onLogout} className="inline-flex items-center gap-2 self-start rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-xs font-bold text-slate-200 hover:bg-slate-800">
@@ -298,7 +298,7 @@ export const OperationsDashboard: React.FC<OperationsDashboardProps> = ({ curren
         {view === 'customers' && currentUser.role === 'owner' && <CustomerPanel customers={customers} open={customerFormOpen} onOpen={() => setCustomerFormOpen(true)} onSubmit={addCustomer} />}
         {view === 'categories' && currentUser.role === 'owner' && <section className="mt-6 max-w-2xl rounded-2xl border border-slate-800 bg-slate-900 p-5"><h2 className="text-lg font-black">Service categories</h2><form onSubmit={addCategory} className="mt-4 flex gap-2"><input value={newCategory} onChange={event => setNewCategory(event.target.value)} placeholder="Add category" className="min-w-0 flex-1 rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm" /><button className="rounded-xl bg-(--color-orange) px-4 py-2 text-sm font-black text-slate-950"><Plus className="inline h-4 w-4" /> Add</button></form><div className="mt-4 flex flex-wrap gap-2">{categories.map(category => <span key={category} className="rounded-full bg-slate-800 px-3 py-1 text-xs font-bold text-slate-300">{category}</span>)}</div></section>}
       </div>
-    </main>
+    </section>
   );
 };
 

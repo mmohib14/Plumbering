@@ -16,36 +16,36 @@ interface ProjectComparison {
 const COMPARISONS: ProjectComparison[] = [
   {
     id: 'pipes',
-    title: 'Corroded Galvanized Iron vs. Modern Uponor PEX-a Repipe',
-    subtitle: 'Residential Single-Family Repipe in Dallas, TX',
-    beforeLabel: 'Before: Corroded 50-Year Galvanized Pipe (Restricted Flow & Brown Water)',
-    afterLabel: 'After: Clean High-Flow PEX-a System (Full Pressure & 25-Year Warranty)',
+    title: 'Pipe Replacement Preview',
+    subtitle: 'Illustrative residential repipe scenario',
+    beforeLabel: 'Illustration: Corroded galvanized piping',
+    afterLabel: 'Illustration: Replacement pipework',
     beforeImage: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=800&q=80',
-    afterImage: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=800&q=80',
-    description: 'Homeowner suffered from low shower pressure and rusty water when running kitchen sink. We completed a full-house surgical PEX-a repipe in 2 days.',
-    results: ['Domestic water pressure increased by 140%', 'Eliminated risk of pinhole leaks under slab', 'Drywall restored & water never shut off overnight']
+    afterImage: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=800&q=80',
+    description: 'An inspection can help identify deteriorated pipework and determine whether a targeted repair or repiping is appropriate.',
+    results: ['Inspect pipe condition and water quality', 'Compare repair and replacement options', 'Confirm scope and pricing before work begins']
   },
   {
     id: 'heater',
-    title: 'Failing Rusted Storage Tank vs. Endless Navien Tankless',
-    subtitle: 'Water Heater Replacement in Austin, TX',
-    beforeLabel: 'Before: 12-Year Leaking 50-Gallon Tank (High Gas Bill & Cold Showers)',
-    afterLabel: 'After: Navien High-Efficiency Tankless (Endless Hot Water & 30% Gas Savings)',
+    title: 'Water Heater Upgrade Preview',
+    subtitle: 'Illustrative water heater service scenario',
+    beforeLabel: 'Illustration: Aging water heater',
+    afterLabel: 'Illustration: Water heater service',
     beforeImage: 'https://images.unsplash.com/photo-1621905251918-48416bd8575a?auto=format&fit=crop&w=800&q=80',
-    afterImage: 'https://images.unsplash.com/photo-1621905251918-48416bd8575a?auto=format&fit=crop&w=800&q=80',
-    description: 'Family of 5 constantly ran out of hot water after two morning showers. We installed an outdoor Navien tankless unit with dedicated recirculation pump.',
-    results: ['Continuous hot water for endless showers simultaneously', 'Saved $24/month on gas energy bills', 'Freed up 12 square feet of interior storage space']
+    afterImage: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=800&q=80',
+    description: 'A plumber can assess a failing unit and explain repair and replacement options based on household needs.',
+    results: ['Check the unit, connections, and venting', 'Compare tank and tankless options', 'Review installation requirements and estimate']
   },
   {
     id: 'sewer',
-    title: 'Root-Choked 4" Main Sewer vs. Hydro-Jetted Scoured Line',
-    subtitle: 'Trenchless Rooter Clearance in Houston, TX',
-    beforeLabel: 'Before: 80% Blocked by Tree Roots (Raw Sewage Backing Up into Bathtubs)',
-    afterLabel: 'After: 100% Restored Pipe Diameter via 4,000 PSI Hydro Jetting',
+    title: 'Drain and Sewer Service Preview',
+    subtitle: 'Illustrative drain cleaning scenario',
+    beforeLabel: 'Illustration: Drain blockage',
+    afterLabel: 'Illustration: Drain cleaning service',
     beforeImage: 'https://images.unsplash.com/photo-1542013936693-884638332954?auto=format&fit=crop&w=800&q=80',
-    afterImage: 'https://images.unsplash.com/photo-1542013936693-884638332954?auto=format&fit=crop&w=800&q=80',
-    description: 'Tree roots penetrated cast iron hub joints. Rather than excavating the paved front driveway for $8,500, we used root-cutting hydro jetting heads.',
-    results: ['Saved homeowner over $5,800 in concrete demolition', 'Fully cleared grease, wipes, and root mass', 'Confirmed 100% flow with full color camera scope']
+    afterImage: 'https://images.unsplash.com/photo-1504148455328-c376907d081c?auto=format&fit=crop&w=800&q=80',
+    description: 'A camera inspection can help locate a sewer concern and inform the right cleaning or repair approach.',
+    results: ['Inspect the line to locate the concern', 'Review cleaning and repair options', 'Confirm the recommended work before scheduling']
   }
 ];
 
@@ -61,18 +61,18 @@ export const BeforeAfterSlider: React.FC = () => {
 
   return (
     <section className="py-16 sm:py-24 bg-slate-50 text-slate-900 border-b border-slate-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         
         {/* Section Heading */}
         <div className="text-center max-w-3xl mx-auto mb-10">
           <span className="text-orange-950 font-bold text-xs uppercase tracking-widest bg-orange-100 border border-orange-200 px-3 py-1 rounded-full">
-            Real Proof Of Quality
+            Illustrative Service Previews
           </span>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mt-3">
-            Before & After Project Visualizer
+            Plumbing Repair Comparisons
           </h2>
           <p className="text-base text-slate-600 mt-2">
-            See the real craftsmanship of our licensed plumbers. Drag the slider to compare deteriorated piping systems with our completed installations.
+            These stock images illustrate common plumbing services; they are not actual customer before-and-after photos. Drag to explore each example.
           </p>
 
           {/* Project Switcher Tabs */}
@@ -97,12 +97,12 @@ export const BeforeAfterSlider: React.FC = () => {
         </div>
 
         {/* Visualizer Container */}
-        <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm">
+        <div className="mx-auto max-w-[1100px] bg-white border border-slate-200 rounded-3xl p-5 sm:p-8 shadow-sm">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             
             {/* Left Interactive Image Comparison (7 cols) */}
-            <div className="lg:col-span-7">
-              <div className="relative w-full h-80 sm:h-96 rounded-2xl overflow-hidden select-none border border-slate-200 shadow-lg">
+            <div className="lg:col-span-8 lg:mx-auto lg:w-full">
+              <div className="relative mx-auto h-80 w-full max-w-[980px] rounded-2xl overflow-hidden select-none border border-slate-200 shadow-lg sm:h-96">
                 
                 {/* AFTER Image (Full background) */}
                 <img
@@ -110,8 +110,8 @@ export const BeforeAfterSlider: React.FC = () => {
                   alt={activeComp.afterLabel}
                   className="absolute inset-0 w-full h-full object-cover"
                 />
-                <div className="absolute top-3 right-3 bg-emerald-600/90 backdrop-blur-sm text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow">
-                  After (Fixed)
+                <div className="absolute top-3 right-3 bg-slate-900/85 backdrop-blur-sm text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow">
+                  Service example
                 </div>
 
                 {/* BEFORE Image (Clipped on top based on sliderPosition) */}
@@ -125,8 +125,8 @@ export const BeforeAfterSlider: React.FC = () => {
                     className="absolute inset-0 w-full h-full object-cover max-w-none grayscale brightness-75 contrast-125"
                     style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                   />
-                  <div className="absolute top-3 left-3 bg-red-600/90 backdrop-blur-sm text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow">
-                    Before (Damaged)
+                    <div className="absolute top-3 left-3 bg-slate-900/85 backdrop-blur-sm text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow">
+                    Issue example
                   </div>
                 </div>
 
@@ -161,10 +161,10 @@ export const BeforeAfterSlider: React.FC = () => {
             </div>
 
             {/* Right Project Details (5 cols) */}
-            <div className="lg:col-span-5 space-y-4">
+            <div className="lg:col-span-4 space-y-4">
               <div>
                 <span className="text-xs font-bold text-orange-900 uppercase tracking-wider">
-                  Case Study
+                  Example Scenario
                 </span>
                 <h3 className="text-xl sm:text-2xl font-bold text-slate-900 mt-1">
                   {activeComp.title}
@@ -180,7 +180,7 @@ export const BeforeAfterSlider: React.FC = () => {
 
               <div className="space-y-2 pt-2 border-t border-slate-200">
                 <span className="text-xs font-bold uppercase tracking-wider text-slate-600">
-                  Customer Results:
+                  What to expect:
                 </span>
                 <ul className="space-y-2">
                   {activeComp.results.map((res, i) => (

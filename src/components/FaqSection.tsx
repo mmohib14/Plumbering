@@ -98,7 +98,10 @@ export const FaqSection: React.FC<{ onOpenBooking: () => void }> = ({ onOpenBook
                 className="border border-slate-200 rounded-2xl overflow-hidden transition-all duration-200"
               >
                 <button
+                  type="button"
                   onClick={() => toggleFaq(idx)}
+                  aria-expanded={isOpen}
+                  aria-controls={`faq-answer-${idx}`}
                   className="w-full text-left p-5 flex items-center justify-between bg-slate-50/60 hover:bg-slate-50 transition-colors"
                 >
                   <span className="font-bold text-slate-900 text-sm sm:text-base pr-4">
@@ -111,11 +114,9 @@ export const FaqSection: React.FC<{ onOpenBooking: () => void }> = ({ onOpenBook
                   </div>
                 </button>
 
-                {isOpen && (
-                  <div className="p-5 pt-2 bg-white border-t border-slate-100 text-sm text-slate-600 leading-relaxed animate-in fade-in duration-150">
-                    {faq.answer}
-                  </div>
-                )}
+                <div id={`faq-answer-${idx}`} hidden={!isOpen} className="p-5 pt-2 bg-white border-t border-slate-100 text-sm text-slate-600 leading-relaxed animate-in fade-in duration-150">
+                  {faq.answer}
+                </div>
               </div>
             );
           })}

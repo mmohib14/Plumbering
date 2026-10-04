@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Star, CheckCircle2, MessageSquare, ThumbsUp, PlusCircle, X, ShieldCheck } from 'lucide-react';
 import { REVIEWS_DATA, COMPANY_INFO } from '../data/plumbingData';
 import { ReviewItem } from '../types';
+import { useModalAccessibility } from '../services/useModalAccessibility';
 
 interface ReviewsSectionProps {
   onAddReview: (review: ReviewItem) => void;
@@ -19,6 +20,7 @@ export const ReviewsSection: React.FC<ReviewsSectionProps> = ({ onAddReview }) =
   const [rating, setRating] = useState(5);
   const [reviewText, setReviewText] = useState('');
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const dialogRef = useModalAccessibility(isModalOpen, () => setIsModalOpen(false));
 
   const handleSubmitReview = (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,7 +34,7 @@ export const ReviewsSection: React.FC<ReviewsSectionProps> = ({ onAddReview }) =
       date: 'Just now',
       serviceType,
       review: reviewText,
-      verified: true
+      verified: false
     };
 
     setReviewsList([newRev, ...reviewsList]);
@@ -185,11 +187,10 @@ export const ReviewsSection: React.FC<ReviewsSectionProps> = ({ onAddReview }) =
 
               {/* Verified Badge */}
               <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-                <span className="flex items-center text-emerald-600 font-medium text-[11px]">
-                  <CheckCircle2 className="w-3.5 h-3.5 mr-1 text-emerald-600" />
-                  Verified Customer Job
-                </span>
-                <span className="text-[11px] text-slate-400">Google Verified</span>
+                <span className={`flex items-center font-medium text-[11px] ${rev.verified ? 'text-emerald-600' : 'text-amber-700'}`}>
+                  {rev.verified && <CheckCircle2 className="mr-1 h-3.5 w-3.5 text-emerald-600" />}
+                  {rev.verified ? 'Verified Customer Job' : 'Awaiting review'}</span>
+                {rev.verified && <span className="text-[11px] text-slate-400">Google Verified</span>}
               </div>
             </div>
           ))}
@@ -200,10 +201,11 @@ export const ReviewsSection: React.FC<ReviewsSectionProps> = ({ onAddReview }) =
       {/* Write a Review Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-150">
-          <div className="relative bg-white w-full max-w-lg rounded-3xl shadow-2xl p-6 sm:p-8 border border-slate-200 animate-in zoom-in-95">
+          <div ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="review-dialog-title" tabIndex={-1} className="relative bg-white w-full max-w-lg rounded-3xl shadow-2xl p-6 sm:p-8 border border-slate-200 animate-in zoom-in-95">
             <button
               onClick={() => setIsModalOpen(false)}
               className="absolute top-4 right-4 text-slate-400 hover:text-slate-700 p-1.5 rounded-full"
+              aria-label="Close review form"
             >
               <X className="w-5 h-5" />
             </button>
@@ -213,15 +215,15 @@ export const ReviewsSection: React.FC<ReviewsSectionProps> = ({ onAddReview }) =
                 <div className="w-14 h-14 rounded-full bg-emerald-100 text-emerald-600 mx-auto flex items-center justify-center">
                   <CheckCircle2 className="w-8 h-8" />
                 </div>
-                <h3 className="text-xl font-bold text-slate-900">Thank You!</h3>
+                <h3 id="review-dialog-title" className="text-xl font-bold text-slate-900">Thank You!</h3>
                 <p className="text-sm text-slate-600">
-                  Your feedback has been published. We appreciate your trust in USA Pro Plumbing!
+                  Your review is saved in this browser demo and is awaiting moderation. It has not been posted to Google.
                 </p>
               </div>
             ) : (
               <form onSubmit={handleSubmitReview} className="space-y-4">
                 <div>
-                  <h3 className="text-xl font-bold text-slate-900">
+                  <h3 id="review-dialog-title" className="text-xl font-bold text-slate-900">
                     Write a Customer Review
                   </h3>
                   <p className="text-xs text-slate-500 mt-1">
@@ -234,13 +236,15 @@ export const ReviewsSection: React.FC<ReviewsSectionProps> = ({ onAddReview }) =
                   <label className="text-xs font-bold text-slate-700 block mb-1">
                     Your Rating:
                   </label>
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-2" role="group" aria-label="Your rating">
                     {[1, 2, 3, 4, 5].map((star) => (
                       <button
                         type="button"
                         key={star}
                         onClick={() => setRating(star)}
                         className="p-1 focus:outline-none"
+                        aria-label={`${star} ${star === 1 ? 'star' : 'stars'}`}
+                        aria-pressed={star === rating}
                       >
                         <Star
                           className={`w-7 h-7 ${
@@ -259,11 +263,12 @@ export const ReviewsSection: React.FC<ReviewsSectionProps> = ({ onAddReview }) =
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="text-xs font-bold text-slate-700 block mb-1">
+                    <label htmlFor="review-author" className="text-xs font-bold text-slate-700 block mb-1">
                       Your Full Name:
                     </label>
                     <input
                       type="text"
+                      id="review-author"
                       required
                       value={author}
                       onChange={(e) => setAuthor(e.target.value)}
@@ -272,11 +277,12 @@ export const ReviewsSection: React.FC<ReviewsSectionProps> = ({ onAddReview }) =
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-bold text-slate-700 block mb-1">
+                    <label htmlFor="review-location" className="text-xs font-bold text-slate-700 block mb-1">
                       City, State:
                     </label>
                     <input
                       type="text"
+                      id="review-location"
                       required
                       value={location}
                       onChange={(e) => setLocation(e.target.value)}
@@ -287,10 +293,11 @@ export const ReviewsSection: React.FC<ReviewsSectionProps> = ({ onAddReview }) =
                 </div>
 
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                  <label htmlFor="review-service" className="text-xs font-bold text-slate-700 block mb-1">
                     Service Performed:
                   </label>
                   <select
+                    id="review-service"
                     value={serviceType}
                     onChange={(e) => setServiceType(e.target.value)}
                     className="w-full text-xs p-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white"
@@ -306,10 +313,11 @@ export const ReviewsSection: React.FC<ReviewsSectionProps> = ({ onAddReview }) =
                 </div>
 
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                  <label htmlFor="review-text" className="text-xs font-bold text-slate-700 block mb-1">
                     Your Review:
                   </label>
                   <textarea
+                    id="review-text"
                     required
                     rows={3}
                     value={reviewText}

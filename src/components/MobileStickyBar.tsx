@@ -8,7 +8,7 @@ interface MobileStickyBarProps {
 
 export const MobileStickyBar: React.FC<MobileStickyBarProps> = ({ onOpenBooking }) => {
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 px-3 py-2.5 shadow-2xl lg:hidden">
+    <div className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-md border-t border-slate-200 px-3 py-2.5 shadow-2xl xl:hidden">
       <div className="max-w-md mx-auto grid grid-cols-2 gap-2">
         <a
           href={`tel:${COMPANY_INFO.phoneRaw}`}

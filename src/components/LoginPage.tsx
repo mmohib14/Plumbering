@@ -40,7 +40,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin, requestedRole = '
   };
 
   return (
-    <main className="flex min-h-[70vh] items-center justify-center bg-slate-50 px-4 py-12">
+    <section aria-labelledby="login-page-title" className="flex min-h-[70vh] items-center justify-center bg-slate-50 px-4 py-12">
       <div className="w-full max-w-md rounded-3xl border border-slate-200 bg-white p-6 shadow-xl sm:p-8">
         <div className="mb-6 flex items-center gap-3">
           <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-(--color-orange) text-(--color-charcoal)">
@@ -48,7 +48,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin, requestedRole = '
           </div>
           <div>
             <p className="text-xs font-black uppercase tracking-[0.16em] text-orange-900">USA Pro Operations</p>
-            <h1 className="text-2xl font-black text-slate-900">Operations sign in</h1>
+            <h1 id="login-page-title" className="text-2xl font-black text-slate-900">Operations sign in</h1>
           </div>
         </div>
 
@@ -99,6 +99,6 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin, requestedRole = '
           <p className="flex items-center gap-2 font-semibold"><LockKeyhole className="h-4 w-4 text-emerald-600" /> Staff: derek@usaproplumbing.com / staff123</p>
         </div>
       </div>
-    </main>
+    </section>
   );
 };
