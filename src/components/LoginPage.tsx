@@ -86,7 +86,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin, requestedRole = '
             />
           </label>
           {error && <p className="rounded-xl bg-red-50 px-3 py-2 text-sm font-semibold text-red-700">{error}</p>}
-          <button type="submit" className="flex w-full items-center justify-center gap-2 rounded-xl bg-(--color-orange) px-4 py-3 font-black text-(--color-charcoal) transition hover:bg-(--color-orange-dark)">
+          <button type="submit" className="flex w-full items-center justify-center gap-2 rounded-xl bg-(--color-orange) px-4 py-3 font-black text-(--color-charcoal) transition hover:bg-orange-500">
             <LogIn className="h-4 w-4" />
             Sign in
           </button>

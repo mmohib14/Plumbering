@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { 
   Phone, 
   Search,
@@ -9,10 +9,17 @@ import {
   X, 
   Wrench, 
   ChevronDown, 
+  ChevronRight,
   Calendar, 
   Flame, 
   MapPin,
-  UserCheck
+  UserCheck,
+  Droplets,
+  Waves,
+  Pipette,
+  Building2,
+  Bath,
+  type LucideIcon,
 } from 'lucide-react';
 import { COMPANY_INFO, SERVICES_DATA, SERVICE_AREAS_DATA } from '../data/plumbingData';
 import { ServiceArea, ServiceItem } from '../types';
@@ -20,6 +27,24 @@ import { BrandLogo } from './BrandLogo';
 import { getShortAreaName, getShortServiceName } from '../services/displayLabels';
 
 type SpeechResultEvent = { results: ArrayLike<ArrayLike<{ transcript: string }>> };
+type DropdownPosition = { left: number; top: number; width: number; arrowLeft: number };
+
+const getDropdownPosition = (
+  triggerElement: HTMLElement | null,
+  headerElement: HTMLElement | null,
+  maxWidth: number
+): DropdownPosition | null => {
+  const trigger = triggerElement?.getBoundingClientRect();
+  const header = headerElement?.getBoundingClientRect();
+  if (!trigger || !header) return null;
+
+  const viewportWidth = document.documentElement.clientWidth;
+  const width = Math.min(maxWidth, viewportWidth - 32, viewportWidth - trigger.left - 16);
+  const left = Math.max(16, Math.min(trigger.left, viewportWidth - width - 16));
+  const arrowLeft = Math.max(24, Math.min(trigger.left + trigger.width / 2 - left, width - 24));
+  return { left, top: header.bottom, width, arrowLeft };
+};
+
 type SpeechRecognitionLike = {
   lang: string;
   interimResults: boolean;
@@ -51,6 +76,17 @@ const SEARCH_INTENTS: { phrases: string[]; serviceIds: string[] }[] = [
   { phrases: ['water heater', 'no hot water', 'hot water'], serviceIds: ['water-heater', 'emergency-plumbing'] },
   { phrases: ['plumber near me', 'service area', 'near me'], serviceIds: ['emergency-plumbing'] },
 ];
+
+const SERVICE_MENU_ICONS: Record<string, LucideIcon> = {
+  'emergency-plumbing': Flame,
+  'water-heater': Droplets,
+  'leak-detection': Pipette,
+  repiping: Wrench,
+  'drain-cleaning': Waves,
+  'sewer-repair': Waves,
+  'commercial-plumbing': Building2,
+  'fixture-repair': Bath,
+};
 
 const normalizeSearch = (value: string) => value
   .toLowerCase()
@@ -124,6 +160,8 @@ export const Header: React.FC<HeaderProps> = ({
   const [mobileAreasOpen, setMobileAreasOpen] = useState(false);
   const [servicesDropdownOpen, setServicesDropdownOpen] = useState(false);
   const [serviceAreasDropdownOpen, setServiceAreasDropdownOpen] = useState(false);
+  const [servicesMenuPosition, setServicesMenuPosition] = useState<DropdownPosition | null>(null);
+  const [serviceAreasMenuPosition, setServiceAreasMenuPosition] = useState<DropdownPosition | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchOpen, setSearchOpen] = useState(false);
   const [isListening, setIsListening] = useState(false);
@@ -133,6 +171,10 @@ export const Header: React.FC<HeaderProps> = ({
   );
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
   const recognitionRunRef = useRef(0);
+  const headerRef = useRef<HTMLElement>(null);
+  const servicesTriggerRef = useRef<HTMLDivElement>(null);
+  const serviceAreasTriggerRef = useRef<HTMLDivElement>(null);
+  const skipServicesFocusOpenRef = useRef(false);
   const servicesCloseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const areasCloseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -171,6 +213,7 @@ export const Header: React.FC<HeaderProps> = ({
     { tab: 'service-areas', label: 'Service Areas', keywords: 'areas zip location' },
     { tab: 'reviews', label: 'Customer Reviews', keywords: 'reviews testimonials rating' },
     { tab: 'blog', label: 'Guides & Blog', keywords: 'guides articles tips blog' },
+    { tab: 'faq', label: 'Frequently Asked Questions', keywords: 'faq questions answers help' },
     { tab: 'contact', label: 'Contact Us', keywords: 'contact phone address' },
   ];
 
@@ -189,6 +232,39 @@ export const Header: React.FC<HeaderProps> = ({
     clearServicesCloseTimer();
     clearAreasCloseTimer();
   }, []);
+
+  useLayoutEffect(() => {
+    if (!servicesDropdownOpen && !serviceAreasDropdownOpen) return;
+    const updateMenuPosition = () => {
+      if (servicesDropdownOpen) {
+        setServicesMenuPosition(getDropdownPosition(servicesTriggerRef.current, headerRef.current, 864));
+      }
+      if (serviceAreasDropdownOpen) {
+        setServiceAreasMenuPosition(getDropdownPosition(serviceAreasTriggerRef.current, headerRef.current, 608));
+      }
+    };
+
+    updateMenuPosition();
+    window.addEventListener('resize', updateMenuPosition);
+    window.addEventListener('scroll', updateMenuPosition, true);
+    return () => {
+      window.removeEventListener('resize', updateMenuPosition);
+      window.removeEventListener('scroll', updateMenuPosition, true);
+    };
+  }, [servicesDropdownOpen, serviceAreasDropdownOpen]);
+
+  useEffect(() => {
+    if (!servicesDropdownOpen) return;
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setServicesDropdownOpen(false);
+        skipServicesFocusOpenRef.current = true;
+        servicesTriggerRef.current?.querySelector('button')?.focus();
+      }
+    };
+    window.addEventListener('keydown', handleEscape);
+    return () => window.removeEventListener('keydown', handleEscape);
+  }, [servicesDropdownOpen]);
 
   const handleNavClick = (tab: string) => {
     clearServicesCloseTimer();
@@ -220,13 +296,6 @@ export const Header: React.FC<HeaderProps> = ({
     setMobileMenuOpen(false);
     setSearchOpen(false);
   };
-
-  const serviceGroups = [
-    { label: 'Drains & Sewer', services: SERVICES_DATA.filter(service => service.category === 'drain-sewer') },
-    { label: 'Water Heaters', services: SERVICES_DATA.filter(service => service.category === 'water-heater') },
-    { label: 'Emergency & Residential', services: SERVICES_DATA.filter(service => service.category === 'emergency' || service.category === 'residential') },
-    { label: 'Commercial', services: SERVICES_DATA.filter(service => service.category === 'commercial') },
-  ].filter(group => group.services.length > 0);
 
   const handleSearchSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -314,7 +383,7 @@ export const Header: React.FC<HeaderProps> = ({
   };
 
   return (
-    <header className="site-header sticky top-0 z-50 border-b transition-all">
+    <header ref={headerRef} className="site-header sticky top-0 z-50 border-b transition-all">
       <div className="site-announcement border-b text-[10px] font-bold sm:text-xs">
         <div className="site-announcement-inner mx-auto flex min-h-8 max-w-360 flex-wrap items-center justify-center gap-x-2 gap-y-0.5 px-4 py-1 sm:justify-between sm:px-6 lg:px-8">
           <span className="tracking-wide">America&apos;s trusted plumbing team <span className="hidden sm:inline">· Licensed, insured, and available 24/7</span></span>
@@ -343,7 +412,7 @@ export const Header: React.FC<HeaderProps> = ({
               <div className="flex w-fit min-w-0 items-center justify-center gap-1">
               <button
                 onClick={() => handleNavClick('home')}
-                className={`rounded-lg px-3 py-1.5 text-sm font-semibold transition-all ${
+                className={`rounded-lg px-3 py-1.5 text-sm font-semibold transition-none ${
                   currentTab === 'home'
                     ? 'site-nav-active shadow-sm'
                     : 'text-slate-700 hover:bg-orange-50'
@@ -353,6 +422,7 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
 
               <div
+                ref={servicesTriggerRef}
                 className="relative"
                 onMouseEnter={() => {
                   clearServicesCloseTimer();
@@ -361,6 +431,10 @@ export const Header: React.FC<HeaderProps> = ({
                   setServiceAreasDropdownOpen(false);
                 }}
                 onFocus={() => {
+                  if (skipServicesFocusOpenRef.current) {
+                    skipServicesFocusOpenRef.current = false;
+                    return;
+                  }
                   clearServicesCloseTimer();
                   clearAreasCloseTimer();
                   setServicesDropdownOpen(true);
@@ -376,7 +450,7 @@ export const Header: React.FC<HeaderProps> = ({
                   aria-haspopup="true"
                   aria-expanded={servicesDropdownOpen}
                   aria-controls="services-mega-menu"
-                    className={`flex items-center rounded-lg px-3 py-1.5 text-sm font-semibold transition-all ${
+                    className={`flex items-center rounded-lg px-3 py-1.5 text-sm font-semibold transition-none ${
                     currentTab === 'services'
                       ? 'site-nav-active shadow-sm'
                       : 'text-slate-700 hover:bg-orange-50'
@@ -388,39 +462,64 @@ export const Header: React.FC<HeaderProps> = ({
 
                 <div className="absolute left-0 top-full z-40 h-2" aria-hidden="true" />
                 {servicesDropdownOpen && (
-                  <div id="services-mega-menu" className="fixed left-1/2 top-[6.5rem] z-[60] w-[min(94vw,74rem)] -translate-x-1/2 overflow-hidden rounded-2xl border border-slate-200 border-t-4 border-t-(--color-orange) bg-white text-(--color-navy) shadow-[0_24px_60px_rgba(13,44,84,0.2)]">
-                    <div className="grid grid-cols-[repeat(4,minmax(0,1fr))_0.85fr] gap-0">
-                      {serviceGroups.map(group => (
-                        <div key={group.label} className="space-y-1 border-r border-slate-200 p-3">
-                          <div className="mb-1 text-[9px] font-black uppercase tracking-[0.14em] text-(--color-orange-dark)">{group.label}</div>
-                          {group.services.map(service => (
-                            <button key={service.id} type="button" onClick={() => handleServiceClick(service)} className="flex min-h-12 w-full items-center rounded-md px-2 text-left transition-colors hover:bg-(--color-ice) hover:text-(--color-navy)">
-                              <span className="block text-xs font-bold leading-4 text-slate-800">{getShortServiceName(service)}</span>
-                            </button>
-                          ))}
+                  <div
+                    id="services-mega-menu"
+                    className="services-menu-panel fixed z-[60] max-h-[calc(100dvh-7rem)] overflow-y-auto rounded-2xl border border-slate-200 border-t-4 border-t-(--color-orange) bg-white text-(--color-navy) shadow-[0_20px_48px_rgba(13,44,84,0.16)]"
+                    style={servicesMenuPosition ? { left: servicesMenuPosition.left, top: servicesMenuPosition.top, width: servicesMenuPosition.width } : undefined}
+                  >
+                    {servicesMenuPosition && (
+                      <span className="services-menu-connector" aria-hidden="true" style={{ left: servicesMenuPosition.arrowLeft }} />
+                    )}
+                    <div className="grid grid-cols-[minmax(0,1fr)_15rem] max-[639px]:grid-cols-1">
+                      <div className="p-4 sm:p-5">
+                        <h3 className="mb-3 text-xs font-black uppercase tracking-[0.18em] text-(--color-orange-dark)">Services</h3>
+                        <div className="grid grid-cols-2 content-start gap-x-3 gap-y-1 max-[639px]:grid-cols-1">
+                          {SERVICES_DATA.map(service => {
+                            const ServiceIcon = SERVICE_MENU_ICONS[service.id] ?? Wrench;
+                            const isActive = window.location.pathname === `/services/${service.slug}`;
+                            return (
+                              <button
+                              key={service.id}
+                              type="button"
+                              onClick={() => handleServiceClick(service)}
+                              aria-current={isActive ? 'page' : undefined}
+                              className={`services-menu-item group flex min-h-11 w-full items-center justify-between gap-2 rounded-lg border px-2.5 py-2 text-left focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-(--color-orange) ${isActive ? 'border-sky-100 bg-(--color-ice) font-bold text-(--color-navy)' : 'border-transparent text-slate-700 hover:border-slate-200 hover:bg-(--color-ice) hover:text-(--color-navy)'}`}
+                            >
+                              <span className="flex min-w-0 items-center gap-2.5">
+                                <ServiceIcon className={`h-4 w-4 shrink-0 ${isActive ? 'text-(--color-orange-dark)' : 'text-slate-400 group-hover:text-(--color-orange-dark)'}`} strokeWidth={1.8} aria-hidden="true" />
+                                <span className="block truncate text-[13px] leading-5">{getShortServiceName(service)}</span>
+                              </span>
+                              <ChevronRight className="services-menu-arrow h-3.5 w-3.5 shrink-0 text-slate-400 opacity-0 group-hover:text-(--color-orange-dark) group-hover:opacity-100" aria-hidden="true" />
+                              </button>
+                            );
+                          })}
                         </div>
-                      ))}
+                      </div>
 
-                      <div className="flex flex-col justify-between bg-(--color-ice) p-3">
+                      <div className="flex flex-col justify-between border-l border-orange-100 bg-orange-50/70 p-4 sm:p-5 max-[639px]:border-l-0 max-[639px]:border-t">
                         <div>
-                          <div className="text-[9px] font-black uppercase tracking-[0.14em] text-(--color-orange-dark)">Need help now?</div>
-                          <div className="mt-2 text-xl font-black tracking-tight text-(--color-navy)">24/7</div>
-                          <div className="mt-0.5 text-xs font-semibold text-slate-700">Emergency plumbing</div>
+                          <h3 className="text-xs font-black uppercase tracking-[0.18em] text-(--color-orange-dark)">Emergency</h3>
+                          <div className="mt-2.5 text-3xl font-black tracking-tight text-(--color-navy)">24/7</div>
+                          <div className="mt-1 text-sm font-semibold text-slate-700">Emergency plumbing</div>
+                          <a href={`tel:${COMPANY_INFO.phoneRaw}`} className="mt-4 flex min-h-11 items-center gap-2 rounded-xl border border-orange-200 bg-white px-3 py-2 text-sm font-semibold text-(--color-navy) hover:border-(--color-orange) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-orange)">
+                            <Phone className="h-4 w-4 text-(--color-orange-dark)" />
+                            {COMPANY_INFO.phone}
+                          </a>
                         </div>
                         <div className="mt-4 space-y-2">
                           <button
                             type="button"
                             onClick={() => handleNavClick('emergency')}
-                            className="block min-h-12 w-full rounded-lg bg-(--color-orange) px-2.5 py-2 text-xs font-black text-(--color-charcoal) transition-colors hover:brightness-95"
+                            className="services-menu-action block min-h-11 w-full rounded-xl bg-(--color-orange) px-3 py-2.5 text-sm font-black text-(--color-charcoal) shadow-[0_8px_20px_rgba(255,107,53,0.18)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-orange) hover:brightness-95 active:translate-y-px"
                           >
-                            Emergency service
+                            Emergency Service
                           </button>
                           <button
                             type="button"
                             onClick={() => handleNavClick('services')}
-                            className="block min-h-12 w-full rounded-lg border border-slate-300 bg-white px-2.5 py-2 text-xs font-bold text-(--color-navy) transition-colors hover:border-(--color-orange)"
+                            className="services-menu-action block min-h-11 w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm font-bold text-(--color-navy) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-orange) hover:border-(--color-orange) hover:bg-white active:translate-y-px"
                           >
-                            All services
+                            View All Services
                           </button>
                         </div>
                       </div>
@@ -430,6 +529,7 @@ export const Header: React.FC<HeaderProps> = ({
               </div>
 
               <div
+                ref={serviceAreasTriggerRef}
                 className="relative"
                 onMouseEnter={() => {
                   clearAreasCloseTimer();
@@ -453,7 +553,7 @@ export const Header: React.FC<HeaderProps> = ({
                   aria-haspopup="true"
                   aria-expanded={serviceAreasDropdownOpen}
                   aria-controls="service-areas-mega-menu"
-                  className={`flex items-center rounded-lg px-3 py-1.5 text-sm font-semibold transition-all ${
+                  className={`flex items-center rounded-lg px-3 py-1.5 text-sm font-semibold transition-none ${
                     currentTab === 'service-areas'
                       ? 'site-nav-active shadow-sm'
                       : 'text-slate-700 hover:bg-orange-50'
@@ -465,7 +565,11 @@ export const Header: React.FC<HeaderProps> = ({
 
                 <div className="absolute left-0 top-full z-40 h-2" aria-hidden="true" />
                 {serviceAreasDropdownOpen && (
-                  <div id="service-areas-mega-menu" className="fixed left-1/2 top-[6.5rem] z-[60] w-[min(94vw,38rem)] -translate-x-1/2 overflow-hidden rounded-2xl border border-slate-200 border-t-4 border-t-(--color-orange) bg-white text-(--color-navy) shadow-[0_24px_60px_rgba(13,44,84,0.2)]">
+                  <div
+                    id="service-areas-mega-menu"
+                    className="fixed z-[60] overflow-hidden rounded-2xl border border-slate-200 border-t-4 border-t-(--color-orange) bg-white text-(--color-navy) shadow-[0_24px_60px_rgba(13,44,84,0.2)]"
+                    style={serviceAreasMenuPosition ? { left: serviceAreasMenuPosition.left, top: serviceAreasMenuPosition.top, width: serviceAreasMenuPosition.width } : undefined}
+                  >
                     <div className="grid grid-cols-[minmax(0,1fr)_10rem]">
                       <div className="p-4">
                         <p className="text-[9px] font-black uppercase tracking-[0.14em] text-(--color-orange-dark)">Service coverage</p>
@@ -511,7 +615,7 @@ export const Header: React.FC<HeaderProps> = ({
 
               <button
                 onClick={() => handleNavClick('contact')}
-                className={`rounded-lg px-3 py-1.5 text-sm font-semibold transition-all ${
+                className={`rounded-lg px-3 py-1.5 text-sm font-semibold transition-none ${
                   currentTab === 'contact'
                     ? 'site-nav-active shadow-sm'
                     : 'text-slate-700 hover:bg-orange-50'
@@ -543,10 +647,10 @@ export const Header: React.FC<HeaderProps> = ({
               />
               <a
                 href={`tel:${COMPANY_INFO.phoneRaw}`}
-                className="group flex h-11 shrink-0 items-center gap-2 rounded-xl border border-slate-200 bg-transparent px-2.5 text-left transition-all hover:-translate-y-0.5 hover:border-(--color-orange) hover:bg-white"
+                className="group flex h-11 shrink-0 items-center gap-2 rounded-xl border border-slate-200 bg-transparent px-2.5 text-left transition-none hover:border-(--color-orange) hover:bg-white"
                 aria-label={`Call emergency plumbing 24/7 at ${COMPANY_INFO.phone}`}
               >
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg transition-transform group-hover:scale-105">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg">
                   <Flame className="h-4 w-4 text-(--color-orange-dark)" />
                 </div>
                 <div>
@@ -557,7 +661,7 @@ export const Header: React.FC<HeaderProps> = ({
 
               <button
                 onClick={() => onOpenBooking()}
-                className="site-cta flex h-11 shrink-0 items-center gap-2 rounded-xl px-4 text-xs font-black uppercase transition-all hover:-translate-y-0.5 hover:shadow-xl"
+                className="site-cta flex h-11 shrink-0 items-center gap-2 rounded-xl px-4 text-xs font-black uppercase transition-none hover:bg-orange-500 hover:shadow-xl"
               >
                 <Calendar className="h-4 w-4" />
                 <span>Book Now</span>
@@ -616,15 +720,6 @@ export const Header: React.FC<HeaderProps> = ({
                 <span>Book Online</span>
               </button>
             </div>
-            <div className="flex justify-center">
-              <button
-                onClick={() => handleNavClick('staff')}
-                className="site-nav flex min-h-12 w-1/2 items-center justify-center gap-2 rounded-xl px-3 py-2.5 text-sm font-bold text-slate-800"
-              >
-                <UserCheck className="h-4 w-4" />
-                <span>Staff Login</span>
-              </button>
-            </div>
           </div>
 
           <div className="mt-3">
@@ -677,11 +772,26 @@ export const Header: React.FC<HeaderProps> = ({
             </button>
             {mobileServicesOpen && (
               <div className="grid gap-1 border-l-2 border-orange-300 pl-3 sm:col-start-2">
-                {SERVICES_DATA.map(service => (
-                <button key={service.id} type="button" onClick={() => handleServiceClick(service)} className="flex min-h-12 w-full items-center rounded-lg px-3 py-2 text-left hover:bg-orange-50 hover:text-orange-900">
-                  <span className="block text-xs font-semibold leading-4 text-slate-800">{getShortServiceName(service)}</span>
-                </button>
-              ))}
+                {SERVICES_DATA.map(service => {
+                  const ServiceIcon = SERVICE_MENU_ICONS[service.id] ?? Wrench;
+                  return (
+                    <button key={service.id} type="button" onClick={() => handleServiceClick(service)} className="flex min-h-12 w-full items-center gap-2 rounded-lg px-3 py-2 text-left hover:bg-orange-50 hover:text-orange-900 focus-visible:outline-2 focus-visible:outline-orange-600">
+                      <ServiceIcon className="h-4 w-4 shrink-0 text-slate-400" strokeWidth={1.8} aria-hidden="true" />
+                      <span className="block text-xs font-semibold leading-4 text-slate-800">{getShortServiceName(service)}</span>
+                    </button>
+                  );
+                })}
+                <div className="mt-2 rounded-xl border border-orange-200 bg-orange-50 p-3">
+                  <h3 className="text-[10px] font-black uppercase tracking-[0.16em] text-(--color-orange-dark)">Emergency · 24/7</h3>
+                  <a href={`tel:${COMPANY_INFO.phoneRaw}`} className="mt-2 flex min-h-11 items-center gap-2 rounded-lg border border-orange-200 bg-white px-3 text-sm font-bold text-(--color-navy)">
+                    <Phone className="h-4 w-4 text-(--color-orange-dark)" />
+                    {COMPANY_INFO.phone}
+                  </a>
+                  <div className="mt-2 grid grid-cols-1 gap-2">
+                    <button type="button" onClick={() => handleNavClick('emergency')} className="min-h-11 rounded-lg bg-(--color-orange) px-3 text-sm font-bold text-(--color-charcoal)">Emergency Service</button>
+                    <button type="button" onClick={() => handleNavClick('services')} className="min-h-11 rounded-lg border border-slate-300 bg-white px-3 text-sm font-bold text-(--color-navy)">View All Services</button>
+                  </div>
+                </div>
               </div>
             )}
 
@@ -731,6 +841,15 @@ export const Header: React.FC<HeaderProps> = ({
               }`}
             >
               Contact Us
+            </button>
+
+            <button
+              onClick={() => handleNavClick('faq')}
+              className={`min-h-12 w-full rounded-lg px-3 py-2 text-left text-sm font-semibold ${
+                currentTab === 'faq' ? 'bg-orange-100 text-orange-950' : 'text-slate-700 hover:bg-slate-100'
+              }`}
+            >
+              FAQs
             </button>
 
             <button
@@ -889,8 +1008,8 @@ const HeaderSearchControl: React.FC<HeaderSearchControlProps> = ({
             <div className="flex snap-x gap-3 overflow-x-auto px-4 py-3 focus-visible:outline-2 focus-visible:outline-(--color-orange)" tabIndex={0} aria-label="Matching services. Scroll horizontally for more results.">
               {results.map(service => (
                 <article key={service.id} className="w-72 shrink-0 snap-start overflow-hidden rounded-xl border border-slate-200 bg-white">
-                  <div className="relative h-28 bg-slate-100">
-                    <img src={service.imageUrl} alt={service.title} loading="lazy" className="h-full w-full object-cover" />
+                  <div className="relative flex h-28 items-center justify-center bg-gradient-to-br from-sky-100 via-white to-orange-100 text-(--color-navy)">
+                    <Wrench className="h-9 w-9" aria-hidden="true" />
                     {service.isEmergency && (
                       <span className="absolute left-2 top-2 inline-flex items-center gap-1 rounded-md bg-white/95 px-2 py-1 text-[10px] font-bold text-red-800 shadow-sm">
                         <Flame className="h-3 w-3" /> 24/7 Emergency
@@ -903,7 +1022,7 @@ const HeaderSearchControl: React.FC<HeaderSearchControlProps> = ({
                       <button type="button" onClick={() => onSelectService(service)} className="min-h-12 rounded-lg border border-slate-300 px-2 py-2 text-xs font-bold text-slate-800 hover:border-(--color-orange) hover:bg-orange-50 focus-visible:outline-2 focus-visible:outline-(--color-orange)">
                         View Service
                       </button>
-                      <button type="button" onClick={() => onBookService(service)} className="min-h-12 rounded-lg bg-(--color-orange) px-2 py-2 text-xs font-bold text-slate-950 hover:bg-(--color-orange-dark) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-orange)">
+                      <button type="button" onClick={() => onBookService(service)} className="min-h-12 rounded-lg bg-(--color-orange) px-2 py-2 text-xs font-bold text-slate-950 hover:bg-orange-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-orange)">
                         Book Now
                       </button>
                       <button type="button" onClick={() => onBookService(service)} className="min-h-12 rounded-lg border border-orange-200 px-2 py-2 text-xs font-bold text-orange-900 hover:bg-orange-50 focus-visible:outline-2 focus-visible:outline-(--color-orange)">

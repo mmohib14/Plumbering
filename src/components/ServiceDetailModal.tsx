@@ -42,12 +42,8 @@ export const ServiceDetailModal: React.FC<ServiceDetailModalProps> = ({
       >
         {/* Modal Header with Photo Banner */}
         <div className="relative h-56 sm:h-64 bg-slate-900 shrink-0">
-          <img
-            src={service.imageUrl}
-            alt={service.title}
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-(--color-navy) via-sky-900 to-orange-900"></div>
+          <div className="absolute inset-0 bg-linear-to-t from-slate-950/80 via-slate-950/20 to-transparent"></div>
 
           {/* Close Button */}
           <button
@@ -100,7 +96,7 @@ export const ServiceDetailModal: React.FC<ServiceDetailModalProps> = ({
                   onClose();
                   onBookService(service.id);
                 }}
-                className="w-full sm:w-auto bg-(--color-orange) hover:bg-(--color-orange-dark) text-slate-950 font-bold px-5 py-2.5 rounded-xl text-sm transition-colors shadow-md shadow-orange-600/20"
+                className="w-full sm:w-auto bg-(--color-orange) hover:bg-orange-500 text-slate-950 font-bold px-5 py-2.5 rounded-xl text-sm transition-colors shadow-md shadow-orange-600/20"
               >
                 Book This Service
               </button>
@@ -180,7 +176,7 @@ export const ServiceDetailModal: React.FC<ServiceDetailModalProps> = ({
           <div className="flex items-center space-x-2 w-full sm:w-auto">
             <a
               href={`tel:${COMPANY_INFO.phoneRaw}`}
-              className="flex-1 sm:flex-initial bg-(--color-orange) hover:bg-(--color-orange-dark) text-slate-950 font-bold px-4 py-2.5 rounded-xl text-xs flex items-center justify-center space-x-1.5 transition-colors shadow-sm"
+              className="flex-1 sm:flex-initial bg-(--color-orange) hover:bg-orange-500 text-slate-950 font-bold px-4 py-2.5 rounded-xl text-xs flex items-center justify-center space-x-1.5 transition-colors shadow-sm"
             >
               <Phone className="w-3.5 h-3.5" />
               <span>Call Now</span>

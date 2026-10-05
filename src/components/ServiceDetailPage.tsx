@@ -59,7 +59,6 @@ export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
   const isDrainOrSewer = service.category === 'drain-sewer';
   const imageFirst = service.id === 'sewer-repair' || service.id === 'water-heater' || isCommercial;
   const serviceName = service.title.replace(/^(24\/7 )?/, '');
-
   return (
     <div className="overflow-hidden bg-white text-slate-900">
       <section className="bg-(--color-navy) text-white">
@@ -99,12 +98,19 @@ export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
 
           <div className={`relative min-w-0 ${imageFirst ? 'lg:order-1' : ''}`}>
             <div className="relative overflow-hidden rounded-2xl bg-slate-800 lg:rounded-[1.75rem]" style={{ aspectRatio: '4 / 3' }}>
-              <img
-                src={service.imageUrl}
-                alt={`${serviceName} plumbing service`}
-                className="absolute inset-0 h-full w-full object-cover"
-                fetchPriority="high"
-              />
+              {service.detailImageUrl ? (
+                <img
+                  src={service.detailImageUrl}
+                  alt={service.detailImageAlt || service.title}
+                  loading="eager"
+                  decoding="async"
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-sky-100 via-white to-orange-100 text-(--color-navy)" aria-hidden="true">
+                  <Wrench className="h-20 w-20" />
+                </div>
+              )}
             </div>
             <div className={`absolute bottom-3 ${imageFirst ? 'left-3 sm:left-6' : 'right-3 sm:right-6'} max-w-[calc(100%-1.5rem)] rounded-xl border border-slate-200 bg-white/95 px-4 py-3 text-slate-900 shadow-lg backdrop-blur-sm sm:px-5`}>
               <p className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-slate-500">Typical price range</p>

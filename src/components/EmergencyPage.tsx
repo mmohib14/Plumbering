@@ -44,7 +44,7 @@ export const EmergencyPage: React.FC<EmergencyPageProps> = ({ onOpenBooking }) =
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
             <a
               href={`tel:${COMPANY_INFO.phoneRaw}`}
-              className="w-full sm:w-auto inline-flex items-center justify-center bg-(--color-orange) hover:bg-(--color-orange-dark) active:bg-orange-800 text-slate-950 font-black text-sm px-5 py-3 rounded-lg shadow-lg shadow-orange-600/20 transition-transform active:scale-95"
+              className="w-full sm:w-auto inline-flex items-center justify-center bg-(--color-orange) hover:bg-orange-500 active:bg-orange-500 text-slate-950 font-black text-sm px-5 py-3 rounded-lg shadow-lg shadow-orange-600/20 transition-transform active:scale-95"
             >
               <Phone className="w-4 h-4 mr-2 animate-pulse" />
               <span>Call Now</span>

@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { ArrowRight, Check, ChevronDown, Flame, Phone } from 'lucide-react';
+import { ArrowRight, Check, ChevronDown, Flame, Phone, Wrench } from 'lucide-react';
 import { COMPANY_INFO, SERVICES_DATA } from '../data/plumbingData';
 import { ServiceItem } from '../types';
 
@@ -41,9 +41,9 @@ export const ServicesGrid: React.FC<ServicesGridProps> = ({ onSelectService, onO
                 <a href={`tel:${COMPANY_INFO.phoneRaw}`} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-lg border border-white/30 px-5 text-sm font-bold text-white hover:bg-white/10"><Phone className="h-4 w-4" />Call {COMPANY_INFO.phone}</a>
               </div>
             </div>
-            <button type="button" onClick={() => onSelectService(featured)} style={{ aspectRatio: '16 / 10' }} className="group relative overflow-hidden rounded-2xl text-left">
-              <img src={featured.imageUrl} alt={featured.title} className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" fetchPriority="high" />
-              <span className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/10 to-transparent" />
+            <button type="button" onClick={() => onSelectService(featured)} style={{ aspectRatio: '16 / 10' }} className="group relative flex items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-sky-100 via-white to-orange-100 text-left text-(--color-navy)">
+              <Wrench className="h-16 w-16" aria-hidden="true" />
+              <span className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-transparent" />
               <span className="absolute bottom-0 left-0 right-0 flex items-end justify-between gap-4 p-5 sm:p-7">
                 <span><span className="inline-flex items-center gap-1 rounded-full bg-amber-400 px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider text-slate-950"><Flame className="h-3 w-3" /> 24/7 emergency</span><span className="mt-2 block text-xl font-extrabold text-white sm:text-2xl">{featured.title}</span><span className="mt-1 block text-xs text-slate-200">{featured.priceRange} · {featured.unit}</span></span>
                 <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-(--color-navy)"><ArrowRight className="h-5 w-5" /></span>
@@ -78,8 +78,18 @@ export const ServicesGrid: React.FC<ServicesGridProps> = ({ onSelectService, onO
         <div className="divide-y divide-slate-200">
           {filteredServices.map((service, index) => (
             <article key={service.id} className="grid items-center gap-5 py-7 sm:py-9 md:grid-cols-2 md:gap-9 lg:gap-14">
-              <button type="button" onClick={() => onSelectService(service)} style={{ aspectRatio: '16 / 10' }} className={`group relative overflow-hidden rounded-xl bg-slate-100 text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500 ${index % 2 ? 'md:order-2' : ''}`}>
-                <img src={service.imageUrl} alt={service.title} loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" />
+              <button type="button" onClick={() => onSelectService(service)} aria-label={`View ${service.title} details`} style={{ aspectRatio: '16 / 10' }} className={`group relative flex items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-sky-100 via-white to-orange-100 text-left text-(--color-navy) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500 ${index % 2 ? 'md:order-2' : ''}`}>
+                {service.catalogImageUrl ? (
+                  <img
+                    src={service.catalogImageUrl}
+                    alt={service.title}
+                    loading="lazy"
+                    decoding="async"
+                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                  />
+                ) : (
+                  <Wrench className="h-14 w-14 transition-transform duration-300 group-hover:scale-110" aria-hidden="true" />
+                )}
                 {service.isEmergency && <span className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full bg-amber-400 px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wide text-slate-950"><Flame className="h-3 w-3" /> Emergency available</span>}
               </button>
               <div>

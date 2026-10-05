@@ -73,7 +73,7 @@ export const EmergencyAlertBanner: React.FC<EmergencyAlertBannerProps> = ({ onOp
             <div className="pt-2 flex flex-col sm:flex-row gap-3">
               <a
                 href={`tel:${COMPANY_INFO.phoneRaw}`}
-                className="flex-1 bg-(--color-orange) hover:bg-(--color-orange-dark) active:bg-orange-800 text-slate-950 font-black py-3.5 px-4 rounded-xl shadow-lg transition-transform active:scale-95 text-center flex items-center justify-center space-x-2"
+                className="flex-1 bg-(--color-orange) hover:bg-orange-500 active:bg-orange-500 text-slate-950 font-black py-3.5 px-4 rounded-xl shadow-lg transition-transform active:scale-95 text-center flex items-center justify-center space-x-2"
               >
                 <Phone className="w-4 h-4" />
                 <span>Call 24/7</span>

@@ -42,9 +42,11 @@ const NAV_TABS = new Set([
   'service-areas',
   'reviews',
   'blog',
+  'faq',
   'contact',
   'admin',
-  'staff'
+  'staff',
+  'not-found'
 ]);
 
 const getTabFromLocation = (): string => {
@@ -54,17 +56,25 @@ const getTabFromLocation = (): string => {
   if (pathname.startsWith('service-areas/')) return 'service-areas';
 
   const requestedTab = window.location.hash.replace(/^#\/?/, '');
-  return NAV_TABS.has(requestedTab) ? requestedTab : 'home';
+  return NAV_TABS.has(requestedTab) ? requestedTab : pathname ? 'not-found' : 'home';
+};
+
+const decodeRouteSegment = (segment: string) => {
+  try {
+    return decodeURIComponent(segment);
+  } catch {
+    return segment;
+  }
 };
 
 const getServiceSlugFromLocation = (): string | null => {
   const match = window.location.pathname.match(/^\/services\/([^/?#]+)/i);
-  return match ? decodeURIComponent(match[1]) : null;
+  return match ? decodeRouteSegment(match[1]) : null;
 };
 
 const getServiceAreaSlugFromLocation = (): string | null => {
   const match = window.location.pathname.match(/^\/service-areas\/([^/?#]+)/i);
-  return match ? decodeURIComponent(match[1]) : null;
+  return match ? decodeRouteSegment(match[1]) : null;
 };
 
 const PAGE_METADATA: Record<string, { title: string; description: string }> = {
@@ -100,12 +110,20 @@ const PAGE_METADATA: Record<string, { title: string; description: string }> = {
     title: 'Plumbing Guides & Advice | USA Pro Plumbing',
     description: 'Practical plumbing guidance on emergency water shutoffs, drain care, water heaters, and home maintenance.',
   },
+  faq: {
+    title: 'Plumbing FAQs | USA Pro Plumbing',
+    description: 'Answers to common questions about plumbing services, emergency response, estimates, and service coverage.',
+  },
   contact: {
     title: 'Contact USA Pro Plumbing | Request Service',
     description: 'Contact USA Pro Plumbing to ask about service availability, request an estimate, or get help with an urgent plumbing issue.',
   },
   admin: { title: 'Operations Sign In | USA Pro Plumbing', description: 'Secure operations sign-in for USA Pro Plumbing administrators.' },
   staff: { title: 'Staff Sign In | USA Pro Plumbing', description: 'Secure operations sign-in for USA Pro Plumbing field staff.' },
+  'not-found': {
+    title: 'Page Not Found | USA Pro Plumbing',
+    description: 'The page you requested could not be found. Explore USA Pro Plumbing services or return to the home page.',
+  },
 };
 
 export default function App() {
@@ -153,6 +171,8 @@ export default function App() {
       ? { title: `${service.title} | USA Pro Plumbing`, description: service.shortDesc }
       : serviceArea
         ? { title: `Plumber in ${serviceArea.city}, ${serviceArea.state} | USA Pro Plumbing`, description: `Explore plumbing services and coverage information for ${serviceArea.city}, ${serviceArea.state}. ${serviceArea.metroArea}.` }
+        : (serviceRouteSlug || serviceAreaRouteSlug) && !service && !serviceArea
+          ? PAGE_METADATA['not-found']
         : (currentTab === 'admin' || currentTab === 'staff') && currentUser
       ? {
           title: `${currentUser.role === 'owner' ? 'Owner' : currentUser.role === 'admin' ? 'Admin' : 'Staff'} Operations | USA Pro`,
@@ -182,7 +202,7 @@ export default function App() {
         : requestedTab === 'staff' && currentUser && currentUser.role !== 'staff'
           ? 'admin'
           : requestedTab;
-      setCurrentTab(NAV_TABS.has(guardedTab) ? guardedTab : 'home');
+      setCurrentTab(NAV_TABS.has(guardedTab) ? guardedTab : 'not-found');
       setServiceRouteSlug(getServiceSlugFromLocation());
       setServiceAreaRouteSlug(getServiceAreaSlugFromLocation());
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -330,7 +350,19 @@ export default function App() {
 
       {/* Main Content Area based on currentTab */}
       <main className="flex-1">
-        {activeServiceRoute ? (
+        {(currentTab === 'not-found' ||
+          (serviceRouteSlug !== null && !activeServiceRoute) ||
+          (serviceAreaRouteSlug !== null && !activeServiceAreaRoute)) ? (
+          <section aria-labelledby="not-found-title" className="flex min-h-[55vh] flex-1 flex-col items-center justify-center bg-slate-50 px-4 py-16 text-center">
+            <p className="text-sm font-extrabold uppercase tracking-[0.16em] text-orange-900">404 · Page not found</p>
+            <h1 id="not-found-title" className="mt-3 text-3xl font-extrabold text-(--color-navy) sm:text-4xl">We couldn’t find that page.</h1>
+            <p className="mt-3 max-w-lg text-sm leading-6 text-slate-600">The address may be incorrect or the page may have moved. You can return home or browse our plumbing services.</p>
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+              <button type="button" onClick={() => handleSelectTab('home')} className="min-h-11 rounded-lg bg-(--color-orange) px-5 text-sm font-extrabold text-slate-950 hover:brightness-95">Return home</button>
+              <button type="button" onClick={() => handleSelectTab('services')} className="min-h-11 rounded-lg border border-slate-300 bg-white px-5 text-sm font-bold text-(--color-navy) hover:bg-slate-100">Browse services</button>
+            </div>
+          </section>
+        ) : activeServiceRoute ? (
           <ServiceDetailPage
             service={activeServiceRoute}
             onSelectTab={handleSelectTab}
@@ -437,6 +469,12 @@ export default function App() {
             <BlogSection
               onOpenBooking={handleOpenBooking}
             />
+          </div>
+        )}
+
+        {currentTab === 'faq' && (
+          <div className="py-8">
+            <FaqSection onOpenBooking={handleOpenBooking} headingLevel="h1" />
           </div>
         )}
 

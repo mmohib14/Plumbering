@@ -9,7 +9,11 @@ export interface ServiceItem {
   category: ServiceCategory;
   isEmergency: boolean;
   iconName: string;
-  imageUrl: string;
+  imageUrl?: string;
+  highlightImageUrl?: string;
+  catalogImageUrl?: string;
+  detailImageUrl?: string;
+  detailImageAlt?: string;
   priceRange: string;
   unit: string;
   commonSymptoms: string[];
@@ -136,11 +140,9 @@ export interface BlogPost {
   author: {
     name: string;
     role: string;
-    avatar: string;
   };
   excerpt: string;
   content: string[];
-  coverImage: string;
   tags: string[];
 }
 

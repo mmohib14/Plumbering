@@ -1,5 +1,5 @@
 import React from 'react';
-import { AlertTriangle, ArrowRight, BadgeCheck, BookOpen, Building2, Calculator, Clock3, CreditCard, Mail, MapPin, MessageCircle, Phone, ShieldCheck, Star } from 'lucide-react';
+import { AlertTriangle, ArrowRight, BadgeCheck, BookOpen, Building2, Calculator, Clock3, CreditCard, Mail, MapPin, MessageCircle, Phone, ShieldCheck, Star, Wrench } from 'lucide-react';
 import { COMPANY_INFO, SERVICE_AREAS_DATA, SERVICES_DATA } from '../data/plumbingData';
 import { ServiceArea, ServiceItem } from '../types';
 import { ContactInquiryForm } from './ContactInquiryForm';
@@ -104,7 +104,13 @@ export const HomePageShowcases: React.FC<HomePageShowcasesProps> = ({
           {SERVICES_DATA.map(service => (
             <article key={service.id} className="flex min-w-0 flex-col overflow-hidden rounded-xl border border-slate-200 bg-white">
               <button type="button" onClick={() => onSelectService(service)} aria-label={`View ${getShortServiceName(service)} service details`} className="group relative block aspect-[16/10] overflow-hidden bg-slate-100 text-left focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-orange-500">
-                <img src={service.imageUrl} alt={service.title} loading="lazy" className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]" />
+                {service.imageUrl ? (
+                  <img src={service.imageUrl} alt={service.title} loading="lazy" className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]" />
+                ) : (
+                  <span className="flex h-full items-center justify-center bg-gradient-to-br from-sky-100 via-white to-orange-100 text-(--color-navy)" aria-hidden="true">
+                    <Wrench className="h-12 w-12" />
+                  </span>
+                )}
                 <span aria-label={`Typical range: ${service.priceRange} for ${service.unit}`} className="absolute bottom-2 left-2 rounded-md bg-white/95 px-2.5 py-1 text-xs font-extrabold text-(--color-navy)">{service.priceRange}<span className="ml-1.5 text-[10px] font-semibold text-slate-600">typical range</span></span>
               </button>
               <div className="flex flex-1 flex-col p-3.5">

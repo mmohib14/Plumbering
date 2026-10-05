@@ -190,8 +190,7 @@ export const BLOG_POSTS_DATA: BlogPost[] = [
     date: "September 18, 2026",
     author: {
       name: "Jack Callahan",
-      role: "Master Plumber & Technical Director",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80"
+      role: "Master Plumber & Technical Director"
     },
     excerpt: "Every homeowner should know where their main water shutoff is located before a catastrophic pipe burst occurs. Here is a step-by-step visual guide.",
     content: [
@@ -200,7 +199,6 @@ export const BLOG_POSTS_DATA: BlogPost[] = [
       "Gate Valves vs. Ball Valves: Older homes have brass gate valves with round wheel handles that require several clockwise rotations to seal. Newer homes have brass ball valves with a straight lever handle. Simply rotate the lever 90 degrees perpendicular to the pipe until it stops.",
       "Pro Tip: Once the main valve is shut off, walk to the lowest sink or garden hose bibb and open the faucet fully. This relieves residual line pressure and drains remaining water harmlessly out of the plumbing system."
     ],
-    coverImage: "https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=800&q=80",
     tags: ["Emergency", "Water Valve", "DIY Safety", "Home Maintenance"]
   },
   {
@@ -212,8 +210,7 @@ export const BLOG_POSTS_DATA: BlogPost[] = [
     date: "September 10, 2026",
     author: {
       name: "Marcus Vance",
-      role: "Senior Water Systems Specialist",
-      avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=80"
+      role: "Senior Water Systems Specialist"
     },
     excerpt: "Learn the 5 critical warning signs that tell you when a quick fix makes sense versus when investing in a high-efficiency replacement saves thousands in energy bills.",
     content: [
@@ -222,7 +219,6 @@ export const BLOG_POSTS_DATA: BlogPost[] = [
       "Warning Signs of Tank Failure: If water is weeping or actively pooling around the base of the tank cylinder itself, the inner glass lining has cracked due to thermal expansion. This cannot be patched or welded; the tank must be replaced immediately before a catastrophic flood occurs.",
       "The Tankless Advantage: Modern tankless water heaters (such as Navien or Rheem) offer a 20+ year expected lifespan, 30% reduction in gas consumption, and endless hot water that never runs cold during back-to-back family showers."
     ],
-    coverImage: "https://images.unsplash.com/photo-1621905251918-48416bd8575a?auto=format&fit=crop&w=800&q=80",
     tags: ["Water Heater", "Tankless", "Energy Savings", "Cost Guide"]
   },
   {
@@ -234,8 +230,7 @@ export const BLOG_POSTS_DATA: BlogPost[] = [
     date: "August 28, 2026",
     author: {
       name: "Jack Callahan",
-      role: "Master Plumber & Technical Director",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80"
+      role: "Master Plumber & Technical Director"
     },
     excerpt: "Caustic supermarket drain cleaners eat through pipe adhesives, warp PVC, and generate hazardous fumes. Here is what professional plumbers use instead.",
     content: [
@@ -243,7 +238,6 @@ export const BLOG_POSTS_DATA: BlogPost[] = [
       "Exothermic Chemical Heat: Liquid drain openers work by generating violent heat (up to 200°F) via chemical reaction. This extreme heat softens thin-walled PVC pipes, breaks glue welds at P-traps, and accelerates galvanic corrosion in older cast iron or galvanized lines.",
       "What To Do Instead: First, try a standard cup-style plunger on flat drains or an accordion plunger on toilets. Second, remove and manually inspect the sink P-trap under the cabinet with a bucket beneath. If the clog is deeper down the waste arm, motorized mechanical snaking or hydro jetting safely removes the blockage without corrosive chemicals."
     ],
-    coverImage: "https://images.unsplash.com/photo-1504148455328-c376907d081c?auto=format&fit=crop&w=800&q=80",
     tags: ["Drain Cleaning", "Plumbing Tips", "Clogged Sink", "DIY Prevention"]
   }
 ];

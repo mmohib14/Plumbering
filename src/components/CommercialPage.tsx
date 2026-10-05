@@ -37,7 +37,7 @@ export const CommercialPage: React.FC<CommercialPageProps> = ({ onOpenBooking })
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
             <button
               onClick={onOpenBooking}
-              className="w-full sm:w-auto bg-(--color-orange) hover:bg-(--color-orange-dark) active:bg-orange-800 text-slate-950 font-bold text-sm px-5 py-3 rounded-lg shadow-lg shadow-orange-600/20 transition-all"
+              className="w-full sm:w-auto bg-(--color-orange) hover:bg-orange-500 active:bg-orange-500 text-slate-950 font-bold text-sm px-5 py-3 rounded-lg shadow-lg shadow-orange-600/20 transition-all"
             >
               Book Commercial Service
             </button>
@@ -110,19 +110,15 @@ export const CommercialPage: React.FC<CommercialPageProps> = ({ onOpenBooking })
               <div className="pt-4">
                 <button
                   onClick={onOpenBooking}
-                  className="bg-(--color-orange) hover:bg-(--color-orange-dark) text-slate-950 font-bold py-3.5 px-6 rounded-xl text-sm transition-colors shadow-md"
+                  className="bg-(--color-orange) hover:bg-orange-500 text-slate-950 font-bold py-3.5 px-6 rounded-xl text-sm transition-colors shadow-md"
                 >
                   Schedule Commercial Site Inspection
                 </button>
               </div>
             </div>
 
-            <div className="relative rounded-3xl overflow-hidden border border-slate-200 shadow-xl">
-              <img
-                src="https://images.unsplash.com/photo-1621905251918-48416bd8575a?auto=format&fit=crop&w=1000&q=80"
-                alt="Commercial plumber servicing a professional plumbing system"
-                className="w-full h-96 object-cover"
-              />
+            <div className="relative flex h-96 items-center justify-center overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-br from-sky-100 via-white to-orange-100 text-(--color-navy) shadow-xl" aria-hidden="true">
+              <Building2 className="h-28 w-28" />
             </div>
           </div>
         </div>

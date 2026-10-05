@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sparkles, ArrowLeftRight, CheckCircle2, AlertTriangle } from 'lucide-react';
+import { ArrowLeftRight, CheckCircle2, AlertTriangle } from 'lucide-react';
 
 interface ProjectComparison {
   id: string;
@@ -7,8 +7,6 @@ interface ProjectComparison {
   subtitle: string;
   beforeLabel: string;
   afterLabel: string;
-  beforeImage: string;
-  afterImage: string;
   description: string;
   results: string[];
 }
@@ -20,8 +18,6 @@ const COMPARISONS: ProjectComparison[] = [
     subtitle: 'Illustrative residential repipe scenario',
     beforeLabel: 'Illustration: Corroded galvanized piping',
     afterLabel: 'Illustration: Replacement pipework',
-    beforeImage: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=800&q=80',
-    afterImage: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=800&q=80',
     description: 'An inspection can help identify deteriorated pipework and determine whether a targeted repair or repiping is appropriate.',
     results: ['Inspect pipe condition and water quality', 'Compare repair and replacement options', 'Confirm scope and pricing before work begins']
   },
@@ -31,8 +27,6 @@ const COMPARISONS: ProjectComparison[] = [
     subtitle: 'Illustrative water heater service scenario',
     beforeLabel: 'Illustration: Aging water heater',
     afterLabel: 'Illustration: Water heater service',
-    beforeImage: 'https://images.unsplash.com/photo-1621905251918-48416bd8575a?auto=format&fit=crop&w=800&q=80',
-    afterImage: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=800&q=80',
     description: 'A plumber can assess a failing unit and explain repair and replacement options based on household needs.',
     results: ['Check the unit, connections, and venting', 'Compare tank and tankless options', 'Review installation requirements and estimate']
   },
@@ -42,8 +36,6 @@ const COMPARISONS: ProjectComparison[] = [
     subtitle: 'Illustrative drain cleaning scenario',
     beforeLabel: 'Illustration: Drain blockage',
     afterLabel: 'Illustration: Drain cleaning service',
-    beforeImage: 'https://images.unsplash.com/photo-1542013936693-884638332954?auto=format&fit=crop&w=800&q=80',
-    afterImage: 'https://images.unsplash.com/photo-1504148455328-c376907d081c?auto=format&fit=crop&w=800&q=80',
     description: 'A camera inspection can help locate a sewer concern and inform the right cleaning or repair approach.',
     results: ['Inspect the line to locate the concern', 'Review cleaning and repair options', 'Confirm the recommended work before scheduling']
   }
@@ -72,7 +64,7 @@ export const BeforeAfterSlider: React.FC = () => {
             Plumbing Repair Comparisons
           </h2>
           <p className="text-base text-slate-600 mt-2">
-            These stock images illustrate common plumbing services; they are not actual customer before-and-after photos. Drag to explore each example.
+            These illustrations explain common plumbing issues and service outcomes; they are not customer before-and-after photos. Drag to compare.
           </p>
 
           {/* Project Switcher Tabs */}
@@ -84,7 +76,7 @@ export const BeforeAfterSlider: React.FC = () => {
                   setSelectedIdx(idx);
                   setSliderPosition(50);
                 }}
-                className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
+                className={`rounded-xl px-4 py-2 text-xs font-semibold transition-none sm:text-sm ${
                   selectedIdx === idx
                     ? 'bg-(--color-orange) text-slate-950 shadow-lg shadow-orange-600/20'
                     : 'bg-white text-slate-700 hover:bg-orange-50 border border-slate-200'
@@ -97,19 +89,18 @@ export const BeforeAfterSlider: React.FC = () => {
         </div>
 
         {/* Visualizer Container */}
-        <div className="mx-auto max-w-[1100px] bg-white border border-slate-200 rounded-3xl p-5 sm:p-8 shadow-sm">
+        <div className="mx-auto max-w-5xl rounded-3xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6 lg:p-7">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             
             {/* Left Interactive Image Comparison (7 cols) */}
-            <div className="lg:col-span-8 lg:mx-auto lg:w-full">
-              <div className="relative mx-auto h-80 w-full max-w-[980px] rounded-2xl overflow-hidden select-none border border-slate-200 shadow-lg sm:h-96">
+            <div className="lg:col-span-7 lg:mx-auto lg:w-full">
+              <div className="relative mx-auto h-72 w-full max-w-[680px] overflow-hidden rounded-2xl border border-slate-200 shadow-lg select-none sm:h-80">
                 
-                {/* AFTER Image (Full background) */}
-                <img
-                  src={activeComp.afterImage}
-                  alt={activeComp.afterLabel}
-                  className="absolute inset-0 w-full h-full object-cover"
-                />
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-gradient-to-br from-emerald-100 via-white to-sky-100 px-6 text-center text-emerald-950">
+                  <CheckCircle2 className="h-20 w-20" aria-hidden="true" />
+                  <p className="max-w-md text-xl font-extrabold sm:text-2xl">{activeComp.afterLabel}</p>
+                  <p className="text-sm font-semibold">Reviewed options and a clear service plan</p>
+                </div>
                 <div className="absolute top-3 right-3 bg-slate-900/85 backdrop-blur-sm text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow">
                   Service example
                 </div>
@@ -119,12 +110,11 @@ export const BeforeAfterSlider: React.FC = () => {
                   className="absolute inset-0 overflow-hidden"
                   style={{ width: `${sliderPosition}%` }}
                 >
-                  <img
-                    src={activeComp.beforeImage}
-                    alt={activeComp.beforeLabel}
-                    className="absolute inset-0 w-full h-full object-cover max-w-none grayscale brightness-75 contrast-125"
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                  />
+                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-gradient-to-br from-amber-100 via-orange-50 to-slate-200 px-6 text-center text-slate-900">
+                    <AlertTriangle className="h-20 w-20 text-orange-800" aria-hidden="true" />
+                    <p className="max-w-md text-xl font-extrabold sm:text-2xl">{activeComp.beforeLabel}</p>
+                    <p className="text-sm font-semibold">Inspection helps identify the underlying issue</p>
+                  </div>
                     <div className="absolute top-3 left-3 bg-slate-900/85 backdrop-blur-sm text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow">
                     Issue example
                   </div>
@@ -153,7 +143,7 @@ export const BeforeAfterSlider: React.FC = () => {
               </div>
 
               {/* Slider instruction */}
-              <div className="flex items-center justify-between text-xs text-slate-600 mt-3 px-1">
+              <div className="mt-3 flex flex-col items-start gap-1 px-1 text-xs text-slate-600 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
                 <span>◀ Slide left to reveal completed work</span>
                 <span className="font-semibold text-orange-900">Drag handle or tap image</span>
                 <span>Slide right to see original issue ▶</span>
@@ -161,7 +151,7 @@ export const BeforeAfterSlider: React.FC = () => {
             </div>
 
             {/* Right Project Details (5 cols) */}
-            <div className="lg:col-span-4 space-y-4">
+            <div className="space-y-4 lg:col-span-5">
               <div>
                 <span className="text-xs font-bold text-orange-900 uppercase tracking-wider">
                   Example Scenario

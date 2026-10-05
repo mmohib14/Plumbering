@@ -11,13 +11,13 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({ compact = false, light = f
     <div className={`relative flex shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white shadow-[0_8px_20px_rgba(3,45,70,0.24)] ring-1 ring-white/80 transition-transform duration-200 group-hover:scale-105 ${compact ? 'h-11 w-11' : 'h-12 w-12 sm:h-13 sm:w-13'}`}>
       <div className={`relative flex items-center justify-center rounded-[13px] bg-(--color-navy) ring-2 ring-sky-100 ${compact ? 'h-8 w-8' : 'h-9 w-9 sm:h-10 sm:w-10'}`}>
         <ShieldCheck className={`absolute text-sky-100 ${compact ? 'h-7 w-7' : 'h-8 w-8 sm:h-9 sm:w-9'}`} strokeWidth={1.5} />
-        <Wrench className={`relative -rotate-45 text-(--color-orange) ${compact ? 'h-4 w-4' : 'h-5 w-5'}`} strokeWidth={2.8} />
+        <Wrench className={`relative -rotate-45 text-(--color-orange-dark) ${compact ? 'h-4 w-4' : 'h-5 w-5'}`} strokeWidth={2.8} />
       </div>
       <span className="absolute bottom-0 left-0 right-0 h-1 bg-(--color-orange)" />
     </div>
     <div className="leading-none">
       <div className={`font-black uppercase tracking-[-0.06em] ${light ? 'text-slate-900' : 'text-white'} ${compact ? 'text-xl' : 'text-xl sm:text-3xl'}`}>
-        USA <span className="text-(--color-orange)">PRO</span>
+        USA <span className="text-(--color-orange-dark)">PRO</span>
       </div>
       <div className="mt-1 hidden items-center gap-1.5 sm:flex">
         <span className={`h-px bg-(--color-orange) ${compact ? 'w-4' : 'w-5 sm:w-7'}`} />

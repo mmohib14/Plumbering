@@ -36,14 +36,8 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ onOpenBooking }) => {
               key={post.id}
               className="bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col overflow-hidden group hover:-translate-y-1"
             >
-              {/* Image banner */}
-              <div className="relative h-48 overflow-hidden bg-slate-900">
-                <img
-                  src={post.coverImage}
-                  alt={post.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  loading="lazy"
-                />
+              <div className="relative flex h-48 items-center justify-center overflow-hidden bg-gradient-to-br from-(--color-navy) via-sky-900 to-orange-900 text-white">
+                <BookOpen className="h-16 w-16 opacity-80" aria-hidden="true" />
                 <div className="absolute top-3 left-3 bg-slate-900/80 backdrop-blur-sm text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full">
                   {post.category}
                 </div>
@@ -73,11 +67,9 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ onOpenBooking }) => {
                 {/* Author & Read More */}
                 <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
                   <div className="flex items-center space-x-2">
-                    <img
-                      src={post.author.avatar}
-                      alt={post.author.name}
-                      className="w-7 h-7 rounded-full object-cover border border-slate-200"
-                    />
+                    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-sky-100 text-[10px] font-extrabold text-(--color-navy)" aria-hidden="true">
+                      {post.author.name.split(/\s+/).map(part => part[0]).join('').slice(0, 2)}
+                    </span>
                     <div className="text-xs">
                       <div className="font-bold text-slate-800">{post.author.name}</div>
                     </div>
@@ -103,13 +95,7 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ onOpenBooking }) => {
         <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/75 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-150">
           <div ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="article-dialog-title" tabIndex={-1} className="relative bg-white w-full max-w-3xl rounded-3xl shadow-2xl overflow-hidden border border-slate-200 max-h-[90vh] flex flex-col animate-in zoom-in-95">
             
-            {/* Header image banner */}
-            <div className="relative h-60 bg-slate-900 shrink-0">
-              <img
-                src={selectedPost.coverImage}
-                alt={selectedPost.title}
-                className="w-full h-full object-cover"
-              />
+            <div className="relative h-60 shrink-0 bg-gradient-to-br from-(--color-navy) via-sky-900 to-orange-900">
               <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
 
               <button
@@ -135,11 +121,9 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ onOpenBooking }) => {
               
               {/* Author & Meta */}
               <div className="flex items-center space-x-3 pb-4 border-b border-slate-200">
-                <img
-                  src={selectedPost.author.avatar}
-                  alt={selectedPost.author.name}
-                  className="w-12 h-12 rounded-full object-cover border border-slate-300"
-                />
+                <span className="flex h-12 w-12 items-center justify-center rounded-full bg-sky-100 text-sm font-extrabold text-(--color-navy)" aria-hidden="true">
+                  {selectedPost.author.name.split(/\s+/).map(part => part[0]).join('').slice(0, 2)}
+                </span>
                 <div>
                   <div className="text-sm font-bold text-slate-900">{selectedPost.author.name}</div>
                   <div className="text-xs text-slate-500">{selectedPost.author.role} • {selectedPost.date}</div>

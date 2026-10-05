@@ -125,7 +125,7 @@ export const ReviewsSection: React.FC<ReviewsSectionProps> = ({ onAddReview }) =
 
           <button
             onClick={() => setIsModalOpen(true)}
-            className="bg-(--color-orange) hover:bg-(--color-orange-dark) text-slate-950 font-bold text-xs py-2 px-4 rounded-xl transition-colors shadow-sm flex items-center space-x-1.5"
+            className="bg-(--color-orange) hover:bg-orange-500 text-slate-950 font-bold text-xs py-2 px-4 rounded-xl transition-colors shadow-sm flex items-center space-x-1.5"
           >
             <MessageSquare className="w-3.5 h-3.5" />
             <span>Write a Customer Review</span>
@@ -162,7 +162,7 @@ export const ReviewsSection: React.FC<ReviewsSectionProps> = ({ onAddReview }) =
                     </div>
                   </div>
 
-                  <span className="text-[11px] text-slate-400 font-medium">
+                  <span className="text-[11px] text-slate-500 font-medium">
                     {rev.date}
                   </span>
                 </div>
@@ -190,7 +190,7 @@ export const ReviewsSection: React.FC<ReviewsSectionProps> = ({ onAddReview }) =
                 <span className={`flex items-center font-medium text-[11px] ${rev.verified ? 'text-emerald-600' : 'text-amber-700'}`}>
                   {rev.verified && <CheckCircle2 className="mr-1 h-3.5 w-3.5 text-emerald-600" />}
                   {rev.verified ? 'Verified Customer Job' : 'Awaiting review'}</span>
-                {rev.verified && <span className="text-[11px] text-slate-400">Google Verified</span>}
+                {rev.verified && <span className="text-[11px] text-slate-500">Google Verified</span>}
               </div>
             </div>
           ))}

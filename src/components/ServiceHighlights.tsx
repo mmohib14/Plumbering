@@ -20,7 +20,7 @@ export const ServiceHighlights: React.FC<ServiceHighlightsProps> = ({
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
           <div>
-            <span className="text-xs font-black uppercase tracking-[0.16em] text-(--color-orange)">
+            <span className="text-xs font-black uppercase tracking-[0.16em] text-(--color-orange-dark)">
               Popular solutions
             </span>
             <h2 className="mt-2 text-3xl font-black tracking-tight text-(--color-navy) sm:text-4xl">
@@ -32,7 +32,7 @@ export const ServiceHighlights: React.FC<ServiceHighlightsProps> = ({
           </div>
           <button
             onClick={() => onSelectTab('services')}
-            className="inline-flex items-center gap-1 self-start text-sm font-black text-(--color-navy) transition-colors hover:text-(--color-orange) sm:self-auto"
+            className="inline-flex items-center gap-1 self-start text-sm font-black text-(--color-navy) transition-colors hover:text-(--color-orange-dark) sm:self-auto"
           >
             View all services
             <ArrowUpRight className="h-4 w-4" />
@@ -46,14 +46,18 @@ export const ServiceHighlights: React.FC<ServiceHighlightsProps> = ({
               onClick={() => onSelectService(service)}
               className="group overflow-hidden rounded-2xl border border-slate-200 bg-white text-left shadow-sm transition-all hover:-translate-y-1 hover:border-(--color-orange) hover:shadow-xl"
             >
-              <div className="relative aspect-16/10 overflow-hidden bg-slate-200">
-                <img
-                  src={service.imageUrl}
-                  alt={service.title}
-                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  loading="lazy"
-                />
-                <div className="absolute inset-0 bg-linear-to-t from-(--color-navy)/85 via-transparent to-transparent" />
+              <div className="relative flex aspect-16/10 items-center justify-center overflow-hidden bg-gradient-to-br from-sky-100 via-white to-orange-100 text-(--color-navy)">
+                {service.highlightImageUrl ? (
+                  <img
+                    src={service.highlightImageUrl}
+                    alt={service.title}
+                    loading="lazy"
+                    decoding="async"
+                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                  />
+                ) : (
+                  <Wrench className="h-12 w-12" aria-hidden="true" />
+                )}
                 <span className="absolute bottom-3 left-3 inline-flex items-center gap-1 rounded-full bg-(--color-orange) px-2 py-0.5 text-[9px] font-black uppercase tracking-wide text-(--color-charcoal)">
                   <Wrench className="h-3 w-3" />
                   {service.isEmergency ? '24/7 response' : service.category}
@@ -66,7 +70,7 @@ export const ServiceHighlights: React.FC<ServiceHighlightsProps> = ({
                 <p className="mt-1.5 line-clamp-2 text-xs leading-relaxed text-slate-600">
                   {service.shortDesc}
                 </p>
-                <span className="mt-3 inline-flex items-center gap-1 text-[11px] font-black text-(--color-orange)">
+                <span className="mt-3 inline-flex items-center gap-1 text-[11px] font-black text-(--color-orange-dark)">
                   Explore service
                   <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </span>

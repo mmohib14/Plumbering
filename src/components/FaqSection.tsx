@@ -50,8 +50,12 @@ const FAQS_LIST: FaqItem[] = [
   }
 ];
 
-export const FaqSection: React.FC<{ onOpenBooking: () => void }> = ({ onOpenBooking }) => {
+export const FaqSection: React.FC<{ onOpenBooking: () => void; headingLevel?: 'h1' | 'h2' }> = ({
+  onOpenBooking,
+  headingLevel = 'h2',
+}) => {
   const [openIdx, setOpenIdx] = useState<number | null>(0);
+  const Heading = headingLevel;
 
   const toggleFaq = (idx: number) => {
     setOpenIdx(openIdx === idx ? null : idx);
@@ -80,9 +84,9 @@ export const FaqSection: React.FC<{ onOpenBooking: () => void }> = ({ onOpenBook
           <span className="text-orange-950 font-bold text-xs uppercase tracking-widest bg-orange-100 px-3 py-1 rounded-full">
             Answers To Common Questions
           </span>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mt-3">
+          <Heading className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mt-3">
             Frequently Asked Plumbing Questions
-          </h2>
+          </Heading>
           <p className="text-base text-slate-600 mt-2">
             Quick answers about pricing, response times, and service.
           </p>
@@ -143,7 +147,7 @@ export const FaqSection: React.FC<{ onOpenBooking: () => void }> = ({ onOpenBook
             </a>
             <button
               onClick={onOpenBooking}
-              className="bg-(--color-orange) hover:bg-(--color-orange-dark) text-slate-950 font-bold px-4 py-2.5 rounded-xl text-xs"
+              className="bg-(--color-orange) hover:bg-orange-500 text-slate-950 font-bold px-4 py-2.5 rounded-xl text-xs"
             >
               Book Service
             </button>

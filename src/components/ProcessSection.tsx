@@ -86,7 +86,7 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ onOpenBooking })
         <div className="mt-12 text-center">
           <button
             onClick={onOpenBooking}
-            className="inline-flex items-center bg-(--color-orange) hover:bg-(--color-orange-dark) text-slate-950 font-bold px-7 py-3.5 rounded-xl shadow-lg shadow-orange-600/20 transition-all text-sm group"
+            className="inline-flex items-center bg-(--color-orange) hover:bg-orange-500 text-slate-950 font-bold px-7 py-3.5 rounded-xl shadow-lg shadow-orange-600/20 transition-all text-sm group"
           >
             <span>Schedule Your Service Call Now</span>
             <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />

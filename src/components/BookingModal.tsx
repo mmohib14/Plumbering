@@ -270,7 +270,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                 </button>
                 <a
                   href={`tel:${COMPANY_INFO.phoneRaw}`}
-                  className="bg-(--color-orange) hover:bg-(--color-orange-dark) text-slate-950 font-bold py-2.5 px-5 rounded-xl text-xs flex items-center space-x-1.5"
+                  className="bg-(--color-orange) hover:bg-orange-500 text-slate-950 font-bold py-2.5 px-5 rounded-xl text-xs flex items-center space-x-1.5"
                 >
                   <Phone className="w-3.5 h-3.5" />
                   <span>Call Dispatcher Direct</span>
@@ -590,11 +590,6 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                     </label>
                     {photoPreview && (
                       <div className="flex items-center space-x-2">
-                        <img 
-                          src={photoPreview} 
-                          alt="Issue preview" 
-                          className="w-10 h-10 object-cover rounded-lg border border-slate-300"
-                        />
                         <span className="text-[11px] text-emerald-600 font-semibold">Image Attached</span>
                         <button
                           type="button"
@@ -614,7 +609,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-(--color-orange) hover:bg-(--color-orange-dark) active:bg-orange-800 text-slate-950 font-bold py-4 px-4 rounded-xl text-sm transition-all shadow-lg shadow-orange-600/20 flex items-center justify-center space-x-2"
+                  className="w-full bg-(--color-orange) hover:bg-orange-500 active:bg-orange-500 text-slate-950 font-bold py-4 px-4 rounded-xl text-sm transition-all shadow-lg shadow-orange-600/20 flex items-center justify-center space-x-2"
                 >
                   <Calendar className="w-4 h-4" />
                   <span>

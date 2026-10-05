@@ -81,7 +81,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenBooking, onSelec
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5 pt-2">
               <a
                 href={`tel:${COMPANY_INFO.phoneRaw}`}
-                className="w-full sm:w-auto inline-flex items-center justify-center bg-(--color-orange) hover:bg-(--color-orange-dark) active:bg-orange-800 text-slate-950 font-extrabold text-sm px-5 py-3 rounded-lg shadow-lg shadow-orange-600/20 transition-all transform hover:-translate-y-0.5"
+                className="w-full sm:w-auto inline-flex items-center justify-center bg-(--color-orange) hover:bg-orange-500 active:bg-orange-500 text-slate-950 font-extrabold text-sm px-5 py-3 rounded-lg shadow-lg shadow-orange-600/20 transition-all transform hover:-translate-y-0.5"
               >
                 <Phone className="w-4 h-4 mr-2" />
                 <span>Call Now</span>
@@ -122,7 +122,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenBooking, onSelec
                 />
                 <button
                   type="submit"
-                  className="bg-(--color-orange) hover:bg-(--color-orange-dark) text-slate-950 text-xs font-bold px-3.5 py-2 rounded-lg shrink-0 transition-colors"
+                  className="bg-(--color-orange) hover:bg-orange-500 text-slate-950 text-xs font-bold px-3.5 py-2 rounded-lg shrink-0 transition-colors"
                 >
                   Check Plumber
                 </button>

@@ -91,7 +91,7 @@ export const ProblemFinderSection: React.FC<ProblemFinderSectionProps> = ({
             className="text-4xl font-extrabold leading-[1.08] tracking-normal text-(--color-navy) lg:text-5xl"
             style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
           >
-            What needs <span className="text-(--color-orange)">fixing?</span>
+            What needs <span className="text-(--color-orange-dark)">fixing?</span>
           </h2>
           <p className="mx-auto max-w-xl text-sm text-slate-600 lg:mx-0">
             Choose an issue to book the right plumber.
@@ -123,14 +123,14 @@ export const ProblemFinderSection: React.FC<ProblemFinderSectionProps> = ({
 
           <div className="flex flex-col gap-3">
             <div className="rounded-lg bg-(--color-navy) p-4 text-white shadow-lg shadow-slate-900/10 sm:p-5">
-              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-(--color-orange)">
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-(--color-accent-on-dark)">
                 The USA Pro difference
               </p>
               <h3 className="mt-2 text-lg font-black tracking-tight">Good work. No guesswork.</h3>
               <div className="mt-2 space-y-1">
                 {financingHighlights.map((item) => (
                   <div key={item.title} className="flex items-center gap-2.5 border-t border-white/15 py-2.5 first:border-0 first:pt-0 last:pb-0">
-                    <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-white/10 text-(--color-orange)">
+                    <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-white/10 text-(--color-accent-on-dark)">
                       {item.icon}
                     </div>
                     <div className="min-w-0">

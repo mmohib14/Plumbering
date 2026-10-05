@@ -31,7 +31,9 @@ export const FeaturedReview: React.FC<FeaturedReviewProps> = ({ review, title })
             <p className="mt-1 text-base font-medium leading-7 text-slate-800 sm:text-lg">{review.review}</p>
           </div>
           <footer className="mt-6 flex items-center gap-3 border-t border-slate-200 pt-4">
-            {review.avatar && <img src={review.avatar} alt="" loading="lazy" className="h-10 w-10 shrink-0 rounded-full object-cover" />}
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-sky-100 text-sm font-extrabold text-(--color-navy)" aria-hidden="true">
+              {review.author.split(/\s+/).map(part => part[0]).join('').slice(0, 2)}
+            </span>
             <div className="min-w-0">
               <cite className="block not-italic text-sm font-extrabold text-(--color-navy)">{review.author}</cite>
               <p className="mt-0.5 text-xs leading-5 text-slate-600">{review.location} · {review.serviceType}</p>

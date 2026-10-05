@@ -104,7 +104,7 @@ export const ContactInquiryForm: React.FC<ContactInquiryFormProps> = ({ variant 
               className="w-full resize-y rounded-xl border border-slate-300 p-3 text-xs text-slate-900 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-orange-300 sm:text-sm"
             />
           </div>
-          <button type="submit" className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-(--color-orange) px-4 py-3.5 text-sm font-bold text-slate-950 shadow-md shadow-orange-600/20 transition-colors hover:bg-(--color-orange-dark)">
+          <button type="submit" className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-(--color-orange) px-4 py-3.5 text-sm font-bold text-slate-950 shadow-md shadow-orange-600/20 transition-colors hover:bg-orange-500">
             <Send className="h-4 w-4" />
             <span>Send Message to Dispatch</span>
           </button>

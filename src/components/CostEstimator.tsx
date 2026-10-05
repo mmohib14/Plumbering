@@ -251,7 +251,7 @@ export const CostEstimator: React.FC<CostEstimatorProps> = ({
             <div className="pt-2 space-y-2">
               <button
                 onClick={handleBookEstimate}
-                className="w-full bg-(--color-orange) hover:bg-(--color-orange-dark) active:bg-orange-800 text-slate-950 font-bold py-3 px-4 rounded-xl shadow-lg shadow-orange-600/20 transition-all text-sm flex items-center justify-center space-x-2"
+                className="w-full bg-(--color-orange) hover:bg-orange-500 active:bg-orange-500 text-slate-950 font-bold py-3 px-4 rounded-xl shadow-lg shadow-orange-600/20 transition-all text-sm flex items-center justify-center space-x-2"
               >
                 <span>Book This Estimate</span>
                 <ArrowRight className="w-4 h-4" />
